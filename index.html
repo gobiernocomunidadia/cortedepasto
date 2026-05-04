@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corte de Pasto - Lomas de Zamora</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fuentes e Íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-main: #2A7E43; /* Un tono verde acorde al corte de pasto */
+            --blanco: #FFFFFF;
+            --acento: #7ED957;
+            --azul-inst: #19567C;
+        }
+
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-main); color: var(--blanco); margin: 0; min-height: 100vh; }
+        
+        #map { height: 100%; width: 100%; border-radius: 8px; background-color: #f8fafc; z-index: 10; }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #F3F6F9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #E6EDF3; border-radius: 4px; }
+
+        /* Ajustes para la ventana de Info de Google Maps */
+        .gm-style-iw.gm-style-iw-c {
+            border-radius: 8px !important;
+            padding: 12px !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+        }
+        .gm-style-iw-d { overflow: hidden !important; }
+        button.gm-ui-hover-effect { display: none !important; }
+
+        /* Estilos del Botón de Cierre Personalizado */
+        .custom-close-btn {
+            position: absolute;
+            right: -4px;
+            top: -6px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: #94A3B8;
+            font-size: 22px;
+            font-weight: bold;
+            line-height: 1;
+            padding: 2px 6px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            z-index: 50;
+        }
+        .custom-close-btn:hover {
+            background-color: #F1F5F9;
+            color: var(--bg-main);
+        }
+    </style>
+</head>
+<body class="flex flex-col">
+
+    <header class="bg-[var(--bg-main)] shadow-lg border-b-4 border-[var(--acento)] z-20 py-6 px-4 shrink-0">
+        <div class="max-w-[1600px] mx-auto flex items-center justify-center gap-4">
+            <div class="bg-white text-[var(--bg-main)] rounded-full h-14 w-14 flex items-center justify-center shadow-md">
+                <i class="fa-solid fa-leaf text-2xl"></i>
+            </div>
+            <div class="flex flex-col">
+                <h1 class="text-3xl font-extrabold tracking-tight uppercase leading-none">Corte de Pasto</h1>
+            </div>
+        </div>
+    </header>
+
+    <main class="w-full max-w-[1600px] mx-auto py-8 px-4 flex-1 flex flex-col lg:flex-row gap-6">
+        
+        <aside class="w-full lg:w-80 bg-white rounded-xl shadow-md border border-[#E6EDF3] flex flex-col max-h-[calc(100vh-200px)] overflow-hidden shrink-0 z-20">
+            <div class="p-4 border-b bg-[#F3F6F9] flex items-center gap-2">
+                <i data-lucide="filter" class="text-[var(--bg-main)] h-5 w-5"></i>
+                <h3 class="font-bold text-[#0F172A] uppercase text-sm">Filtros Operativos</h3>
+            </div>
+            
+            <div class="p-5 overflow-y-auto custom-scrollbar flex-1 space-y-6">
+                
+                <!-- SECCIÓN: FILTRO GLOBAL -->
+                <div class="bg-[var(--bg-main)]/10 p-3 rounded-lg border border-[var(--bg-main)]/30 shadow-sm">
+                    <h4 class="text-xs font-extrabold text-[var(--bg-main)] uppercase mb-2 flex items-center gap-2">
+                        <i data-lucide="crosshair" class="h-4 w-4"></i> Filtro Global de Zona
+                    </h4>
+                    <select id="filtro-global-cgm" class="w-full text-xs p-2 border border-[var(--bg-main)]/30 rounded focus:outline-none focus:border-[var(--bg-main)] font-semibold text-[#0F172A] cursor-pointer">
+                        <option value="TODOS">TODOS LOS CGM</option>
+                        <!-- Se llena dinámicamente -->
+                    </select>
+                </div>
+
+                <!-- SECCIÓN: DIVISIÓN TERRITORIAL -->
+                <div class="bg-[var(--bg-main)]/10 p-3 rounded-lg border border-[var(--bg-main)]/30">
+                    <h4 class="text-xs font-extrabold text-[var(--bg-main)] uppercase mb-3 flex items-center gap-2">
+                        <i data-lucide="map" class="h-4 w-4"></i> División Territorial
+                    </h4>
+                    <div class="space-y-3">
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" id="cb-limite" checked class="w-4 h-4 accent-[var(--bg-main)]">
+                            <span class="text-sm text-[#0F172A] font-bold">Límite Lomas de Zamora</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" id="cb-cgm" checked class="w-4 h-4 accent-[var(--bg-main)]">
+                            <span class="text-sm text-[#0F172A] font-bold">División por CGM</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN: CORTES DE PASTO -->
+                <div class="bg-[var(--bg-main)]/10 p-3 rounded-lg border border-[var(--bg-main)]/30">
+                    <h4 class="text-xs font-extrabold text-[var(--bg-main)] uppercase mb-3 flex items-center gap-2">
+                        <i data-lucide="scissors" class="h-4 w-4"></i> Cortes de Pasto
+                    </h4>
+                    <div class="space-y-3">
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" id="cb-cortes" checked class="w-4 h-4 accent-[var(--bg-main)]">
+                            <span class="text-sm text-[#0F172A] font-bold">Ver Cortes de Pasto</span>
+                        </label>
+                        <div class="flex flex-col gap-1 mt-2 pl-7">
+                            <label class="text-xs font-semibold text-gray-600">Filtrar por Fecha:</label>
+                            <select id="filtro-fecha" class="w-full text-xs p-1.5 border border-gray-300 rounded focus:outline-none focus:border-[var(--bg-main)] font-semibold text-[#0F172A] cursor-pointer">
+                                <option value="TODAS">TODAS LAS FECHAS</option>
+                                <!-- Se llena dinámicamente -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+        <div class="flex-1 bg-white p-2 rounded-xl shadow-lg border border-[#E6EDF3] flex flex-col min-h-[500px] relative z-10">
+            <div id="map"></div>
+        </div>
+
+    </main>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2MHti5Cy4IDKPc3Iu0ypNQg_BgsjcMoQ&callback=initMap" defer></script>
+
+    <script>
+        let map, infoWindow;
+        let infoWindowTimer;
+        let cgmLayer;
+        let cortesLayer;
+        let limiteElements = []; 
+        
+        function startInfoWindowTimer() {
+            if (infoWindowTimer) clearTimeout(infoWindowTimer);
+            infoWindowTimer = setTimeout(() => {
+                if (infoWindow) infoWindow.close();
+            }, 10000); 
+        }
+
+        window.closeInfoWindow = function() {
+            if (infoWindow) {
+                infoWindow.close();
+            }
+            if (infoWindowTimer) {
+                clearTimeout(infoWindowTimer);
+            }
+        };
+
+        function initMap() {
+            lucide.createIcons();
+            infoWindow = new google.maps.InfoWindow();
+            
+            google.maps.event.addListener(infoWindow, 'domready', () => {
+                const iwContainer = document.querySelector('.gm-style-iw-c');
+                if (iwContainer) {
+                    iwContainer.addEventListener('mouseenter', () => {
+                        if (infoWindowTimer) clearTimeout(infoWindowTimer);
+                    });
+                    iwContainer.addEventListener('mouseleave', () => {
+                        startInfoWindowTimer();
+                    });
+                }
+            });
+
+            const mapStyle = [
+                { featureType: "poi", stylers: [{ visibility: "off" }] },
+                { featureType: "transit", stylers: [{ visibility: "off" }] },
+                { elementType: "geometry", stylers: [{ color: "#f5f5f5" }] },
+                { elementType: "labels.icon", stylers: [{ visibility: "off" }] },
+                { elementType: "labels.text.fill", stylers: [{ color: "#616161" }] },
+                { elementType: "labels.text.stroke", stylers: [{ color: "#f5f5f5" }] },
+                { featureType: "water", elementType: "geometry", stylers: [{ color: "#c9e8f5" }] },
+                { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] }
+            ];
+
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: -34.7573, lng: -58.4035 },
+                zoom: 13,
+                styles: mapStyle,
+                mapTypeControl: false,
+                streetViewControl: false
+            });
+
+            // 1. Límite Lomas (Línea Punteada)
+            fetch('./municipios_Lomas de Zamora.geojson').then(r => r.json()).then(geoJson => {
+                geoJson.features.forEach(feature => {
+                    if (feature.geometry.type === 'MultiPolygon' || feature.geometry.type === 'Polygon') {
+                        const polys = feature.geometry.type === 'Polygon' ? [feature.geometry.coordinates] : feature.geometry.coordinates;
+                        polys.forEach(poly => {
+                            poly.forEach(ring => {
+                                const path = ring.map(coord => ({ lat: coord[1], lng: coord[0] }));
+                                const p = new google.maps.Polygon({ paths: path, strokeOpacity: 0, fillColor: '#2A7E43', fillOpacity: 0.03, map: map, zIndex: 2 });
+                                const lineSymbol = { path: 'M 0,-1 0,1', strokeOpacity: 1, scale: 3 };
+                                const l = new google.maps.Polyline({ path: path, strokeOpacity: 0, icons: [{ icon: lineSymbol, offset: '0', repeat: '15px' }], strokeColor: '#2A7E43', strokeWeight: 3, map: map, zIndex: 3 });
+                                limiteElements.push(p, l);
+                            });
+                        });
+                    }
+                });
+            }).catch(e => console.log('Error cargando límite:', e));
+
+            // 2. Cargar CGM GeoJSON
+            cgmLayer = new google.maps.Data();
+            fetch('./CGM.geojson').then(r => r.json()).then(geoJson => {
+                cgmLayer.addGeoJson(geoJson);
+                
+                // Llenar Filtro Global
+                const cgmSet = new Set();
+                geoJson.features.forEach(f => {
+                    if (f.properties && f.properties.CGM) cgmSet.add(f.properties.CGM.toUpperCase());
+                });
+                
+                const selectGlobalCgm = document.getElementById('filtro-global-cgm');
+                Array.from(cgmSet).sort().forEach(cgm => {
+                    const opt = document.createElement('option');
+                    opt.value = cgm;
+                    opt.textContent = cgm;
+                    selectGlobalCgm.appendChild(opt);
+                });
+                
+                selectGlobalCgm.addEventListener('change', () => {
+                    updateStyles();
+                    if(typeof updateCortesStyles === 'function') updateCortesStyles();
+                });
+
+                updateStyles(); 
+            }).catch(e => console.log('Error cargando CGM:', e));
+
+            cgmLayer.setMap(map);
+
+            // 3. Cargar Cortes de Pasto GeoJSON (Archivo adjunto con Fechas)
+            cortesLayer = new google.maps.Data();
+            fetch('./Cortes_Pasto.geojson').then(r => r.json()).then(geoJson => {
+                cortesLayer.addGeoJson(geoJson);
+                
+                // Llenar Filtro de Fecha dinámicamente basado en la propiedad "Fecha"
+                const fechasSet = new Set();
+                geoJson.features.forEach(f => {
+                    if (f.properties && f.properties.Fecha) {
+                        fechasSet.add(f.properties.Fecha);
+                    }
+                });
+                
+                const selectFecha = document.getElementById('filtro-fecha');
+                Array.from(fechasSet).sort().forEach(fecha => {
+                    const opt = document.createElement('option');
+                    opt.value = fecha;
+                    opt.textContent = fecha;
+                    selectFecha.appendChild(opt);
+                });
+                
+                selectFecha.addEventListener('change', () => {
+                    updateCortesStyles();
+                });
+
+                updateCortesStyles(); 
+            }).catch(e => console.log('Error cargando Cortes de Pasto:', e));
+
+            cortesLayer.setMap(map);
+
+            function updateStyles() {
+                const globalCgmSelect = document.getElementById('filtro-global-cgm');
+                const globalCgm = globalCgmSelect ? globalCgmSelect.value : "TODOS";
+
+                cgmLayer.setStyle((feature) => {
+                    const featCgm = feature.getProperty('CGM');
+                    let isVisible = true;
+                    let opacidad = 0.25;
+                    let grosor = 3;
+
+                    if (globalCgm !== "TODOS") {
+                        if (!featCgm || featCgm.toUpperCase() !== globalCgm) {
+                            isVisible = false; 
+                        } else {
+                            opacidad = 0.4; 
+                            grosor = 4;
+                        }
+                    }
+
+                    return {
+                        fillColor: '#7ED957', 
+                        fillOpacity: opacidad, 
+                        strokeColor: '#2A7E43', 
+                        strokeWeight: grosor,        
+                        strokeOpacity: 0.9, 
+                        zIndex: 1,
+                        visible: isVisible
+                    };
+                });
+            }
+
+            // Actualizar estilos y filtros para la capa de Cortes de Pasto
+            function updateCortesStyles() {
+                const globalCgmSelect = document.getElementById('filtro-global-cgm');
+                const globalCgm = globalCgmSelect ? globalCgmSelect.value : "TODOS";
+                
+                const fechaSelect = document.getElementById('filtro-fecha');
+                const fechaFiltro = fechaSelect ? fechaSelect.value : "TODAS";
+
+                cortesLayer.setStyle((feature) => {
+                    const featCgm = feature.getProperty('CGM');
+                    const featFecha = feature.getProperty('Fecha');
+                    let isVisible = true;
+
+                    // Validar Filtro Global CGM
+                    if (globalCgm !== "TODOS") {
+                        if (!featCgm || featCgm.toUpperCase() !== globalCgm) {
+                            isVisible = false;
+                        }
+                    }
+
+                    // Validar Filtro de Fecha
+                    if (fechaFiltro !== "TODAS") {
+                        if (!featFecha || featFecha !== fechaFiltro) {
+                            isVisible = false;
+                        }
+                    }
+
+                    return {
+                        fillColor: '#19567C',
+                        fillOpacity: 0.7,
+                        strokeColor: '#FFFFFF',
+                        strokeWeight: 1.5,
+                        icon: {
+                            path: google.maps.SymbolPath.CIRCLE,
+                            scale: 7,
+                            fillColor: '#19567C',
+                            fillOpacity: 1,
+                            strokeColor: '#FFFFFF',
+                            strokeWeight: 2
+                        },
+                        zIndex: 5,
+                        visible: isVisible
+                    };
+                });
+            }
+
+            // Ventanas Emergentes base para CGM y Cortes
+            function bindPopup(layer, colorTitle, isCorte = false) {
+                layer.addListener('click', function(event) {
+                    let content = `<div style="font-family: 'Montserrat', sans-serif; min-width: 180px; position: relative;">`;
+                    content += `<button onclick="window.closeInfoWindow()" class="custom-close-btn">&times;</button>`;
+                    
+                    if (isCorte) {
+                        content += `<h3 style="font-weight: 800; font-size: 14px; color: ${colorTitle}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Corte de Pasto</h3>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${event.feature.getProperty('Fecha') || '-'}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${event.feature.getProperty('CGM') || '-'}</p>`;
+                        if(event.feature.getProperty('Detalle')) content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Detalle:</b> ${event.feature.getProperty('Detalle')}</p>`;
+                    } else {
+                        content += `<h3 style="font-weight: 800; font-size: 14px; color: ${colorTitle}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">CGM: ${event.feature.getProperty('CGM')}</h3>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Manzanas:</b> ${event.feature.getProperty('Manzanas') || '-'}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Cuadras:</b> ${event.feature.getProperty('Cuadras') || '-'}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Viviendas:</b> ${event.feature.getProperty('Viviendas') || '-'}</p>`;
+                    }
+                    
+                    content += `</div>`;
+                    
+                    infoWindow.setContent(content);
+                    // Asegurar que abra en la posición correcta sea punto o polígono
+                    if (event.feature.getGeometry().getType() === 'Point') {
+                        infoWindow.setPosition(event.feature.getGeometry().get());
+                    } else {
+                        infoWindow.setPosition(event.latLng);
+                    }
+                    infoWindow.open(map);
+                    startInfoWindowTimer(); 
+                });
+            }
+
+            bindPopup(cgmLayer, '#2A7E43', false);
+            bindPopup(cortesLayer, '#19567C', true);
+
+            // Toggles
+            document.getElementById('cb-limite').addEventListener('change', (e) => {
+                const m = e.target.checked ? map : null;
+                limiteElements.forEach(el => el.setMap(m));
+            });
+
+            document.getElementById('cb-cgm').addEventListener('change', (e) => {
+                e.target.checked ? cgmLayer.setMap(map) : cgmLayer.setMap(null);
+            });
+
+            document.getElementById('cb-cortes').addEventListener('change', (e) => {
+                e.target.checked ? cortesLayer.setMap(map) : cortesLayer.setMap(null);
+            });
+        }
+    </script>
+</body>
+</html>
