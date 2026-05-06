@@ -109,6 +109,10 @@
                             <input type="checkbox" id="cb-cgm" checked class="w-4 h-4 accent-[var(--bg-main)]">
                             <span class="text-sm text-[#0F172A] font-bold">División por CGM</span>
                         </label>
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" id="cb-plazas" checked class="w-4 h-4 accent-[var(--bg-main)]">
+                            <span class="text-sm text-[#0F172A] font-bold">Plazas Lomas</span>
+                        </label>
                     </div>
                 </div>
 
@@ -148,8 +152,36 @@
         let infoWindowTimer;
         let cgmLayer;
         let cortesLayer;
+        let plazasLayer;
         let limiteElements = []; 
         
+        // --- FUNCIÓN DE COLORES POR DÍA (GAMA AZULES CORPORATIVOS) ---
+        function getColorPorDiaSemana(fechaStr) {
+            if (!fechaStr) return '#19567C'; 
+            
+            const partes = fechaStr.split('/');
+            if (partes.length !== 3) return '#19567C';
+            
+            const dia = parseInt(partes[0], 10);
+            const mes = parseInt(partes[1], 10) - 1; 
+            const anio = parseInt(partes[2], 10);
+            
+            const fechaObj = new Date(anio, mes, dia);
+            const diaSemana = fechaObj.getDay(); 
+            
+            const coloresAzul = {
+                1: '#03045E', // Lunes - Azul Marino Oscuro
+                2: '#023E8A', // Martes - Azul Fuerte
+                3: '#0077B6', // Miércoles - Azul Medio
+                4: '#0096C7', // Jueves - Azul Celeste Oscuro
+                5: '#00B4D8', // Viernes - Celeste
+                6: '#48CAE4', // Sábado - Celeste Claro
+                0: '#90E0EF'  // Domingo - Cyan Muy Claro
+            };
+            
+            return coloresAzul[diaSemana] || '#19567C';
+        }
+
         function startInfoWindowTimer() {
             if (infoWindowTimer) clearTimeout(infoWindowTimer);
             infoWindowTimer = setTimeout(() => {
@@ -224,7 +256,6 @@
             fetch('./CGM.geojson').then(r => r.json()).then(geoJson => {
                 cgmLayer.addGeoJson(geoJson);
                 
-                // Llenar Filtro Global
                 const cgmSet = new Set();
                 geoJson.features.forEach(f => {
                     if (f.properties && f.properties.CGM) cgmSet.add(f.properties.CGM.toUpperCase());
@@ -248,21 +279,26 @@
 
             cgmLayer.setMap(map);
 
-            // 3. Cargar Cortes de Pasto GeoJSON (Archivo adjunto con Fechas)
+            // 3. Cargar Cortes de Pasto GeoJSON
             cortesLayer = new google.maps.Data();
-            fetch('./Cortes_Pasto.geojson').then(r => r.json()).then(geoJson => {
+            fetch('./cortedepasto.geojson').then(r => r.json()).then(geoJson => {
                 cortesLayer.addGeoJson(geoJson);
                 
-                // Llenar Filtro de Fecha dinámicamente basado en la propiedad "Fecha"
                 const fechasSet = new Set();
                 geoJson.features.forEach(f => {
-                    if (f.properties && f.properties.Fecha) {
-                        fechasSet.add(f.properties.Fecha);
+                    if (f.properties && f.properties.Fecha_str) {
+                        fechasSet.add(f.properties.Fecha_str);
                     }
                 });
                 
                 const selectFecha = document.getElementById('filtro-fecha');
-                Array.from(fechasSet).sort().forEach(fecha => {
+                const sortedFechas = Array.from(fechasSet).sort((a, b) => {
+                    const [dayA, monthA, yearA] = a.split('/');
+                    const [dayB, monthB, yearB] = b.split('/');
+                    return new Date(yearA, monthA - 1, dayA) - new Date(yearB, monthB - 1, dayB);
+                });
+
+                sortedFechas.forEach(fecha => {
                     const opt = document.createElement('option');
                     opt.value = fecha;
                     opt.textContent = fecha;
@@ -278,6 +314,28 @@
 
             cortesLayer.setMap(map);
 
+            // 4. Cargar Plazas GeoJSON
+            plazasLayer = new google.maps.Data();
+            fetch('./Plazas.geojson').then(r => r.json()).then(geoJson => {
+                plazasLayer.addGeoJson(geoJson);
+                
+                // Estilo fijo para las plazas
+                plazasLayer.setStyle({
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 6,
+                        fillColor: '#84CC16', // Verde lima para destacar
+                        fillOpacity: 1,
+                        strokeColor: '#FFFFFF',
+                        strokeWeight: 2
+                    },
+                    zIndex: 6
+                });
+            }).catch(e => console.log('Error cargando Plazas:', e));
+
+            plazasLayer.setMap(map);
+
+            // --- FUNCIONES DE ESTILOS Y FILTROS ---
             function updateStyles() {
                 const globalCgmSelect = document.getElementById('filtro-global-cgm');
                 const globalCgm = globalCgmSelect ? globalCgmSelect.value : "TODOS";
@@ -309,7 +367,6 @@
                 });
             }
 
-            // Actualizar estilos y filtros para la capa de Cortes de Pasto
             function updateCortesStyles() {
                 const globalCgmSelect = document.getElementById('filtro-global-cgm');
                 const globalCgm = globalCgmSelect ? globalCgmSelect.value : "TODOS";
@@ -319,17 +376,16 @@
 
                 cortesLayer.setStyle((feature) => {
                     const featCgm = feature.getProperty('CGM');
-                    const featFecha = feature.getProperty('Fecha');
+                    const featFecha = feature.getProperty('Fecha_str'); 
+                    const dynamicDayColor = getColorPorDiaSemana(featFecha); 
                     let isVisible = true;
 
-                    // Validar Filtro Global CGM
                     if (globalCgm !== "TODOS") {
                         if (!featCgm || featCgm.toUpperCase() !== globalCgm) {
                             isVisible = false;
                         }
                     }
 
-                    // Validar Filtro de Fecha
                     if (fechaFiltro !== "TODAS") {
                         if (!featFecha || featFecha !== fechaFiltro) {
                             isVisible = false;
@@ -337,36 +393,45 @@
                     }
 
                     return {
-                        fillColor: '#19567C',
-                        fillOpacity: 0.7,
-                        strokeColor: '#FFFFFF',
-                        strokeWeight: 1.5,
-                        icon: {
-                            path: google.maps.SymbolPath.CIRCLE,
-                            scale: 7,
-                            fillColor: '#19567C',
-                            fillOpacity: 1,
-                            strokeColor: '#FFFFFF',
-                            strokeWeight: 2
-                        },
+                        fillColor: dynamicDayColor,
+                        fillOpacity: 0.6,
+                        strokeColor: dynamicDayColor,
+                        strokeWeight: 4, 
                         zIndex: 5,
                         visible: isVisible
                     };
                 });
             }
 
-            // Ventanas Emergentes base para CGM y Cortes
-            function bindPopup(layer, colorTitle, isCorte = false) {
+            // Ventanas Emergentes base para CGM, Cortes y Plazas
+            function bindPopup(layer, colorTitle, layerType = 'cgm') {
                 layer.addListener('click', function(event) {
                     let content = `<div style="font-family: 'Montserrat', sans-serif; min-width: 180px; position: relative;">`;
                     content += `<button onclick="window.closeInfoWindow()" class="custom-close-btn">&times;</button>`;
                     
-                    if (isCorte) {
-                        content += `<h3 style="font-weight: 800; font-size: 14px; color: ${colorTitle}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Corte de Pasto</h3>`;
-                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${event.feature.getProperty('Fecha') || '-'}</p>`;
+                    if (layerType === 'corte') {
+                        const fechaCorte = event.feature.getProperty('Fecha_str');
+                        const dynamicDayColor = getColorPorDiaSemana(fechaCorte);
+                        
+                        content += `<h3 style="font-weight: 800; font-size: 14px; color: ${dynamicDayColor}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Recorrido de Corte</h3>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaCorte || '-'}</p>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${event.feature.getProperty('CGM') || '-'}</p>`;
-                        if(event.feature.getProperty('Detalle')) content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Detalle:</b> ${event.feature.getProperty('Detalle')}</p>`;
-                    } else {
+                        
+                        if(event.feature.getProperty('Inicio Recorrido')) {
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Inicio:</b> ${event.feature.getProperty('Inicio Recorrido')}</p>`;
+                        }
+                        if(event.feature.getProperty('Fin del Recorrido')) {
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fin:</b> ${event.feature.getProperty('Fin del Recorrido')}</p>`;
+                        }
+                        if(event.feature.getProperty('Distancia')) {
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Distancia:</b> ${event.feature.getProperty('Distancia')} m</p>`;
+                        }
+
+                    } else if (layerType === 'plaza') {
+                        content += `<h3 style="font-weight: 800; font-size: 14px; color: ${colorTitle}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">${event.feature.getProperty('PLAZA')}</h3>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Ubicación:</b> ${event.feature.getProperty('UBICACION') || '-'}</p>`;
+                        
+                    } else { // CGM
                         content += `<h3 style="font-weight: 800; font-size: 14px; color: ${colorTitle}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">CGM: ${event.feature.getProperty('CGM')}</h3>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Manzanas:</b> ${event.feature.getProperty('Manzanas') || '-'}</p>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Cuadras:</b> ${event.feature.getProperty('Cuadras') || '-'}</p>`;
@@ -376,7 +441,7 @@
                     content += `</div>`;
                     
                     infoWindow.setContent(content);
-                    // Asegurar que abra en la posición correcta sea punto o polígono
+                    
                     if (event.feature.getGeometry().getType() === 'Point') {
                         infoWindow.setPosition(event.feature.getGeometry().get());
                     } else {
@@ -387,8 +452,9 @@
                 });
             }
 
-            bindPopup(cgmLayer, '#2A7E43', false);
-            bindPopup(cortesLayer, '#19567C', true);
+            bindPopup(cgmLayer, '#2A7E43', 'cgm');
+            bindPopup(cortesLayer, '#19567C', 'corte');
+            bindPopup(plazasLayer, '#84CC16', 'plaza'); // Vinculación de Popups para Plazas
 
             // Toggles
             document.getElementById('cb-limite').addEventListener('change', (e) => {
@@ -402,6 +468,10 @@
 
             document.getElementById('cb-cortes').addEventListener('change', (e) => {
                 e.target.checked ? cortesLayer.setMap(map) : cortesLayer.setMap(null);
+            });
+
+            document.getElementById('cb-plazas').addEventListener('change', (e) => {
+                e.target.checked ? plazasLayer.setMap(map) : plazasLayer.setMap(null);
             });
         }
     </script>
