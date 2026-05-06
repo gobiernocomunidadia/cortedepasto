@@ -150,6 +150,35 @@
         let cortesLayer;
         let limiteElements = []; 
         
+        // --- FUNCIÓN DE COLORES POR DÍA (GAMA AZULES CORPORATIVOS) ---
+        function getColorPorDiaSemana(fechaStr) {
+            if (!fechaStr) return '#19567C'; // Color por defecto si no hay fecha
+            
+            // Parseamos la fecha asumiendo formato DD/MM/YYYY
+            const partes = fechaStr.split('/');
+            if (partes.length !== 3) return '#19567C';
+            
+            const dia = parseInt(partes[0], 10);
+            const mes = parseInt(partes[1], 10) - 1; // JS usa meses del 0 al 11
+            const anio = parseInt(partes[2], 10);
+            
+            const fechaObj = new Date(anio, mes, dia);
+            const diaSemana = fechaObj.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
+            
+            // Paleta de azules corporativos, de más oscuro (Lunes) a más claro (Domingo)
+            const coloresAzul = {
+                1: '#03045E', // Lunes - Azul Marino Oscuro
+                2: '#023E8A', // Martes - Azul Fuerte
+                3: '#0077B6', // Miércoles - Azul Medio
+                4: '#0096C7', // Jueves - Azul Celeste Oscuro
+                5: '#00B4D8', // Viernes - Celeste
+                6: '#48CAE4', // Sábado - Celeste Claro
+                0: '#90E0EF'  // Domingo - Cyan Muy Claro
+            };
+            
+            return coloresAzul[diaSemana] || '#19567C';
+        }
+
         function startInfoWindowTimer() {
             if (infoWindowTimer) clearTimeout(infoWindowTimer);
             infoWindowTimer = setTimeout(() => {
@@ -328,7 +357,7 @@
                 cortesLayer.setStyle((feature) => {
                     const featCgm = feature.getProperty('CGM');
                     const featFecha = feature.getProperty('Fecha_str'); // Usar Fecha_str según el JSON
-                    const featColor = feature.getProperty('Color_Generado') || '#19567C'; // Color dinámico del JSON
+                    const dynamicDayColor = getColorPorDiaSemana(featFecha); // Calcular azul por día
                     let isVisible = true;
 
                     // Validar Filtro Global CGM
@@ -346,10 +375,10 @@
                     }
 
                     return {
-                        fillColor: featColor,
-                        fillOpacity: 0.5,
-                        strokeColor: featColor,
-                        strokeWeight: 4, // Al ser polilíneas/polígonos, usamos grosor en lugar de icon
+                        fillColor: dynamicDayColor,
+                        fillOpacity: 0.6,
+                        strokeColor: dynamicDayColor,
+                        strokeWeight: 4, 
                         zIndex: 5,
                         visible: isVisible
                     };
@@ -363,9 +392,11 @@
                     content += `<button onclick="window.closeInfoWindow()" class="custom-close-btn">&times;</button>`;
                     
                     if (isCorte) {
-                        const dynamicColor = event.feature.getProperty('Color_Generado') || colorTitle;
-                        content += `<h3 style="font-weight: 800; font-size: 14px; color: ${dynamicColor}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Recorrido de Corte</h3>`;
-                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${event.feature.getProperty('Fecha_str') || '-'}</p>`;
+                        const fechaCorte = event.feature.getProperty('Fecha_str');
+                        const dynamicDayColor = getColorPorDiaSemana(fechaCorte);
+                        
+                        content += `<h3 style="font-weight: 800; font-size: 14px; color: ${dynamicDayColor}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Recorrido de Corte</h3>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaCorte || '-'}</p>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${event.feature.getProperty('CGM') || '-'}</p>`;
                         
                         if(event.feature.getProperty('Inicio Recorrido')) {
