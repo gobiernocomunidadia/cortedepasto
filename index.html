@@ -109,10 +109,6 @@
                             <input type="checkbox" id="cb-cgm" checked class="w-4 h-4 accent-[var(--bg-main)]">
                             <span class="text-sm text-[#0F172A] font-bold">División por CGM</span>
                         </label>
-                        <label class="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" id="cb-plazas" checked class="w-4 h-4 accent-[var(--bg-main)]">
-                            <span class="text-sm text-[#0F172A] font-bold">Plazas Lomas</span>
-                        </label>
                     </div>
                 </div>
 
@@ -152,10 +148,9 @@
         let infoWindowTimer;
         let cgmLayer;
         let cortesLayer;
-        let plazasLayer;
         let limiteElements = []; 
         
-        // --- FUNCIÓN DE COLORES POR DÍA (GAMA AZULES CORPORATIVOS) ---
+        // --- FUNCIÓN DE COLORES POR DÍA PARA CORTES (GAMA AZULES CORPORATIVOS) ---
         function getColorPorDiaSemana(fechaStr) {
             if (!fechaStr) return '#19567C'; 
             
@@ -180,6 +175,34 @@
             };
             
             return coloresAzul[diaSemana] || '#19567C';
+        }
+
+        // --- GENERADOR DE ICONOS INTELIGENTE (PLAZAS/ESCUELAS) ---
+        function getCustomIcon(type, strokeColor = '#FFFFFF') {
+            let bgColor, letter;
+            if (type === 'ESCUELA') {
+                bgColor = '#F59E0B'; // Naranja
+                letter = 'E';
+            } else if (type === 'POLIDEPORTIVO') {
+                bgColor = '#0EA5E9'; // Celeste
+                letter = 'D'; // Deportes
+            } else {
+                bgColor = '#84CC16'; // Verde Lima
+                letter = 'P'; // Plaza/Parque
+            }
+            
+            // El trazo exterior del ícono tomará el color azul del día de la semana
+            const svg = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                    <circle cx="12" cy="12" r="10" fill="${bgColor}" stroke="${strokeColor}" stroke-width="3"/>
+                    <text x="12" y="16" font-family="Montserrat, sans-serif" font-weight="bold" font-size="11" fill="#FFFFFF" text-anchor="middle">${letter}</text>
+                </svg>
+            `;
+            return {
+                url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
+                scaledSize: new google.maps.Size(24, 24),
+                anchor: new google.maps.Point(12, 12)
+            };
         }
 
         function startInfoWindowTimer() {
@@ -279,7 +302,7 @@
 
             cgmLayer.setMap(map);
 
-            // 3. Cargar Cortes de Pasto GeoJSON
+            // 3. Cargar Cortes de Pasto GeoJSON (Líneas, Polígonos y Puntos juntos)
             cortesLayer = new google.maps.Data();
             fetch('./cortedepasto.geojson').then(r => r.json()).then(geoJson => {
                 cortesLayer.addGeoJson(geoJson);
@@ -313,27 +336,6 @@
             }).catch(e => console.log('Error cargando Cortes de Pasto:', e));
 
             cortesLayer.setMap(map);
-
-            // 4. Cargar Plazas GeoJSON
-            plazasLayer = new google.maps.Data();
-            fetch('./Plazas.geojson').then(r => r.json()).then(geoJson => {
-                plazasLayer.addGeoJson(geoJson);
-                
-                // Estilo fijo para las plazas
-                plazasLayer.setStyle({
-                    icon: {
-                        path: google.maps.SymbolPath.CIRCLE,
-                        scale: 6,
-                        fillColor: '#84CC16', // Verde lima para destacar
-                        fillOpacity: 1,
-                        strokeColor: '#FFFFFF',
-                        strokeWeight: 2
-                    },
-                    zIndex: 6
-                });
-            }).catch(e => console.log('Error cargando Plazas:', e));
-
-            plazasLayer.setMap(map);
 
             // --- FUNCIONES DE ESTILOS Y FILTROS ---
             function updateStyles() {
@@ -392,45 +394,93 @@
                         }
                     }
 
-                    return {
-                        fillColor: dynamicDayColor,
-                        fillOpacity: 0.6,
-                        strokeColor: dynamicDayColor,
-                        strokeWeight: 4, 
-                        zIndex: 5,
-                        visible: isVisible
-                    };
+                    const geomType = feature.getGeometry() ? feature.getGeometry().getType() : '';
+
+                    // Si es un punto (Plaza/Escuela), aplicamos ícono inteligente
+                    if (geomType === 'Point') {
+                        const nombre = feature.getProperty('PLAZA') || feature.getProperty('NOMBRE') || feature.getProperty('Inicio Recorrido') || '';
+                        const nombreUpper = nombre.toUpperCase();
+                        
+                        let type = 'PLAZA';
+                        if (nombreUpper.includes('ESCUELA') || nombreUpper.includes('COLEGIO') || nombreUpper.includes('JARDIN')) {
+                            type = 'ESCUELA';
+                        } else if (nombreUpper.includes('POLIDEPORTIVO') || nombreUpper.includes('CLUB')) {
+                            type = 'POLIDEPORTIVO';
+                        }
+
+                        return {
+                            icon: getCustomIcon(type, dynamicDayColor),
+                            zIndex: 6,
+                            visible: isVisible
+                        };
+                    } else {
+                        // Si es línea o polígono (recorridos o áreas de corte)
+                        return {
+                            fillColor: dynamicDayColor,
+                            fillOpacity: 0.6,
+                            strokeColor: dynamicDayColor,
+                            strokeWeight: 4, 
+                            zIndex: 5,
+                            visible: isVisible
+                        };
+                    }
                 });
             }
 
-            // Ventanas Emergentes base para CGM, Cortes y Plazas
+            // Ventanas Emergentes base para CGM y Cortes
             function bindPopup(layer, colorTitle, layerType = 'cgm') {
                 layer.addListener('click', function(event) {
                     let content = `<div style="font-family: 'Montserrat', sans-serif; min-width: 180px; position: relative;">`;
                     content += `<button onclick="window.closeInfoWindow()" class="custom-close-btn">&times;</button>`;
                     
                     if (layerType === 'corte') {
+                        const geomType = event.feature.getGeometry() ? event.feature.getGeometry().getType() : '';
                         const fechaCorte = event.feature.getProperty('Fecha_str');
                         const dynamicDayColor = getColorPorDiaSemana(fechaCorte);
                         
-                        content += `<h3 style="font-weight: 800; font-size: 14px; color: ${dynamicDayColor}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Recorrido de Corte</h3>`;
-                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaCorte || '-'}</p>`;
-                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${event.feature.getProperty('CGM') || '-'}</p>`;
-                        
-                        if(event.feature.getProperty('Inicio Recorrido')) {
-                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Inicio:</b> ${event.feature.getProperty('Inicio Recorrido')}</p>`;
-                        }
-                        if(event.feature.getProperty('Fin del Recorrido')) {
-                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fin:</b> ${event.feature.getProperty('Fin del Recorrido')}</p>`;
-                        }
-                        if(event.feature.getProperty('Distancia')) {
-                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Distancia:</b> ${event.feature.getProperty('Distancia')} m</p>`;
-                        }
+                        if (geomType === 'Point') {
+                            // Información especial para Puntos
+                            const nombre = event.feature.getProperty('PLAZA') || event.feature.getProperty('NOMBRE') || event.feature.getProperty('Inicio Recorrido') || 'Lugar de Interés';
+                            const nombreUpper = nombre.toUpperCase();
+                            
+                            let colorDin = '#84CC16';
+                            let tipoLabel = 'Corte en Plaza / Parque';
+                            
+                            if (nombreUpper.includes('ESCUELA') || nombreUpper.includes('COLEGIO') || nombreUpper.includes('JARDIN')) { 
+                                colorDin = '#F59E0B'; 
+                                tipoLabel = 'Corte en Institución Educativa'; 
+                            }
+                            else if (nombreUpper.includes('POLIDEPORTIVO') || nombreUpper.includes('CLUB')) { 
+                                colorDin = '#0EA5E9'; 
+                                tipoLabel = 'Corte en Deporte / Polideportivo'; 
+                            }
 
-                    } else if (layerType === 'plaza') {
-                        content += `<h3 style="font-weight: 800; font-size: 14px; color: ${colorTitle}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">${event.feature.getProperty('PLAZA')}</h3>`;
-                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Ubicación:</b> ${event.feature.getProperty('UBICACION') || '-'}</p>`;
-                        
+                            content += `<h3 style="font-weight: 800; font-size: 14px; color: ${colorDin}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">${tipoLabel}</h3>`;
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Nombre:</b> ${nombre}</p>`;
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaCorte || '-'}</p>`;
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${event.feature.getProperty('CGM') || '-'}</p>`;
+                            if (event.feature.getProperty('UBICACION') || event.feature.getProperty('DIRECCION')) {
+                                content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Ubicación:</b> ${event.feature.getProperty('UBICACION') || event.feature.getProperty('DIRECCION')}</p>`;
+                            }
+                        } else {
+                            // Información especial para Líneas o Polígonos
+                            content += `<h3 style="font-weight: 800; font-size: 14px; color: ${dynamicDayColor}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Recorrido de Corte</h3>`;
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaCorte || '-'}</p>`;
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${event.feature.getProperty('CGM') || '-'}</p>`;
+                            
+                            if(event.feature.getProperty('Inicio Recorrido')) {
+                                content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Inicio:</b> ${event.feature.getProperty('Inicio Recorrido')}</p>`;
+                            }
+                            if(event.feature.getProperty('Fin del Recorrido')) {
+                                content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fin:</b> ${event.feature.getProperty('Fin del Recorrido')}</p>`;
+                            }
+                            if(event.feature.getProperty('Distancia')) {
+                                content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Distancia:</b> ${event.feature.getProperty('Distancia')} m</p>`;
+                            }
+                            if(event.feature.getProperty('Area') && event.feature.getProperty('Area') > 0) {
+                                content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Área:</b> ${event.feature.getProperty('Area')} m²</p>`;
+                            }
+                        }
                     } else { // CGM
                         content += `<h3 style="font-weight: 800; font-size: 14px; color: ${colorTitle}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">CGM: ${event.feature.getProperty('CGM')}</h3>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Manzanas:</b> ${event.feature.getProperty('Manzanas') || '-'}</p>`;
@@ -454,7 +504,6 @@
 
             bindPopup(cgmLayer, '#2A7E43', 'cgm');
             bindPopup(cortesLayer, '#19567C', 'corte');
-            bindPopup(plazasLayer, '#84CC16', 'plaza'); // Vinculación de Popups para Plazas
 
             // Toggles
             document.getElementById('cb-limite').addEventListener('change', (e) => {
@@ -468,10 +517,6 @@
 
             document.getElementById('cb-cortes').addEventListener('change', (e) => {
                 e.target.checked ? cortesLayer.setMap(map) : cortesLayer.setMap(null);
-            });
-
-            document.getElementById('cb-plazas').addEventListener('change', (e) => {
-                e.target.checked ? plazasLayer.setMap(map) : plazasLayer.setMap(null);
             });
         }
     </script>
