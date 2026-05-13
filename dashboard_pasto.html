@@ -299,29 +299,44 @@
         // Helpers de formato
         const formatNumber = (num) => new Intl.NumberFormat('es-AR', { maximumFractionDigits: 1 }).format(num);
 
-        // Convertir string DD/MM/YYYY a objeto Date limpiando horas y errores comunes
+        // Convertir strings de fecha mixtos a un objeto Date válido
         const parseDateString = (dateStr) => {
-            if (!dateStr) return new Date(0);
-            const cleanStr = dateStr.trim().split(' ')[0]; // Limpiar espacios y horas
+            if (!dateStr) return new Date(NaN);
             
+            // Limpiar espacios extra y horas
+            const cleanStr = String(dateStr).trim().split(' ')[0]; 
+            
+            // Probar formato con barras /
             const parts = cleanStr.split('/');
             if (parts.length === 3) {
-                return new Date(parts[2], parts[1] - 1, parts[0]);
+                if (parts[0].length === 4) {
+                    return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10)); // YYYY/MM/DD
+                } else {
+                    return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10)); // DD/MM/YYYY
+                }
             }
             
+            // Probar formato con guiones -
             const dashParts = cleanStr.split('-');
             if (dashParts.length === 3) {
-                return new Date(dashParts[0], dashParts[1] - 1, dashParts[2]);
+                if (dashParts[0].length === 4) {
+                    return new Date(parseInt(dashParts[0], 10), parseInt(dashParts[1], 10) - 1, parseInt(dashParts[2], 10)); // YYYY-MM-DD
+                } else {
+                    return new Date(parseInt(dashParts[2], 10), parseInt(dashParts[1], 10) - 1, parseInt(dashParts[0], 10)); // DD-MM-YYYY
+                }
             }
             
-            return new Date(cleanStr); // fallback
+            return new Date(cleanStr); // Fallback nativo
         };
 
-        // Convertir string YYYY-MM-DD (del input type="date") a objeto Date
+        // Convertir string YYYY-MM-DD (del input type="date") a objeto Date a medianoche local
         const getLocalDate = (yyyyMmDd) => {
             if (!yyyyMmDd) return null;
             const parts = yyyMmDd.split('-');
-            return new Date(parts[0], parts[1] - 1, parts[2]);
+            if (parts.length === 3) {
+                return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+            }
+            return null;
         };
 
         // Identificadores Regex para clasificar el tipo de espacio
@@ -388,7 +403,7 @@
 
             let filteredFeatures = allFeatures;
             
-            // 1. Filtro CGM (ahora limpiando espacios invisibles y forzando mayúsculas)
+            // 1. Filtro CGM
             if (selectedCGM !== 'TODOS') {
                 filteredFeatures = filteredFeatures.filter(f => {
                     const featureCGM = (f.properties.CGM || '').trim().toUpperCase();
@@ -396,16 +411,29 @@
                 });
             }
 
-            // 2. Filtro Fechas (evaluando el tiempo exacto)
+            // 2. Filtro Fechas (evaluando con lógica matemática estricta)
             if (fromDate || toDate) {
                 filteredFeatures = filteredFeatures.filter(f => {
                     const featureDate = parseDateString(f.properties.Fecha_str);
                     
+                    // Excluir si la fecha del archivo no se pudo interpretar
                     if (isNaN(featureDate.getTime())) return false; 
                     
                     let valid = true;
-                    if (fromDate && featureDate.getTime() < fromDate.getTime()) valid = false;
-                    if (toDate && featureDate.getTime() > toDate.getTime()) valid = false;
+                    
+                    if (fromDate && featureDate.getTime() < fromDate.getTime()) {
+                        valid = false;
+                    }
+                    
+                    if (toDate) {
+                        // Extender 'toDate' hasta el último segundo del día para incluir la jornada completa
+                        const endOfDay = new Date(toDate.getTime());
+                        endOfDay.setHours(23, 59, 59, 999);
+                        if (featureDate.getTime() > endOfDay.getTime()) {
+                            valid = false;
+                        }
+                    }
+                    
                     return valid;
                 });
             }
@@ -523,19 +551,27 @@
                 return;
             }
 
-            // Ordenar todos los registros filtrados cronológicamente inverso (más reciente primero)
+            // Ordenar todos los registros filtrados cronológicamente inverso de forma segura
             const sortedFeatures = [...features].sort((a, b) => {
-                const dateA = parseDateString(a.properties.Fecha_str);
-                const dateB = parseDateString(b.properties.Fecha_str);
+                const timeA = parseDateString(a.properties.Fecha_str).getTime();
+                const timeB = parseDateString(b.properties.Fecha_str).getTime();
                 
-                const diff = dateB.getTime() - dateA.getTime();
-                if (diff !== 0) return diff;
+                const validA = !isNaN(timeA);
+                const validB = !isNaN(timeB);
                 
-                // Si la fecha es igual, ordenamos por la distancia
+                if (validA && validB) {
+                    if (timeB !== timeA) return timeB - timeA;
+                } else if (validA) {
+                    return -1; // A es válida, B no. A va primero.
+                } else if (validB) {
+                    return 1;
+                }
+                
+                // Si la fecha es exactamente igual o ambas son inválidas, ordenamos por la distancia
                 return (b.properties.Distancia || 0) - (a.properties.Distancia || 0);
             });
 
-            // Usamos fragmento para no reflow en cada iteración
+            // Usamos fragmento para mejorar rendimiento
             const fragment = document.createDocumentFragment();
 
             sortedFeatures.forEach(f => {
