@@ -249,8 +249,8 @@
         <!-- BLOQUE 2: GRÁFICO EVOLUCIÓN -->
         <section>
             <div class="glass rounded-3xl p-6">
-                <h3 class="text-lg font-bold uppercase tracking-wider text-white mb-2">Evolución Metros Realizados (Periodo Seleccionado)</h3>
-                <p class="text-xs text-white/60 mb-4">*Muestra la sumatoria de distancia en metros agrupada por las fechas en el rango especificado.</p>
+                <h3 class="text-lg font-bold uppercase tracking-wider text-white mb-2">Evolución Metros Realizados (Últimos 30 días)</h3>
+                <p class="text-xs text-white/60 mb-4">*Muestra la sumatoria de los últimos 30 días trabajados. Filtrado solo por CGM (ignora el filtro de fecha).</p>
                 <div class="relative w-full h-[350px]">
                     <canvas id="chartMetros"></canvas>
                 </div>
@@ -434,35 +434,38 @@
             const selectedCGM = document.getElementById('cgm-filter').value;
             const selectedDate = document.getElementById('date-filter').value;
 
-            let filteredFeatures = allFeatures;
+            let featuresForChart = allFeatures;
+            let featuresForMainBoard = allFeatures;
             
-            // 1. Filtro CGM
+            // 1. Filtro CGM (Aplica al Gráfico Y al Tablero Principal)
             if (selectedCGM !== 'TODOS') {
-                filteredFeatures = filteredFeatures.filter(f => {
+                const cgmFilterFn = f => {
                     const featureCGM = (f.properties.CGM || '').trim().toUpperCase();
                     return featureCGM === selectedCGM;
-                });
+                };
+                featuresForChart = featuresForChart.filter(cgmFilterFn);
+                featuresForMainBoard = featuresForMainBoard.filter(cgmFilterFn);
             }
 
-            // 2. Filtro Fecha Única
+            // 2. Filtro Fecha Única (Aplica SOLO a KPIs y Tabla, el Gráfico se saltea esto)
             if (selectedDate !== 'TODAS') {
-                filteredFeatures = filteredFeatures.filter(f => {
+                featuresForMainBoard = featuresForMainBoard.filter(f => {
                     const featureDateStr = (f.properties.Fecha_str || '').trim().split(' ')[0];
                     return featureDateStr === selectedDate;
                 });
             }
 
-            updateDashboard(filteredFeatures);
+            // Ejecutar la actualización enviando ambos conjuntos de datos
+            updateDashboard(featuresForMainBoard, featuresForChart);
         }
 
-        function updateDashboard(features) {
+        function updateDashboard(featuresMainBoard, featuresChart) {
             let totalMetros = 0;
             let countPlazas = 0;
             let countEscuelas = 0;
-            const metrosPorDia = {};
 
-            // 1. Procesar Datos y Calcular KPIs
-            features.forEach(f => {
+            // 1. Procesar Datos y Calcular KPIs (Basado en featuresMainBoard)
+            featuresMainBoard.forEach(f => {
                 const props = f.properties;
                 
                 // Sumar Distancia
@@ -473,13 +476,6 @@
                 const recorridoStr = `${props["Inicio Recorrido"] || ""} ${props["Fin del Recorrido"] || ""}`.toLowerCase();
                 if (isPlaza(recorridoStr)) { countPlazas++; }
                 if (isEscuela(recorridoStr)) { countEscuelas++; }
-
-                // Agrupar metros por fecha para el gráfico
-                const dateStr = (props.Fecha_str || '').trim().split(' ')[0]; // Estandarizar la llave
-                if (dateStr) {
-                    if (!metrosPorDia[dateStr]) metrosPorDia[dateStr] = 0;
-                    metrosPorDia[dateStr] += dist;
-                }
             });
 
             // Actualizar Tarjetas (KPI)
@@ -487,15 +483,31 @@
             document.getElementById('kpi-plazas').textContent = countPlazas;
             document.getElementById('kpi-escuelas').textContent = countEscuelas;
 
-            // 2. Procesar Gráfico ordenado estrictamente por fecha matemática (ascendente)
-            const sortedDates = Object.keys(metrosPorDia).sort((a, b) => parseDateString(a).getTime() - parseDateString(b).getTime());
-            const chartData = sortedDates.map(date => metrosPorDia[date]);
-            
-            updateChart(sortedDates, chartData);
+            // 2. Procesar Gráfico (Basado en featuresChart - IGNORA filtro de fecha)
+            const metrosPorDiaChart = {};
+            featuresChart.forEach(f => {
+                const props = f.properties;
+                const dist = parseFloat(props.Distancia) || 0;
+                const dateStr = (props.Fecha_str || '').trim().split(' ')[0]; // Estandarizar la llave
+                
+                if (dateStr) {
+                    if (!metrosPorDiaChart[dateStr]) metrosPorDiaChart[dateStr] = 0;
+                    metrosPorDiaChart[dateStr] += dist;
+                }
+            });
 
-            // 3. Procesar Tabla con los registros del periodo
-            document.getElementById('label-registros-count').textContent = `${features.length} Recorridos`;
-            updateTable(features);
+            // Ordenar estrictamente por fecha matemática (ascendente)
+            const sortedChartDates = Object.keys(metrosPorDiaChart).sort((a, b) => parseDateString(a).getTime() - parseDateString(b).getTime());
+            
+            // Recortar para mostrar solo los ÚLTIMOS 30 DÍAS trabajados
+            const last30Dates = sortedChartDates.slice(-30);
+            const chartData = last30Dates.map(date => metrosPorDiaChart[date]);
+            
+            updateChart(last30Dates, chartData);
+
+            // 3. Procesar Tabla con los registros del periodo (Basado en featuresMainBoard)
+            document.getElementById('label-registros-count').textContent = `${featuresMainBoard.length} Recorridos`;
+            updateTable(featuresMainBoard);
         }
 
         function updateChart(labels, data) {
