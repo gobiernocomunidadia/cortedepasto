@@ -299,14 +299,22 @@
         // Helpers de formato
         const formatNumber = (num) => new Intl.NumberFormat('es-AR', { maximumFractionDigits: 1 }).format(num);
 
-        // Convertir string DD/MM/YYYY a objeto Date
+        // Convertir string DD/MM/YYYY a objeto Date limpiando horas y errores comunes
         const parseDateString = (dateStr) => {
             if (!dateStr) return new Date(0);
-            const parts = dateStr.split('/');
+            const cleanStr = dateStr.trim().split(' ')[0]; // Limpiar espacios y horas
+            
+            const parts = cleanStr.split('/');
             if (parts.length === 3) {
                 return new Date(parts[2], parts[1] - 1, parts[0]);
             }
-            return new Date(dateStr); // fallback
+            
+            const dashParts = cleanStr.split('-');
+            if (dashParts.length === 3) {
+                return new Date(dashParts[0], dashParts[1] - 1, dashParts[2]);
+            }
+            
+            return new Date(cleanStr); // fallback
         };
 
         // Convertir string YYYY-MM-DD (del input type="date") a objeto Date
@@ -351,11 +359,11 @@
             document.getElementById('loader').style.display = 'none';
             document.getElementById('dashboard-content').classList.remove('hidden');
 
-            // Llenar selector de CGM
+            // Llenar selector de CGM resolviendo problemas de mayúsculas y espacios invisibles
             const cgmSet = new Set();
             allFeatures.forEach(f => {
                 const cgm = f.properties.CGM;
-                if (cgm && cgm.trim() !== '') cgmSet.add(cgm.trim());
+                if (cgm && cgm.trim() !== '') cgmSet.add(cgm.trim().toUpperCase());
             });
 
             const selectElement = document.getElementById('cgm-filter');
@@ -380,22 +388,24 @@
 
             let filteredFeatures = allFeatures;
             
-            // 1. Filtro CGM
+            // 1. Filtro CGM (ahora limpiando espacios invisibles y forzando mayúsculas)
             if (selectedCGM !== 'TODOS') {
-                filteredFeatures = filteredFeatures.filter(f => f.properties.CGM === selectedCGM);
+                filteredFeatures = filteredFeatures.filter(f => {
+                    const featureCGM = (f.properties.CGM || '').trim().toUpperCase();
+                    return featureCGM === selectedCGM;
+                });
             }
 
-            // 2. Filtro Fechas
+            // 2. Filtro Fechas (evaluando el tiempo exacto)
             if (fromDate || toDate) {
                 filteredFeatures = filteredFeatures.filter(f => {
                     const featureDate = parseDateString(f.properties.Fecha_str);
                     
-                    // Si la fecha del registro es inválida, se omite (opcional)
                     if (isNaN(featureDate.getTime())) return false; 
                     
                     let valid = true;
-                    if (fromDate && featureDate < fromDate) valid = false;
-                    if (toDate && featureDate > toDate) valid = false;
+                    if (fromDate && featureDate.getTime() < fromDate.getTime()) valid = false;
+                    if (toDate && featureDate.getTime() > toDate.getTime()) valid = false;
                     return valid;
                 });
             }
@@ -423,7 +433,7 @@
                 if (isEscuela(recorridoStr)) { countEscuelas++; }
 
                 // Agrupar metros por fecha para el gráfico
-                const dateStr = props.Fecha_str;
+                const dateStr = (props.Fecha_str || '').trim().split(' ')[0]; // Estandarizar la llave
                 if (dateStr) {
                     if (!metrosPorDia[dateStr]) metrosPorDia[dateStr] = 0;
                     metrosPorDia[dateStr] += dist;
@@ -435,8 +445,8 @@
             document.getElementById('kpi-plazas').textContent = countPlazas;
             document.getElementById('kpi-escuelas').textContent = countEscuelas;
 
-            // 2. Procesar Gráfico para todo el periodo filtrado
-            const sortedDates = Object.keys(metrosPorDia).sort((a, b) => parseDateString(a) - parseDateString(b));
+            // 2. Procesar Gráfico ordenado estrictamente por fecha matemática
+            const sortedDates = Object.keys(metrosPorDia).sort((a, b) => parseDateString(a).getTime() - parseDateString(b).getTime());
             const chartData = sortedDates.map(date => metrosPorDia[date]);
             
             updateChart(sortedDates, chartData);
@@ -514,11 +524,14 @@
             }
 
             // Ordenar todos los registros filtrados cronológicamente inverso (más reciente primero)
-            // Si la fecha es igual, ordenamos por la distancia de mayor a menor.
             const sortedFeatures = [...features].sort((a, b) => {
                 const dateA = parseDateString(a.properties.Fecha_str);
                 const dateB = parseDateString(b.properties.Fecha_str);
-                if (dateB - dateA !== 0) return dateB - dateA;
+                
+                const diff = dateB.getTime() - dateA.getTime();
+                if (diff !== 0) return diff;
+                
+                // Si la fecha es igual, ordenamos por la distancia
                 return (b.properties.Distancia || 0) - (a.properties.Distancia || 0);
             });
 
