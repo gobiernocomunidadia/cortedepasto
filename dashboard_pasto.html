@@ -48,21 +48,18 @@
              box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
-        /* Select & Date Inputs Style */
-        select, input[type="date"] {
+        /* Select Style */
+        select {
             background-color: rgba(255, 255, 255, 0.1);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 0.5rem;
-            padding: 0.4rem 0.8rem;
+            padding: 0.4rem 2.5rem 0.4rem 0.8rem;
             appearance: none;
             outline: none;
             cursor: pointer;
             font-weight: 600;
             backdrop-filter: blur(10px);
-        }
-        select {
-            padding-right: 2.5rem; /* Space for the arrow */
         }
         select option {
             background-color: var(--verde-principal);
@@ -77,11 +74,6 @@
             transform: translateY(-50%);
             pointer-events: none;
             color: white;
-        }
-        /* Make calendar icon white */
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(1);
-            cursor: pointer;
         }
 
         /* Table Styles */
@@ -156,16 +148,15 @@
                 <!-- Contenedor de Filtros -->
                 <div class="flex flex-wrap items-center gap-3 sm:gap-4 w-full xl:w-auto justify-center xl:justify-end">
                     
-                    <!-- Filtro Fecha Desde -->
+                    <!-- Filtro Fecha (Único desplegable) -->
                     <div class="flex items-center gap-2">
-                        <label for="date-from" class="text-xs sm:text-sm font-bold uppercase tracking-wider text-green-100">Desde:</label>
-                        <input type="date" id="date-from" onchange="applyFilter()" class="text-sm">
-                    </div>
-
-                    <!-- Filtro Fecha Hasta -->
-                    <div class="flex items-center gap-2">
-                        <label for="date-to" class="text-xs sm:text-sm font-bold uppercase tracking-wider text-green-100">Hasta:</label>
-                        <input type="date" id="date-to" onchange="applyFilter()" class="text-sm">
+                        <label for="date-filter" class="text-xs sm:text-sm font-bold uppercase tracking-wider text-green-100">Fecha:</label>
+                        <div class="relative select-wrapper">
+                            <select id="date-filter" onchange="applyFilter()" class="text-sm">
+                                <option value="TODAS">Todas</option>
+                                <!-- Inyectado via JS -->
+                            </select>
+                        </div>
                     </div>
 
                     <!-- Filtro CGM -->
@@ -299,7 +290,7 @@
         // Helpers de formato
         const formatNumber = (num) => new Intl.NumberFormat('es-AR', { maximumFractionDigits: 1 }).format(num);
 
-        // Convertir strings de fecha mixtos a un objeto Date válido
+        // Convertir strings de fecha mixtos a un objeto Date válido (necesario para el orden cronológico)
         const parseDateString = (dateStr) => {
             if (!dateStr) return new Date(NaN);
             
@@ -327,16 +318,6 @@
             }
             
             return new Date(cleanStr); // Fallback nativo
-        };
-
-        // Convertir string YYYY-MM-DD (del input type="date") a objeto Date a medianoche local
-        const getLocalDate = (yyyyMmDd) => {
-            if (!yyyyMmDd) return null;
-            const parts = yyyMmDd.split('-');
-            if (parts.length === 3) {
-                return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
-            }
-            return null;
         };
 
         // Identificadores Regex para clasificar el tipo de espacio
@@ -376,17 +357,39 @@
 
             // Llenar selector de CGM resolviendo problemas de mayúsculas y espacios invisibles
             const cgmSet = new Set();
+            const dateSet = new Set(); // Para recolectar todas las fechas existentes
+
             allFeatures.forEach(f => {
+                // Para CGM
                 const cgm = f.properties.CGM;
                 if (cgm && cgm.trim() !== '') cgmSet.add(cgm.trim().toUpperCase());
+
+                // Para Fechas
+                const rawDate = f.properties.Fecha_str;
+                if (rawDate && rawDate.trim() !== '') {
+                    const cleanDateStr = String(rawDate).trim().split(' ')[0]; // Estandarizar string visible
+                    dateSet.add(cleanDateStr);
+                }
             });
 
-            const selectElement = document.getElementById('cgm-filter');
+            // Llenar y ordenar selector de CGM
+            const selectElementCGM = document.getElementById('cgm-filter');
             Array.from(cgmSet).sort().forEach(cgm => {
                 const option = document.createElement('option');
                 option.value = cgm;
                 option.textContent = cgm;
-                selectElement.appendChild(option);
+                selectElementCGM.appendChild(option);
+            });
+
+            // Llenar y ordenar selector de Fechas (de más reciente a más antigua)
+            const selectElementDate = document.getElementById('date-filter');
+            const sortedDatesArray = Array.from(dateSet).sort((a, b) => parseDateString(b).getTime() - parseDateString(a).getTime());
+            
+            sortedDatesArray.forEach(dateStr => {
+                const option = document.createElement('option');
+                option.value = dateStr;
+                option.textContent = dateStr; // Mostrar la fecha exactamente como viene
+                selectElementDate.appendChild(option);
             });
 
             // Render inicial
@@ -395,11 +398,7 @@
 
         function applyFilter() {
             const selectedCGM = document.getElementById('cgm-filter').value;
-            const dateFromStr = document.getElementById('date-from').value;
-            const dateToStr = document.getElementById('date-to').value;
-            
-            const fromDate = getLocalDate(dateFromStr);
-            const toDate = getLocalDate(dateToStr);
+            const selectedDate = document.getElementById('date-filter').value;
 
             let filteredFeatures = allFeatures;
             
@@ -411,30 +410,11 @@
                 });
             }
 
-            // 2. Filtro Fechas (evaluando con lógica matemática estricta)
-            if (fromDate || toDate) {
+            // 2. Filtro Fecha Única
+            if (selectedDate !== 'TODAS') {
                 filteredFeatures = filteredFeatures.filter(f => {
-                    const featureDate = parseDateString(f.properties.Fecha_str);
-                    
-                    // Excluir si la fecha del archivo no se pudo interpretar
-                    if (isNaN(featureDate.getTime())) return false; 
-                    
-                    let valid = true;
-                    
-                    if (fromDate && featureDate.getTime() < fromDate.getTime()) {
-                        valid = false;
-                    }
-                    
-                    if (toDate) {
-                        // Extender 'toDate' hasta el último segundo del día para incluir la jornada completa
-                        const endOfDay = new Date(toDate.getTime());
-                        endOfDay.setHours(23, 59, 59, 999);
-                        if (featureDate.getTime() > endOfDay.getTime()) {
-                            valid = false;
-                        }
-                    }
-                    
-                    return valid;
+                    const featureDateStr = (f.properties.Fecha_str || '').trim().split(' ')[0];
+                    return featureDateStr === selectedDate;
                 });
             }
 
