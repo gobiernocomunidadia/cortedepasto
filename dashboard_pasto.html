@@ -65,6 +65,12 @@
             background-color: var(--verde-principal);
             color: white;
         }
+        select optgroup {
+            background-color: var(--verde-oscuro);
+            color: var(--verde-claro);
+            font-weight: 700;
+            font-style: normal;
+        }
         .select-wrapper::after {
             content: '▼';
             font-size: 0.8rem;
@@ -148,13 +154,12 @@
                 <!-- Contenedor de Filtros -->
                 <div class="flex flex-wrap items-center gap-3 sm:gap-4 w-full xl:w-auto justify-center xl:justify-end">
                     
-                    <!-- Filtro Fecha (Único desplegable) -->
+                    <!-- Filtro Fecha (Único desplegable agrupado) -->
                     <div class="flex items-center gap-2">
                         <label for="date-filter" class="text-xs sm:text-sm font-bold uppercase tracking-wider text-green-100">Fecha:</label>
                         <div class="relative select-wrapper">
-                            <select id="date-filter" onchange="applyFilter()" class="text-sm">
-                                <option value="TODAS">Todas</option>
-                                <!-- Inyectado via JS -->
+                            <select id="date-filter" onchange="applyFilter()" class="text-sm min-w-[150px]">
+                                <!-- Inyectado via JS (con optgroups) -->
                             </select>
                         </div>
                     </div>
@@ -344,7 +349,8 @@
                         { properties: { "Fecha_str": "25/02/2025", "Inicio Recorrido": "Plaza del Campeón", "Fin del Recorrido": "Estación", "CGM": "Banfield", "Distancia": 1250.00 } },
                         { properties: { "Fecha_str": "26/02/2025", "Inicio Recorrido": "Escuela Primaria 10", "Fin del Recorrido": "Jardín 901", "CGM": "Temperley", "Distancia": 800.50 } },
                         { properties: { "Fecha_str": "26/02/2025", "Inicio Recorrido": "Parque Finky", "Fin del Recorrido": "Circuito perimetral", "CGM": "Turdera", "Distancia": 2100.00 } },
-                        { properties: { "Fecha_str": "27/02/2025", "Inicio Recorrido": "Alsina", "Fin del Recorrido": "Maipú", "CGM": "Banfield", "Distancia": 450.20 } }
+                        { properties: { "Fecha_str": "27/02/2025", "Inicio Recorrido": "Alsina", "Fin del Recorrido": "Maipú", "CGM": "Banfield", "Distancia": 450.20 } },
+                        { properties: { "Fecha_str": "05/01/2025", "Inicio Recorrido": "Calle Falsa", "Fin del Recorrido": "123", "CGM": "Fiorito", "Distancia": 150.00 } }
                     ]
                 };
             }
@@ -355,9 +361,9 @@
             document.getElementById('loader').style.display = 'none';
             document.getElementById('dashboard-content').classList.remove('hidden');
 
-            // Llenar selector de CGM resolviendo problemas de mayúsculas y espacios invisibles
+            // Llenar selector de CGM y recolectar Fechas
             const cgmSet = new Set();
-            const dateSet = new Set(); // Para recolectar todas las fechas existentes
+            const dateSet = new Set(); 
 
             allFeatures.forEach(f => {
                 // Para CGM
@@ -372,7 +378,7 @@
                 }
             });
 
-            // Llenar y ordenar selector de CGM
+            // 1. Selector de CGM
             const selectElementCGM = document.getElementById('cgm-filter');
             Array.from(cgmSet).sort().forEach(cgm => {
                 const option = document.createElement('option');
@@ -381,15 +387,43 @@
                 selectElementCGM.appendChild(option);
             });
 
-            // Llenar y ordenar selector de Fechas (de más reciente a más antigua)
+            // 2. Selector de Fechas (Agrupado por Mes, Orden Ascendente)
             const selectElementDate = document.getElementById('date-filter');
-            const sortedDatesArray = Array.from(dateSet).sort((a, b) => parseDateString(b).getTime() - parseDateString(a).getTime());
+            selectElementDate.innerHTML = '<option value="TODAS">Todas las fechas</option>'; // Default inicial
             
+            const monthNames = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+
+            // Ordenar fechas en forma ascendente (de más antigua a más reciente)
+            const sortedDatesArray = Array.from(dateSet).sort((a, b) => parseDateString(a).getTime() - parseDateString(b).getTime());
+            
+            // Agrupar fechas usando un Map para preservar el orden de inserción cronológico
+            const groupedDatesMap = new Map();
+
             sortedDatesArray.forEach(dateStr => {
-                const option = document.createElement('option');
-                option.value = dateStr;
-                option.textContent = dateStr; // Mostrar la fecha exactamente como viene
-                selectElementDate.appendChild(option);
+                const dateObj = parseDateString(dateStr);
+                if(isNaN(dateObj.getTime())) return; // Omitir inválidas
+                
+                const monthIndex = dateObj.getMonth();
+                const year = dateObj.getFullYear();
+                const groupLabel = `${monthNames[monthIndex]} ${year}`; // ej: FEBRERO 2025
+
+                if (!groupedDatesMap.has(groupLabel)) {
+                    groupedDatesMap.set(groupLabel, []);
+                }
+                groupedDatesMap.get(groupLabel).push(dateStr);
+            });
+
+            // Construir los optgroups y agregarlos al selector
+            groupedDatesMap.forEach((dates, groupLabel) => {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = groupLabel;
+                dates.forEach(dateStr => {
+                    const option = document.createElement('option');
+                    option.value = dateStr;
+                    option.textContent = dateStr; 
+                    optgroup.appendChild(option);
+                });
+                selectElementDate.appendChild(optgroup);
             });
 
             // Render inicial
@@ -453,7 +487,7 @@
             document.getElementById('kpi-plazas').textContent = countPlazas;
             document.getElementById('kpi-escuelas').textContent = countEscuelas;
 
-            // 2. Procesar Gráfico ordenado estrictamente por fecha matemática
+            // 2. Procesar Gráfico ordenado estrictamente por fecha matemática (ascendente)
             const sortedDates = Object.keys(metrosPorDia).sort((a, b) => parseDateString(a).getTime() - parseDateString(b).getTime());
             const chartData = sortedDates.map(date => metrosPorDia[date]);
             
