@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablero de Corte de Pasto</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Font: Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --azul-petroleo: #1E6F99;
+            --celeste: #34BBEB;
+            --fucsia: #DF4172;
+            --azul-medio: #35A4D4;
+            --blanco: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(90deg, #1E6F99 0%, #35A4D4 50%, #34BBEB 100%);
+            background-attachment: fixed;
+            color: var(--blanco);
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* HEADER SÓLIDO */
+        .solid-header {
+             background-color: var(--azul-petroleo);
+             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Select / Dropdown Style */
+        select {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0.5rem;
+            padding: 0.5rem 2.5rem 0.5rem 1rem;
+            appearance: none;
+            outline: none;
+            cursor: pointer;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+        select option {
+            background-color: var(--azul-petroleo);
+            color: white;
+        }
+        .select-wrapper::after {
+            content: '▼';
+            font-size: 0.8rem;
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: white;
+        }
+
+        /* Table Styles */
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th {
+            background-color: rgba(30, 111, 153, 0.9);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+        td {
+            padding: 1rem;
+            font-size: 0.875rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+        }
+        tbody tr:nth-child(even) { background-color: rgba(255, 255, 255, 0.03); }
+        tr:last-child td { border-bottom: none; }
+        .font-mono-nums { font-variant-numeric: tabular-nums; }
+
+        /* Sección Titulos */
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: white;
+            border-bottom: 3px solid #34BBEB;
+            padding-bottom: 0.5rem;
+        }
+        
+        #preview-warning {
+            display: none;
+            background-color: rgba(245, 158, 11, 0.2);
+            border: 1px solid #F59E0B;
+            color: #FCD34D;
+            text-align: center;
+            padding: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="p-0 md:p-0 lg:p-0">
+
+    <div id="preview-warning">Vista Previa: Mostrando datos de muestra. El archivo real se cargará automáticamente cuando subas esto a GitHub.</div>
+
+    <!-- Encabezado SÓLIDO -->
+    <header class="solid-header sticky top-0 left-0 w-full z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-6 w-full sm:w-auto justify-center sm:justify-start">
+                    <img src="https://lomasdezamora.gov.ar/logo.webp" alt="Logo Municipio Lomas de Zamora" class="h-16 w-auto object-contain drop-shadow-md">
+                    <div>
+                        <h1 class="text-2xl sm:text-3xl font-extrabold uppercase leading-none tracking-tight text-white drop-shadow-md">
+                            Tablero de Corte de Pasto
+                        </h1>
+                        <p class="text-xs sm:text-sm font-medium tracking-widest uppercase opacity-90 mt-1 text-blue-100">
+                            Gestión de Servicios Públicos
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Filtro CGM -->
+                <div class="flex items-center gap-3 w-full sm:w-auto justify-center">
+                    <label for="cgm-filter" class="text-sm font-bold uppercase tracking-wider text-blue-100">Filtrar por CGM:</label>
+                    <div class="relative select-wrapper">
+                        <select id="cgm-filter" onchange="applyFilter()">
+                            <option value="TODOS">Todos los CGM</option>
+                            <!-- Inyectado via JS -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mensaje de Carga / Error -->
+    <div id="loader" class="max-w-7xl mx-auto flex justify-center items-center h-48 mt-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+        <span class="ml-4 font-bold text-lg">Cargando datos del GeoJSON...</span>
+    </div>
+
+    <!-- Contenedor principal -->
+    <div id="dashboard-content" class="max-w-7xl mx-auto space-y-10 pb-12 pt-8 px-4 md:px-6 lg:px-8 hidden">
+
+        <!-- BLOQUE 1: KPIs -->
+        <section>
+            <h2 class="section-title">Resumen de Actividad</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- KPI Metros -->
+                <div class="glass rounded-2xl p-6 border-l-4 border-l-[#34BBEB] flex flex-col justify-between transition hover:-translate-y-1 hover:shadow-lg">
+                    <div class="flex items-start justify-between mb-2">
+                        <div>
+                            <p class="text-white/70 text-xs font-bold uppercase tracking-widest mb-1">Metros Realizados</p>
+                            <h3 id="kpi-metros" class="text-3xl lg:text-4xl font-extrabold text-[#34BBEB] drop-shadow">0</h3>
+                        </div>
+                        <div class="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                        </div>
+                    </div>
+                    <span class="text-[10px] font-semibold uppercase tracking-wider bg-white/10 px-2 py-1 rounded text-white/80 w-max mt-2">Distancia Lineal Total</span>
+                </div>
+
+                <!-- KPI Plazas -->
+                <div class="glass rounded-2xl p-6 border-l-4 border-l-[#10B981] flex flex-col justify-between transition hover:-translate-y-1 hover:shadow-lg">
+                    <div class="flex items-start justify-between mb-2">
+                        <div>
+                            <p class="text-white/70 text-xs font-bold uppercase tracking-widest mb-1">Plazas Intervenidas</p>
+                            <h3 id="kpi-plazas" class="text-3xl lg:text-4xl font-extrabold text-[#10B981] drop-shadow">0</h3>
+                        </div>
+                        <div class="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <span class="text-[10px] font-semibold uppercase tracking-wider bg-white/10 px-2 py-1 rounded text-white/80 w-max mt-2">Parques y Plazoletas</span>
+                </div>
+
+                <!-- KPI Escuelas -->
+                <div class="glass rounded-2xl p-6 border-l-4 border-l-[#F59E0B] flex flex-col justify-between transition hover:-translate-y-1 hover:shadow-lg">
+                    <div class="flex items-start justify-between mb-2">
+                        <div>
+                            <p class="text-white/70 text-xs font-bold uppercase tracking-widest mb-1">Escuelas Intervenidas</p>
+                            <h3 id="kpi-escuelas" class="text-3xl lg:text-4xl font-extrabold text-[#F59E0B] drop-shadow">0</h3>
+                        </div>
+                        <div class="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <span class="text-[10px] font-semibold uppercase tracking-wider bg-white/10 px-2 py-1 rounded text-white/80 w-max mt-2">Establecimientos Educativos</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- BLOQUE 2: GRÁFICO EVOLUCIÓN 30 DÍAS -->
+        <section>
+            <div class="glass rounded-3xl p-6">
+                <h3 class="text-lg font-bold uppercase tracking-wider text-white mb-2">Evolución Metros Realizados (Últimos 30 días)</h3>
+                <p class="text-xs text-white/60 mb-4">*Muestra la sumatoria de distancia en metros agrupada por fecha.</p>
+                <div class="relative w-full h-[350px]">
+                    <canvas id="chartMetros"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- BLOQUE 3: TABLA ÚLTIMO DÍA -->
+        <section>
+            <h2 class="section-title flex items-center gap-2">
+                Detalle Última Jornada 
+                <span id="label-ultima-fecha" class="bg-white/20 text-white text-sm py-1 px-3 rounded-full ml-2">--/--/----</span>
+            </h2>
+            
+            <div class="glass rounded-3xl p-0 overflow-hidden flex flex-col">
+                <div class="table-container max-h-[500px] overflow-y-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Inicio Recorrido</th>
+                                <th>Fin del Recorrido</th>
+                                <th>CGM</th>
+                                <th class="text-right">Metros</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-body">
+                            <!-- Inyectado via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        let allFeatures = [];
+        let myChart = null;
+
+        // Helpers de formato
+        const formatNumber = (num) => new Intl.NumberFormat('es-AR', { maximumFractionDigits: 1 }).format(num);
+
+        // Convertir string DD/MM/YYYY a objeto Date (para poder ordenar)
+        const parseDateString = (dateStr) => {
+            if (!dateStr) return new Date(0);
+            const parts = dateStr.split('/');
+            if (parts.length === 3) {
+                return new Date(parts[2], parts[1] - 1, parts[0]);
+            }
+            return new Date(dateStr); // fallback
+        };
+
+        // Identificadores Regex para clasificar el tipo de espacio
+        const isPlaza = (texto) => /plaza|parque|plazoleta|espacio\sverde|velodromo|reserva/i.test(texto);
+        const isEscuela = (texto) => /escuela|colegio|jard[ií]n|ees\b|ep\b|ji\b|secundaria|primaria/i.test(texto);
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            let data;
+            
+            try {
+                // Fetch del archivo local GeoJSON (Funcionará sin problemas en GitHub Pages)
+                const response = await fetch('cortedepasto.geojson');
+                if (!response.ok) throw new Error('Network response was not ok');
+                data = await response.json();
+            } catch (error) {
+                console.warn("Entorno de vista previa detectado. Cargando datos de muestra en lugar del fetch local.", error);
+                document.getElementById('preview-warning').style.display = 'block';
+                
+                // Datos de muestra basados en tu archivo para que funcione el preview
+                data = {
+                    features: [
+                        { properties: { "Fecha_str": "21/02/2025", "Inicio Recorrido": "Alberto Gómez & Molina Arrotea", "Fin del Recorrido": "Alberto Gómez & Caseros", "CGM": "Lomas", "Distancia": 935.87 } },
+                        { properties: { "Fecha_str": "25/02/2025", "Inicio Recorrido": "Acevedo & Castelli", "Fin del Recorrido": "Acevedo & Pereyra Lucena", "CGM": "Lomas", "Distancia": 327.35 } },
+                        { properties: { "Fecha_str": "25/02/2025", "Inicio Recorrido": "Plaza del Campeón", "Fin del Recorrido": "Estación", "CGM": "Banfield", "Distancia": 1250.00 } },
+                        { properties: { "Fecha_str": "26/02/2025", "Inicio Recorrido": "Escuela Primaria 10", "Fin del Recorrido": "Jardín 901", "CGM": "Temperley", "Distancia": 800.50 } },
+                        { properties: { "Fecha_str": "26/02/2025", "Inicio Recorrido": "Parque Finky", "Fin del Recorrido": "Circuito perimetral", "CGM": "Turdera", "Distancia": 2100.00 } },
+                        { properties: { "Fecha_str": "27/02/2025", "Inicio Recorrido": "Alsina", "Fin del Recorrido": "Maipú", "CGM": "Banfield", "Distancia": 450.20 } }
+                    ]
+                };
+            }
+
+            allFeatures = data.features || [];
+
+            // Ocultar Loader y mostrar panel
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('dashboard-content').classList.remove('hidden');
+
+            // Llenar selector de CGM
+            const cgmSet = new Set();
+            allFeatures.forEach(f => {
+                const cgm = f.properties.CGM;
+                if (cgm && cgm.trim() !== '') cgmSet.add(cgm.trim());
+            });
+
+            const selectElement = document.getElementById('cgm-filter');
+            Array.from(cgmSet).sort().forEach(cgm => {
+                const option = document.createElement('option');
+                option.value = cgm;
+                option.textContent = cgm;
+                selectElement.appendChild(option);
+            });
+
+            // Render inicial
+            applyFilter();
+        });
+
+        function applyFilter() {
+            const selectedCGM = document.getElementById('cgm-filter').value;
+            
+            // Filtrar features
+            let filteredFeatures = allFeatures;
+            if (selectedCGM !== 'TODOS') {
+                filteredFeatures = allFeatures.filter(f => f.properties.CGM === selectedCGM);
+            }
+
+            updateDashboard(filteredFeatures);
+        }
+
+        function updateDashboard(features) {
+            let totalMetros = 0;
+            let countPlazas = 0;
+            let countEscuelas = 0;
+            const metrosPorDia = {};
+
+            // 1. Procesar Datos y Calcular KPIs
+            features.forEach(f => {
+                const props = f.properties;
+                
+                // Sumar Distancia
+                const dist = parseFloat(props.Distancia) || 0;
+                totalMetros += dist;
+
+                // Identificar Plazas o Escuelas buscando en los nombres de recorrido
+                const recorridoStr = `${props["Inicio Recorrido"] || ""} ${props["Fin del Recorrido"] || ""}`.toLowerCase();
+                if (isPlaza(recorridoStr)) { countPlazas++; }
+                if (isEscuela(recorridoStr)) { countEscuelas++; }
+
+                // Agrupar metros por fecha para el gráfico
+                const dateStr = props.Fecha_str;
+                if (dateStr) {
+                    if (!metrosPorDia[dateStr]) metrosPorDia[dateStr] = 0;
+                    metrosPorDia[dateStr] += dist;
+                }
+            });
+
+            document.getElementById('kpi-metros').textContent = formatNumber(totalMetros) + "m";
+            document.getElementById('kpi-plazas').textContent = countPlazas;
+            document.getElementById('kpi-escuelas').textContent = countEscuelas;
+
+            // 2. Procesar Gráfico (Últimos 30 días reportados)
+            const sortedDates = Object.keys(metrosPorDia).sort((a, b) => parseDateString(a) - parseDateString(b));
+            
+            // Tomar los últimos 30 días
+            const last30Dates = sortedDates.slice(-30);
+            const chartData = last30Dates.map(date => metrosPorDia[date]);
+
+            updateChart(last30Dates, chartData);
+
+            // 3. Procesar Tabla de Última Jornada
+            if (sortedDates.length > 0) {
+                const ultimaFecha = sortedDates[sortedDates.length - 1];
+                document.getElementById('label-ultima-fecha').textContent = ultimaFecha;
+                
+                const featuresUltimaFecha = features.filter(f => f.properties.Fecha_str === ultimaFecha);
+                updateTable(featuresUltimaFecha);
+            } else {
+                document.getElementById('label-ultima-fecha').textContent = "Sin datos";
+                document.getElementById('tabla-body').innerHTML = '<tr><td colspan="5" class="text-center py-4">No hay datos disponibles para el filtro actual.</td></tr>';
+            }
+        }
+
+        function updateChart(labels, data) {
+            const ctx = document.getElementById('chartMetros').getContext('2d');
+            
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Metros Cortados',
+                        data: data,
+                        borderColor: '#FFFFFF',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#34BBEB',
+                        pointBorderColor: '#FFFFFF',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            titleFont: { family: "'Montserrat', sans-serif", size: 13 },
+                            bodyFont: { family: "'Montserrat', sans-serif", size: 14, weight: 'bold' },
+                            callbacks: {
+                                label: function(context) { return formatNumber(context.parsed.y) + ' m'; }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: 'rgba(255,255,255,0.8)', font: { family: "'Montserrat', sans-serif", size: 11 } },
+                            grid: { display: false }
+                        },
+                        y: {
+                            ticks: { 
+                                color: 'rgba(255,255,255,0.8)',
+                                callback: function(value) { return formatNumber(value) + 'm'; }
+                            },
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateTable(features) {
+            const tbody = document.getElementById('tabla-body');
+            tbody.innerHTML = ''; // Limpiar tabla
+
+            if (features.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4">Sin registros para esta fecha.</td></tr>';
+                return;
+            }
+
+            // Ordenar por metros de mayor a menor
+            const sortedFeatures = [...features].sort((a, b) => (b.properties.Distancia || 0) - (a.properties.Distancia || 0));
+
+            sortedFeatures.forEach(f => {
+                const p = f.properties;
+                const tr = document.createElement('tr');
+                tr.className = 'transition-colors duration-200 hover:bg-white/5';
+                
+                tr.innerHTML = `
+                    <td class="font-semibold text-white/80">${p.Fecha_str || '-'}</td>
+                    <td class="font-medium text-white">${p["Inicio Recorrido"] || '-'}</td>
+                    <td class="font-medium text-white/80">${p["Fin del Recorrido"] || '-'}</td>
+                    <td class="uppercase text-xs font-bold text-[#34BBEB]">${p.CGM || '-'}</td>
+                    <td class="text-right font-mono-nums font-bold text-white">${formatNumber(p.Distancia || 0)}m</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    </script>
+</body>
+</html>
