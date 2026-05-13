@@ -16,16 +16,15 @@
 
     <style>
         :root {
-            --azul-petroleo: #1E6F99;
-            --celeste: #34BBEB;
-            --fucsia: #DF4172;
-            --azul-medio: #35A4D4;
+            --verde-oscuro: #1B522C;
+            --verde-principal: #2A7E43;
+            --verde-claro: #3BAA5D;
             --blanco: #FFFFFF;
         }
 
         body {
             font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(90deg, #1E6F99 0%, #35A4D4 50%, #34BBEB 100%);
+            background: linear-gradient(90deg, var(--verde-oscuro) 0%, var(--verde-principal) 50%, var(--verde-claro) 100%);
             background-attachment: fixed;
             color: var(--blanco);
             min-height: 100vh;
@@ -44,26 +43,29 @@
 
         /* HEADER SÓLIDO */
         .solid-header {
-             background-color: var(--azul-petroleo);
+             background-color: var(--verde-principal);
              border-bottom: 1px solid rgba(255, 255, 255, 0.1);
              box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
-        /* Select / Dropdown Style */
-        select {
+        /* Select & Date Inputs Style */
+        select, input[type="date"] {
             background-color: rgba(255, 255, 255, 0.1);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 0.5rem;
-            padding: 0.5rem 2.5rem 0.5rem 1rem;
+            padding: 0.4rem 0.8rem;
             appearance: none;
             outline: none;
             cursor: pointer;
             font-weight: 600;
             backdrop-filter: blur(10px);
         }
+        select {
+            padding-right: 2.5rem; /* Space for the arrow */
+        }
         select option {
-            background-color: var(--azul-petroleo);
+            background-color: var(--verde-principal);
             color: white;
         }
         .select-wrapper::after {
@@ -76,12 +78,17 @@
             pointer-events: none;
             color: white;
         }
+        /* Make calendar icon white */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
 
         /* Table Styles */
         .table-container { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; }
         th {
-            background-color: rgba(30, 111, 153, 0.9);
+            background-color: rgba(42, 126, 67, 0.9);
             text-transform: uppercase;
             font-size: 0.75rem;
             color: white;
@@ -110,7 +117,7 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: white;
-            border-bottom: 3px solid #34BBEB;
+            border-bottom: 3px solid var(--verde-claro);
             padding-bottom: 0.5rem;
         }
         
@@ -133,29 +140,47 @@
     <!-- Encabezado SÓLIDO -->
     <header class="solid-header sticky top-0 left-0 w-full z-50 transition-all duration-300">
         <div class="container mx-auto px-4 py-3">
-            <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-6 w-full sm:w-auto justify-center sm:justify-start">
-                    <img src="https://lomasdezamora.gov.ar/logo.webp" alt="Logo Municipio Lomas de Zamora" class="h-16 w-auto object-contain drop-shadow-md">
+            <div class="flex flex-col xl:flex-row justify-between items-center gap-4">
+                
+                <div class="flex items-center gap-6 w-full xl:w-auto justify-center xl:justify-start">
                     <div>
-                        <h1 class="text-2xl sm:text-3xl font-extrabold uppercase leading-none tracking-tight text-white drop-shadow-md">
+                        <h1 class="text-xl sm:text-2xl font-extrabold uppercase leading-none tracking-tight text-white drop-shadow-md">
                             Tablero de Corte de Pasto
                         </h1>
-                        <p class="text-xs sm:text-sm font-medium tracking-widest uppercase opacity-90 mt-1 text-blue-100">
+                        <p class="text-[10px] sm:text-xs font-medium tracking-widest uppercase opacity-90 mt-1 text-green-100">
                             Gestión de Servicios Públicos
                         </p>
                     </div>
                 </div>
                 
-                <!-- Filtro CGM -->
-                <div class="flex items-center gap-3 w-full sm:w-auto justify-center">
-                    <label for="cgm-filter" class="text-sm font-bold uppercase tracking-wider text-blue-100">Filtrar por CGM:</label>
-                    <div class="relative select-wrapper">
-                        <select id="cgm-filter" onchange="applyFilter()">
-                            <option value="TODOS">Todos los CGM</option>
-                            <!-- Inyectado via JS -->
-                        </select>
+                <!-- Contenedor de Filtros -->
+                <div class="flex flex-wrap items-center gap-3 sm:gap-4 w-full xl:w-auto justify-center xl:justify-end">
+                    
+                    <!-- Filtro Fecha Desde -->
+                    <div class="flex items-center gap-2">
+                        <label for="date-from" class="text-xs sm:text-sm font-bold uppercase tracking-wider text-green-100">Desde:</label>
+                        <input type="date" id="date-from" onchange="applyFilter()" class="text-sm">
                     </div>
+
+                    <!-- Filtro Fecha Hasta -->
+                    <div class="flex items-center gap-2">
+                        <label for="date-to" class="text-xs sm:text-sm font-bold uppercase tracking-wider text-green-100">Hasta:</label>
+                        <input type="date" id="date-to" onchange="applyFilter()" class="text-sm">
+                    </div>
+
+                    <!-- Filtro CGM -->
+                    <div class="flex items-center gap-2">
+                        <label for="cgm-filter" class="text-xs sm:text-sm font-bold uppercase tracking-wider text-green-100">CGM:</label>
+                        <div class="relative select-wrapper">
+                            <select id="cgm-filter" onchange="applyFilter()" class="text-sm">
+                                <option value="TODOS">Todos</option>
+                                <!-- Inyectado via JS -->
+                            </select>
+                        </div>
+                    </div>
+                    
                 </div>
+
             </div>
         </div>
     </header>
@@ -175,11 +200,11 @@
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <!-- KPI Metros -->
-                <div class="glass rounded-2xl p-6 border-l-4 border-l-[#34BBEB] flex flex-col justify-between transition hover:-translate-y-1 hover:shadow-lg">
+                <div class="glass rounded-2xl p-6 border-l-4 border-l-[#3BAA5D] flex flex-col justify-between transition hover:-translate-y-1 hover:shadow-lg">
                     <div class="flex items-start justify-between mb-2">
                         <div>
                             <p class="text-white/70 text-xs font-bold uppercase tracking-widest mb-1">Metros Realizados</p>
-                            <h3 id="kpi-metros" class="text-3xl lg:text-4xl font-extrabold text-[#34BBEB] drop-shadow">0</h3>
+                            <h3 id="kpi-metros" class="text-3xl lg:text-4xl font-extrabold text-[#3BAA5D] drop-shadow">0</h3>
                         </div>
                         <div class="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -225,26 +250,28 @@
             </div>
         </section>
 
-        <!-- BLOQUE 2: GRÁFICO EVOLUCIÓN 30 DÍAS -->
+        <!-- BLOQUE 2: GRÁFICO EVOLUCIÓN -->
         <section>
             <div class="glass rounded-3xl p-6">
-                <h3 class="text-lg font-bold uppercase tracking-wider text-white mb-2">Evolución Metros Realizados (Últimos 30 días)</h3>
-                <p class="text-xs text-white/60 mb-4">*Muestra la sumatoria de distancia en metros agrupada por fecha.</p>
+                <h3 class="text-lg font-bold uppercase tracking-wider text-white mb-2">Evolución Metros Realizados (Periodo Seleccionado)</h3>
+                <p class="text-xs text-white/60 mb-4">*Muestra la sumatoria de distancia en metros agrupada por las fechas en el rango especificado.</p>
                 <div class="relative w-full h-[350px]">
                     <canvas id="chartMetros"></canvas>
                 </div>
             </div>
         </section>
 
-        <!-- BLOQUE 3: TABLA ÚLTIMO DÍA -->
+        <!-- BLOQUE 3: TABLA DE REGISTROS -->
         <section>
-            <h2 class="section-title flex items-center gap-2">
-                Detalle Última Jornada 
-                <span id="label-ultima-fecha" class="bg-white/20 text-white text-sm py-1 px-3 rounded-full ml-2">--/--/----</span>
-            </h2>
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-4">
+                <h2 class="section-title mb-0">Detalle de Registros</h2>
+                <span id="label-registros-count" class="bg-white/20 text-white text-xs py-1 px-3 rounded-full mt-2 sm:mt-0 font-bold tracking-wider">
+                    0 Recorridos
+                </span>
+            </div>
             
             <div class="glass rounded-3xl p-0 overflow-hidden flex flex-col">
-                <div class="table-container max-h-[500px] overflow-y-auto">
+                <div class="table-container max-h-[600px] overflow-y-auto">
                     <table class="w-full text-left">
                         <thead>
                             <tr>
@@ -272,7 +299,7 @@
         // Helpers de formato
         const formatNumber = (num) => new Intl.NumberFormat('es-AR', { maximumFractionDigits: 1 }).format(num);
 
-        // Convertir string DD/MM/YYYY a objeto Date (para poder ordenar)
+        // Convertir string DD/MM/YYYY a objeto Date
         const parseDateString = (dateStr) => {
             if (!dateStr) return new Date(0);
             const parts = dateStr.split('/');
@@ -280,6 +307,13 @@
                 return new Date(parts[2], parts[1] - 1, parts[0]);
             }
             return new Date(dateStr); // fallback
+        };
+
+        // Convertir string YYYY-MM-DD (del input type="date") a objeto Date
+        const getLocalDate = (yyyyMmDd) => {
+            if (!yyyyMmDd) return null;
+            const parts = yyyMmDd.split('-');
+            return new Date(parts[0], parts[1] - 1, parts[2]);
         };
 
         // Identificadores Regex para clasificar el tipo de espacio
@@ -338,11 +372,32 @@
 
         function applyFilter() {
             const selectedCGM = document.getElementById('cgm-filter').value;
+            const dateFromStr = document.getElementById('date-from').value;
+            const dateToStr = document.getElementById('date-to').value;
             
-            // Filtrar features
+            const fromDate = getLocalDate(dateFromStr);
+            const toDate = getLocalDate(dateToStr);
+
             let filteredFeatures = allFeatures;
+            
+            // 1. Filtro CGM
             if (selectedCGM !== 'TODOS') {
-                filteredFeatures = allFeatures.filter(f => f.properties.CGM === selectedCGM);
+                filteredFeatures = filteredFeatures.filter(f => f.properties.CGM === selectedCGM);
+            }
+
+            // 2. Filtro Fechas
+            if (fromDate || toDate) {
+                filteredFeatures = filteredFeatures.filter(f => {
+                    const featureDate = parseDateString(f.properties.Fecha_str);
+                    
+                    // Si la fecha del registro es inválida, se omite (opcional)
+                    if (isNaN(featureDate.getTime())) return false; 
+                    
+                    let valid = true;
+                    if (fromDate && featureDate < fromDate) valid = false;
+                    if (toDate && featureDate > toDate) valid = false;
+                    return valid;
+                });
             }
 
             updateDashboard(filteredFeatures);
@@ -362,7 +417,7 @@
                 const dist = parseFloat(props.Distancia) || 0;
                 totalMetros += dist;
 
-                // Identificar Plazas o Escuelas buscando en los nombres de recorrido
+                // Identificar Plazas o Escuelas
                 const recorridoStr = `${props["Inicio Recorrido"] || ""} ${props["Fin del Recorrido"] || ""}`.toLowerCase();
                 if (isPlaza(recorridoStr)) { countPlazas++; }
                 if (isEscuela(recorridoStr)) { countEscuelas++; }
@@ -375,30 +430,20 @@
                 }
             });
 
+            // Actualizar Tarjetas (KPI)
             document.getElementById('kpi-metros').textContent = formatNumber(totalMetros) + "m";
             document.getElementById('kpi-plazas').textContent = countPlazas;
             document.getElementById('kpi-escuelas').textContent = countEscuelas;
 
-            // 2. Procesar Gráfico (Últimos 30 días reportados)
+            // 2. Procesar Gráfico para todo el periodo filtrado
             const sortedDates = Object.keys(metrosPorDia).sort((a, b) => parseDateString(a) - parseDateString(b));
+            const chartData = sortedDates.map(date => metrosPorDia[date]);
             
-            // Tomar los últimos 30 días
-            const last30Dates = sortedDates.slice(-30);
-            const chartData = last30Dates.map(date => metrosPorDia[date]);
+            updateChart(sortedDates, chartData);
 
-            updateChart(last30Dates, chartData);
-
-            // 3. Procesar Tabla de Última Jornada
-            if (sortedDates.length > 0) {
-                const ultimaFecha = sortedDates[sortedDates.length - 1];
-                document.getElementById('label-ultima-fecha').textContent = ultimaFecha;
-                
-                const featuresUltimaFecha = features.filter(f => f.properties.Fecha_str === ultimaFecha);
-                updateTable(featuresUltimaFecha);
-            } else {
-                document.getElementById('label-ultima-fecha').textContent = "Sin datos";
-                document.getElementById('tabla-body').innerHTML = '<tr><td colspan="5" class="text-center py-4">No hay datos disponibles para el filtro actual.</td></tr>';
-            }
+            // 3. Procesar Tabla con los registros del periodo
+            document.getElementById('label-registros-count').textContent = `${features.length} Recorridos`;
+            updateTable(features);
         }
 
         function updateChart(labels, data) {
@@ -418,7 +463,7 @@
                         borderColor: '#FFFFFF',
                         backgroundColor: 'rgba(255, 255, 255, 0.1)',
                         borderWidth: 3,
-                        pointBackgroundColor: '#34BBEB',
+                        pointBackgroundColor: '#3BAA5D',
                         pointBorderColor: '#FFFFFF',
                         pointBorderWidth: 2,
                         pointRadius: 5,
@@ -464,12 +509,21 @@
             tbody.innerHTML = ''; // Limpiar tabla
 
             if (features.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4">Sin registros para esta fecha.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-white/60">No se encontraron registros para los filtros seleccionados.</td></tr>';
                 return;
             }
 
-            // Ordenar por metros de mayor a menor
-            const sortedFeatures = [...features].sort((a, b) => (b.properties.Distancia || 0) - (a.properties.Distancia || 0));
+            // Ordenar todos los registros filtrados cronológicamente inverso (más reciente primero)
+            // Si la fecha es igual, ordenamos por la distancia de mayor a menor.
+            const sortedFeatures = [...features].sort((a, b) => {
+                const dateA = parseDateString(a.properties.Fecha_str);
+                const dateB = parseDateString(b.properties.Fecha_str);
+                if (dateB - dateA !== 0) return dateB - dateA;
+                return (b.properties.Distancia || 0) - (a.properties.Distancia || 0);
+            });
+
+            // Usamos fragmento para no reflow en cada iteración
+            const fragment = document.createDocumentFragment();
 
             sortedFeatures.forEach(f => {
                 const p = f.properties;
@@ -477,14 +531,16 @@
                 tr.className = 'transition-colors duration-200 hover:bg-white/5';
                 
                 tr.innerHTML = `
-                    <td class="font-semibold text-white/80">${p.Fecha_str || '-'}</td>
+                    <td class="font-semibold text-white/80 whitespace-nowrap">${p.Fecha_str || '-'}</td>
                     <td class="font-medium text-white">${p["Inicio Recorrido"] || '-'}</td>
                     <td class="font-medium text-white/80">${p["Fin del Recorrido"] || '-'}</td>
-                    <td class="uppercase text-xs font-bold text-[#34BBEB]">${p.CGM || '-'}</td>
-                    <td class="text-right font-mono-nums font-bold text-white">${formatNumber(p.Distancia || 0)}m</td>
+                    <td class="uppercase text-xs font-bold text-[#3BAA5D] whitespace-nowrap">${p.CGM || '-'}</td>
+                    <td class="text-right font-mono-nums font-bold text-white whitespace-nowrap">${formatNumber(p.Distancia || 0)}m</td>
                 `;
-                tbody.appendChild(tr);
+                fragment.appendChild(tr);
             });
+            
+            tbody.appendChild(fragment);
         }
     </script>
 </body>
