@@ -92,7 +92,7 @@
         "Fecha_str": "25/02/2026",
         "Inicio Recorrido": "Matheu & María Curie",
         "Fin del Recorrido": "Matheu & Nicora",
-        "CGM": "Santa Catalina",
+        "CGM": "Lomas",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 192.73,
@@ -144,8 +144,8 @@
         "Fecha_str": "25/02/2026",
         "Inicio Recorrido": "Ramón Falcón & Piaggio",
         "Fin del Recorrido": "Ramón Falcón & Bolivar",
-        "CGM": "San Jose",
-        "Localidad": "San Jose",
+        "CGM": "Lomas",
+        "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 277.27,
         "Area": 0
@@ -820,7 +820,7 @@
         "Fecha_str": "04/03/2026",
         "Inicio Recorrido": "María Curie & Pedernera",
         "Fin del Recorrido": "María Curie & Lamadrid",
-        "CGM": "Turdera",
+        "CGM": "Lomas",
         "Localidad": "Turdera",
         "Color_Generado": "#3cb44b",
         "Distancia": 251.73,
@@ -846,7 +846,7 @@
         "Fecha_str": "04/03/2026",
         "Inicio Recorrido": "Sarmiento & Molina Arrotea",
         "Fin del Recorrido": "Sanchez de Bustamante & Sarmiento ",
-        "CGM": "Parque Baron",
+        "CGM": "Lomas ",
         "Localidad": "Lomas de Zamora ",
         "Color_Generado": "#3cb44b",
         "Distancia": 271.06,
@@ -1256,7 +1256,7 @@
         "Fecha_str": "16/03/2026",
         "Inicio Recorrido": "Pringles & Meeks",
         "Fin del Recorrido": "Pringles & Av. H. Yrigoyen",
-        "CGM": "Parque Baron",
+        "CGM": "temperley",
         "Localidad": "Lomas de Zamora ",
         "Color_Generado": "#3cb44b",
         "Distancia": 1908.07,
@@ -1856,7 +1856,7 @@
         "Fecha_str": "17/03/2026",
         "Inicio Recorrido": "París & Unamuno",
         "Fin del Recorrido": "París & Morazán",
-        "CGM": "Santa Marta ",
+        "CGM": "Centenario",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 439.36,
@@ -3054,7 +3054,7 @@
         "Fecha_str": "19/03/2026",
         "Inicio Recorrido": "Gorriti & Olazábal",
         "Fin del Recorrido": "Gorriti & Bolívar",
-        "CGM": "San Jose",
+        "CGM": "Lomas",
         "Localidad": "San Jose",
         "Color_Generado": "#3cb44b",
         "Distancia": 796.3,
@@ -3084,7 +3084,7 @@
         "Fecha_str": "19/03/2026",
         "Inicio Recorrido": "Gral. Frías & Segurola",
         "Fin del Recorrido": "Gral. Frías & Pretti",
-        "CGM": "Centenario",
+        "CGM": "Turdera",
         "Localidad": "Villa Centenario",
         "Color_Generado": "#3cb44b",
         "Distancia": 781.24,
@@ -3200,7 +3200,7 @@
         "Fecha_str": "19/03/2026",
         "Inicio Recorrido": "Loria & Piaggio",
         "Fin del Recorrido": "Loria & Gral. Frías",
-        "CGM": "Parque Baron",
+        "CGM": "Lomas",
         "Localidad": "Lomas de Zamora ",
         "Color_Generado": "#3cb44b",
         "Distancia": 2424.82,
@@ -3580,7 +3580,7 @@
         "Fecha_str": "19/03/2026",
         "Inicio Recorrido": "Rivadavia & Bruselas",
         "Fin del Recorrido": "Rivadavia & Lavarden",
-        "CGM": "Fiorito",
+        "CGM": "Lamadrid",
         "Localidad": "Villa Fiorito",
         "Color_Generado": "#3cb44b",
         "Distancia": 5161.01,
@@ -4864,7 +4864,7 @@
         "Fecha_str": "20/03/2026",
         "Inicio Recorrido": "El Zonda & la Católica",
         "Fin del Recorrido": "El Zonda & Tavano",
-        "CGM": "Temperley",
+        "CGM": "Parque Baron",
         "Localidad": "Temperley",
         "Color_Generado": "#3cb44b",
         "Distancia": 1974.34,
@@ -4922,7 +4922,7 @@
         "Fecha_str": "20/03/2026",
         "Inicio Recorrido": "Evita & C. Correa",
         "Fin del Recorrido": "Evita & Sdo. Brito",
-        "CGM": "Parque Baron",
+        "CGM": "Santa Catalina",
         "Localidad": "Lomas de Zamora ",
         "Color_Generado": "#3cb44b",
         "Distancia": 776.04,
@@ -4948,7 +4948,7 @@
         "Fecha_str": "20/03/2026",
         "Inicio Recorrido": "F. Sánchez & el Zonda",
         "Fin del Recorrido": "F. Sánchez & Billac",
-        "CGM": "Budge",
+        "CGM": "Parque Baron",
         "Localidad": "Ingeniero Budge",
         "Color_Generado": "#3cb44b",
         "Distancia": 3026.46,
@@ -5266,7 +5266,7 @@
         "Fecha_str": "20/03/2026",
         "Inicio Recorrido": "Lope de Vega & el Zonda",
         "Fin del Recorrido": "Lope de Vega & del Campo",
-        "CGM": "Lomas",
+        "CGM": "Parque Baron",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 3545.67,
@@ -5368,7 +5368,7 @@
         "Fecha_str": "20/03/2026",
         "Inicio Recorrido": "M. Güemes & C. Correa",
         "Fin del Recorrido": "M. Güemes & Sdo. Brito",
-        "CGM": "Budge",
+        "CGM": "Santa Catalina",
         "Localidad": "Ingeniero Budge",
         "Color_Generado": "#3cb44b",
         "Distancia": 777.96,
@@ -5436,7 +5436,7 @@
         "Fecha_str": "20/03/2026",
         "Inicio Recorrido": "Pedraza & C. del Monte",
         "Fin del Recorrido": "Pedraza & C. Correa",
-        "CGM": "Lomas",
+        "CGM": "Santa Catalina",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 254.94,
@@ -5462,7 +5462,7 @@
         "Fecha_str": "20/03/2026",
         "Inicio Recorrido": "R. Grigera & C. Correa",
         "Fin del Recorrido": "R. Grigera & Sdo. Brito",
-        "CGM": "Albertina",
+        "CGM": "Santa Catalina",
         "Localidad": "Villa Albertina",
         "Color_Generado": "#3cb44b",
         "Distancia": 14498.08,
@@ -5824,7 +5824,7 @@
         "Fecha_str": "20/03/2026",
         "Inicio Recorrido": "Saladillo & Ayolas",
         "Fin del Recorrido": "Saladillo & Recondo",
-        "CGM": "Turdera",
+        "CGM": "Budge",
         "Localidad": "Turdera",
         "Color_Generado": "#3cb44b",
         "Distancia": 297.67,
@@ -6314,7 +6314,7 @@
         "Fecha_str": "26/03/2026",
         "Inicio Recorrido": "Epecuen & Tuyutí",
         "Fin del Recorrido": "Epecuen & Falucho",
-        "CGM": "San Jose",
+        "CGM": "Lamadrid",
         "Localidad": "San Jose",
         "Color_Generado": "#3cb44b",
         "Distancia": 5298,
@@ -6598,7 +6598,7 @@
         "Fecha_str": "26/03/2026",
         "Inicio Recorrido": "Falucho & Ginebra",
         "Fin del Recorrido": "Falucho & Epecuen",
-        "CGM": "Lamadrid",
+        "CGM": "Budge",
         "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 11552.35,
@@ -6752,7 +6752,7 @@
         "Fecha_str": "26/03/2026",
         "Inicio Recorrido": "Mario Bravo & Pilcomayo",
         "Fin del Recorrido": "Mario Bravo & Bermejo",
-        "CGM": "Santa Catalina",
+        "CGM": "Fiorito",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 1688.8,
@@ -7276,7 +7276,7 @@
         "Fecha_str": "27/03/2026",
         "Inicio Recorrido": "Garibaldi de las vías & ferrocarril",
         "Fin del Recorrido": "Garibaldi de las vías & Gral. Frias",
-        "CGM": "Centenario",
+        "CGM": "Llavallol",
         "Localidad": "Villa Centenario",
         "Color_Generado": "#3cb44b",
         "Distancia": 2672.4,
@@ -7366,7 +7366,7 @@
         "Fecha_str": "27/03/2026",
         "Inicio Recorrido": "Homero & Escobar",
         "Fin del Recorrido": "Homero & Arlucea",
-        "CGM": "Lamadrid",
+        "CGM": "Albertina",
         "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 3484.3,
@@ -7424,7 +7424,7 @@
         "Fecha_str": "27/03/2026",
         "Inicio Recorrido": "Leloir de 30 & septiembre",
         "Fin del Recorrido": "Leloir de 30 & Perito Moreno",
-        "CGM": "Santa Catalina",
+        "CGM": "Temperley",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 610.62,
@@ -7642,7 +7642,7 @@
         "Fecha_str": "27/03/2026",
         "Inicio Recorrido": "Montiel & vias del ferrocarril",
         "Fin del Recorrido": "Montiel & Camino de la Ribera",
-        "CGM": "Centenario",
+        "CGM": "Budge",
         "Localidad": "Villa Centenario",
         "Color_Generado": "#3cb44b",
         "Distancia": 4119.94,
@@ -7952,7 +7952,7 @@
         "Fecha_str": "27/03/2026",
         "Inicio Recorrido": "Viamonte & Rincón",
         "Fin del Recorrido": "Viamonte & Gascon",
-        "CGM": "Budge",
+        "CGM": "Banfield",
         "Localidad": "Ingeniero Budge",
         "Color_Generado": "#3cb44b",
         "Distancia": 1360.3,
@@ -8168,7 +8168,7 @@
         "Fecha_str": "30/03/2026",
         "Inicio Recorrido": "Iguazu & Padre Mujica",
         "Fin del Recorrido": "Iguazu & Newton",
-        "CGM": "Santa Marta ",
+        "CGM": "Lamadrid",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 2116.21,
@@ -8238,7 +8238,7 @@
         "Fecha_str": "30/03/2026",
         "Inicio Recorrido": "Limay & Iparraguirre",
         "Fin del Recorrido": "Limay & Pedro Mujica",
-        "CGM": "Parque Baron",
+        "CGM": "Lamadrid",
         "Localidad": "Lomas de Zamora ",
         "Color_Generado": "#3cb44b",
         "Distancia": 4529.15,
@@ -8328,7 +8328,7 @@
         "Fecha_str": "30/03/2026",
         "Inicio Recorrido": "Linchestein & Garibaldi",
         "Fin del Recorrido": "Linchestein & Oliden",
-        "CGM": "Temperley",
+        "CGM": "Parque Baron",
         "Localidad": "Temperley",
         "Color_Generado": "#3cb44b",
         "Distancia": 1051.5,
@@ -8366,7 +8366,7 @@
         "Fecha_str": "30/03/2026",
         "Inicio Recorrido": "Milán & Itati",
         "Fin del Recorrido": "Milán & Ejercito de Los Andes",
-        "CGM": "San Jose",
+        "CGM": "Centenario",
         "Localidad": "San Jose",
         "Color_Generado": "#3cb44b",
         "Distancia": 3675.15,
@@ -8602,7 +8602,7 @@
         "Fecha_str": "30/03/2026",
         "Inicio Recorrido": "Oliden & Madrid",
         "Fin del Recorrido": "Oliden & San Salvador",
-        "CGM": "Lomas",
+        "CGM": "Parque Baron",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 1227.77,
@@ -8780,7 +8780,7 @@
         "Fecha_str": "30/03/2026",
         "Inicio Recorrido": "Pueyrredon & Gallo",
         "Fin del Recorrido": "Pueyrredon & Medrano",
-        "CGM": "Santa Marta ",
+        "CGM": "Banfield",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 521.52,
@@ -8836,7 +8836,7 @@
         "Fecha_str": "30/03/2026",
         "Inicio Recorrido": "Triunvirato & Cabred",
         "Fin del Recorrido": "Triunvirato & Alsina",
-        "CGM": "Budge",
+        "CGM": "Temperley",
         "Localidad": "Ingeniero Budge",
         "Color_Generado": "#3cb44b",
         "Distancia": 7261.25,
@@ -9070,7 +9070,7 @@
         "Fecha_str": "30/03/2026",
         "Inicio Recorrido": "Turner & Montiel",
         "Fin del Recorrido": "Turner & Campoamor",
-        "CGM": "Lamadrid",
+        "CGM": "Budge",
         "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 4413.68,
@@ -9190,7 +9190,7 @@
         "Fecha_str": "30/03/2026",
         "Inicio Recorrido": "Voltaire & Arlucea",
         "Fin del Recorrido": "Voltaire & Urunday",
-        "CGM": "Lamadrid",
+        "CGM": "Santa Marta ",
         "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 475.58,
@@ -9836,7 +9836,7 @@
         "Fecha_str": "31/03/2026",
         "Inicio Recorrido": "Garay & Río Negro",
         "Fin del Recorrido": "Garay & Jujuy",
-        "CGM": "Parque Baron",
+        "CGM": "San Jose",
         "Localidad": "Lomas de Zamora ",
         "Color_Generado": "#3cb44b",
         "Distancia": 414.6,
@@ -10164,7 +10164,7 @@
         "Fecha_str": "31/03/2026",
         "Inicio Recorrido": "Pareta & Melber",
         "Fin del Recorrido": "Pareta & Cuyo",
-        "CGM": "Centenario",
+        "CGM": "Llavallol",
         "Localidad": "Villa Centenario",
         "Color_Generado": "#3cb44b",
         "Distancia": 351.4,
@@ -10484,7 +10484,7 @@
         "Fecha_str": "31/03/2026",
         "Inicio Recorrido": "Rio Negro & el Zorzal",
         "Fin del Recorrido": "Rio Negro & Garay",
-        "CGM": "Temperley",
+        "CGM": "San Jose",
         "Localidad": "Temperley",
         "Color_Generado": "#3cb44b",
         "Distancia": 3843.84,
@@ -10736,7 +10736,7 @@
         "Fecha_str": "31/03/2026",
         "Inicio Recorrido": "Senillosa & la Golondrina",
         "Fin del Recorrido": "Senillosa & Lituania",
-        "CGM": "Parque Baron",
+        "CGM": "Temperley",
         "Localidad": "Lomas de Zamora ",
         "Color_Generado": "#3cb44b",
         "Distancia": 6055.98,
@@ -10842,7 +10842,7 @@
         "Fecha_str": "31/03/2026",
         "Inicio Recorrido": "Tabaré & Goya",
         "Fin del Recorrido": "Tabaré & Falucho",
-        "CGM": "Albertina",
+        "CGM": "Lamadrid",
         "Localidad": "Villa Albertina",
         "Color_Generado": "#3cb44b",
         "Distancia": 528.49,
@@ -11494,7 +11494,7 @@
         "Fecha_str": "01/04/2026",
         "Inicio Recorrido": "Melber & Wilde",
         "Fin del Recorrido": "Melber & Padre Javier",
-        "CGM": "Lamadrid",
+        "CGM": "Llavallol",
         "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 1580.71,
@@ -11988,7 +11988,7 @@
         "Fecha_str": "01/04/2026",
         "Inicio Recorrido": "Wilde & Hernandez",
         "Fin del Recorrido": "Wilde & Melber",
-        "CGM": "San Jose",
+        "CGM": "Llavallol",
         "Localidad": "San Jose",
         "Color_Generado": "#3cb44b",
         "Distancia": 1009.15,
@@ -12580,7 +12580,7 @@
         "Fecha_str": "07/04/2026",
         "Inicio Recorrido": "El Plumerillo & Ejercito de Los Andes",
         "Fin del Recorrido": "El Plumerillo & Itati",
-        "CGM": "San Jose",
+        "CGM": "Centenario",
         "Localidad": "San Jose",
         "Color_Generado": "#3cb44b",
         "Distancia": 3912.18,
@@ -12674,7 +12674,7 @@
         "Fecha_str": "07/04/2026",
         "Inicio Recorrido": "Erickson & Armesti",
         "Fin del Recorrido": "Erickson & Dinamarca",
-        "CGM": "Lamadrid",
+        "CGM": "San Jose",
         "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 349.07,
@@ -12804,7 +12804,7 @@
         "Fecha_str": "07/04/2026",
         "Inicio Recorrido": "Metan & Newton",
         "Fin del Recorrido": "Metan & Falucho",
-        "CGM": "Centenario",
+        "CGM": "Lamadrid",
         "Localidad": "Villa Centenario",
         "Color_Generado": "#3cb44b",
         "Distancia": 6617.15,
@@ -13044,7 +13044,7 @@
         "Fecha_str": "07/04/2026",
         "Inicio Recorrido": "Pereyra Lucena desde12 & Octubre",
         "Fin del Recorrido": "Pereyra Lucena desde12 & Payró",
-        "CGM": "Fiorito",
+        "CGM": "Lomas",
         "Localidad": "Villa Fiorito",
         "Color_Generado": "#3cb44b",
         "Distancia": 751.52,
@@ -13104,7 +13104,7 @@
         "Fecha_str": "07/04/2026",
         "Inicio Recorrido": "Pio Borja & Recondo",
         "Fin del Recorrido": "Pio Borja & Pilcomayo",
-        "CGM": "Santa Catalina",
+        "CGM": "Fiorito",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 612.06,
@@ -13156,7 +13156,7 @@
         "Fecha_str": "07/04/2026",
         "Inicio Recorrido": "Punta Alta & Terrada",
         "Fin del Recorrido": "Punta Alta & Bustos",
-        "CGM": "Budge",
+        "CGM": "Santa Marta ",
         "Localidad": "Ingeniero Budge",
         "Color_Generado": "#3cb44b",
         "Distancia": 475.58,
@@ -13182,7 +13182,7 @@
         "Fecha_str": "07/04/2026",
         "Inicio Recorrido": "San Luis & Av. Hipolito Yrigoyen",
         "Fin del Recorrido": "SAn Luis & Luis Puig",
-        "CGM": "Santa Catalina",
+        "CGM": "Turdera",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 7575.35,
@@ -13312,7 +13312,7 @@
         "Fecha_str": "07/04/2026",
         "Inicio Recorrido": "Sirrito & Oliden",
         "Fin del Recorrido": "Sirrito & Melendez Valdez",
-        "CGM": "Turdera",
+        "CGM": "Parque Baron",
         "Localidad": "Turdera",
         "Color_Generado": "#3cb44b",
         "Distancia": 2599.7,
@@ -13428,7 +13428,7 @@
         "Fecha_str": "07/04/2026",
         "Inicio Recorrido": "Yerbal & Armesti",
         "Fin del Recorrido": "Yerbal & Dinamarca",
-        "CGM": "Santa Marta ",
+        "CGM": "San Jose",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 356.12,
@@ -13782,7 +13782,7 @@
         "Fecha_str": "08/04/2026",
         "Inicio Recorrido": "Isabela la Catolica & El Zonda",
         "Fin del Recorrido": "Isabela la Catolica & Camino Negro",
-        "CGM": "Centenario",
+        "CGM": "Parque Baron",
         "Localidad": "Villa Centenario",
         "Color_Generado": "#3cb44b",
         "Distancia": 19268.6,
@@ -14132,7 +14132,7 @@
         "Fecha_str": "08/04/2026",
         "Inicio Recorrido": "J. Zamora & Rodriguez",
         "Fin del Recorrido": "J. Zamora & Zapata",
-        "CGM": "San Jose",
+        "CGM": "Centenario",
         "Localidad": "San Jose",
         "Color_Generado": "#3cb44b",
         "Distancia": 589.35,
@@ -14166,7 +14166,7 @@
         "Fecha_str": "08/04/2026",
         "Inicio Recorrido": "Las Heras & Felix de Azara",
         "Fin del Recorrido": "Las Heras & Gral. Carlos Maria de Alvear",
-        "CGM": "Santa Marta ",
+        "CGM": "Lomas",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 560.47,
@@ -14294,7 +14294,7 @@
         "Fecha_str": "08/04/2026",
         "Inicio Recorrido": "Nuñez de Arce & Campana",
         "Fin del Recorrido": "Nuñez de Arce & Figueredo",
-        "CGM": "Parque Baron",
+        "CGM": "Fiorito",
         "Localidad": "Lomas de Zamora ",
         "Color_Generado": "#3cb44b",
         "Distancia": 1705.69,
@@ -14538,7 +14538,7 @@
         "Fecha_str": "08/04/2026",
         "Inicio Recorrido": "Recondo & Falucho",
         "Fin del Recorrido": "Recondo & Camino Negro",
-        "CGM": "Turdera",
+        "CGM": "Budge",
         "Localidad": "Turdera",
         "Color_Generado": "#3cb44b",
         "Distancia": 7977.11,
@@ -14784,7 +14784,7 @@
         "Fecha_str": "08/04/2026",
         "Inicio Recorrido": "Rodriguez & Tabano",
         "Fin del Recorrido": "Rodriguez & Camino Negro",
-        "CGM": "Llavallol",
+        "CGM": "Albertina",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 3922.76,
@@ -16448,7 +16448,7 @@
         "Fecha_str": "09/04/2026",
         "Inicio Recorrido": "Los Aromos & Isla Soledad",
         "Fin del Recorrido": "Los Aromos & Av. Juan XIII",
-        "CGM": "Santa Catalina",
+        "CGM": "Parque Baron",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 15488.86,
@@ -16772,7 +16772,7 @@
         "Fecha_str": "09/04/2026",
         "Inicio Recorrido": "Mariño & Gral. Frias",
         "Fin del Recorrido": "Mariño & Santa Maria",
-        "CGM": "Fiorito",
+        "CGM": "Turdera",
         "Localidad": "Villa Fiorito",
         "Color_Generado": "#3cb44b",
         "Distancia": 2149.05,
@@ -16984,7 +16984,7 @@
         "Fecha_str": "09/04/2026",
         "Inicio Recorrido": "Quilmes & Neglia",
         "Fin del Recorrido": "Quilmes & Av. Republica Argentina",
-        "CGM": "Santa Catalina",
+        "CGM": "San Jose",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 1327.93,
@@ -17072,7 +17072,7 @@
         "Fecha_str": "10/04/2026",
         "Inicio Recorrido": "Alberto Gomez Bis & Molina Arrotea",
         "Fin del Recorrido": "Alberto Gomez Bis & Colombres",
-        "CGM": "Parque Baron",
+        "CGM": "Lomas",
         "Localidad": "Lomas de Zamora ",
         "Color_Generado": "#3cb44b",
         "Distancia": 1219.74,
@@ -17482,7 +17482,7 @@
         "Fecha_str": "10/04/2026",
         "Inicio Recorrido": "Jose Neglia & Quilmes",
         "Fin del Recorrido": "Jose Neglia & Ruben de Rosas",
-        "CGM": "Santa Catalina",
+        "CGM": "San Jose",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 485.41,
@@ -17508,7 +17508,7 @@
         "Fecha_str": "10/04/2026",
         "Inicio Recorrido": "Molina Arrotea & Monseñor Piaggio",
         "Fin del Recorrido": "Molina Arrotea & Alberto Gomez Bis",
-        "CGM": "San Jose",
+        "CGM": "Lomas",
         "Localidad": "San Jose",
         "Color_Generado": "#3cb44b",
         "Distancia": 3330.01,
@@ -17562,7 +17562,7 @@
         "Fecha_str": "10/04/2026",
         "Inicio Recorrido": "Plumerillo & Ribera Sur",
         "Fin del Recorrido": "Plumerillo & Esquel",
-        "CGM": "Turdera",
+        "CGM": "Fiorito",
         "Localidad": "Turdera",
         "Color_Generado": "#3cb44b",
         "Distancia": 564.66,
@@ -17620,7 +17620,7 @@
         "Fecha_str": "10/04/2026",
         "Inicio Recorrido": "Ravel & Quilmes",
         "Fin del Recorrido": "Ravel & Ruben de Rosas",
-        "CGM": "Budge",
+        "CGM": "San Jose",
         "Localidad": "Ingeniero Budge",
         "Color_Generado": "#3cb44b",
         "Distancia": 1207.09,
@@ -17654,7 +17654,7 @@
         "Fecha_str": "10/04/2026",
         "Inicio Recorrido": "Reconquista & Gral. Frias",
         "Fin del Recorrido": "Reconquista & Luis Puig",
-        "CGM": "Santa Catalina",
+        "CGM": "Turdera",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 1334.86,
@@ -17712,7 +17712,7 @@
         "Fecha_str": "10/04/2026",
         "Inicio Recorrido": "Ribera Sur & Prque Solar",
         "Fin del Recorrido": "Ribera Sur & Plumerillo",
-        "CGM": "Budge",
+        "CGM": "Fiorito",
         "Localidad": "Ingeniero Budge",
         "Color_Generado": "#3cb44b",
         "Distancia": 4426.42,
@@ -17928,7 +17928,7 @@
         "Fecha_str": "10/04/2026",
         "Inicio Recorrido": "Ricardo Palma & Necol",
         "Fin del Recorrido": "Ricardo Palma & Canada",
-        "CGM": "Turdera",
+        "CGM": "Budge",
         "Localidad": "Turdera",
         "Color_Generado": "#3cb44b",
         "Distancia": 2701.79,
@@ -18340,7 +18340,7 @@
         "Fecha_str": "10/04/2026",
         "Inicio Recorrido": "Ruben de Rosas & Neglia",
         "Fin del Recorrido": "Ruben de Rosas & Av. Republica Argentina",
-        "CGM": "Budge",
+        "CGM": "San Jose",
         "Localidad": "Ingeniero Budge",
         "Color_Generado": "#3cb44b",
         "Distancia": 590.36,
@@ -18568,7 +18568,7 @@
         "Fecha_str": "13/04/2026",
         "Inicio Recorrido": "Sta María de Oro & Cangallo",
         "Fin del Recorrido": "Sta María de Oro & 14 de Julio",
-        "CGM": "Santa Catalina",
+        "CGM": "Temperley",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 292.79,
@@ -19218,7 +19218,7 @@
         "Fecha_str": "13/04/2026",
         "Inicio Recorrido": "Gabriel Miro & Quesada",
         "Fin del Recorrido": "Gabriel Miro & Canada",
-        "CGM": "San Jose",
+        "CGM": "Fiorito",
         "Localidad": "San Jose",
         "Color_Generado": "#3cb44b",
         "Distancia": 2370.2,
@@ -19296,7 +19296,7 @@
         "Fecha_str": "13/04/2026",
         "Inicio Recorrido": "Ignacio Corsini & Zelarrayan",
         "Fin del Recorrido": "Ignacio Corsini & Facundo Quiroga",
-        "CGM": "Lamadrid",
+        "CGM": "Santa Catalina",
         "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 648.31,
@@ -19368,7 +19368,7 @@
         "Fecha_str": "13/04/2026",
         "Inicio Recorrido": "Machado & Turner",
         "Fin del Recorrido": "Machado & Cipoleti",
-        "CGM": "Centenario",
+        "CGM": "Budge",
         "Localidad": "Villa Centenario",
         "Color_Generado": "#3cb44b",
         "Distancia": 2313.44,
@@ -19418,7 +19418,7 @@
         "Fecha_str": "13/04/2026",
         "Inicio Recorrido": "Provincias Unidas & O´Higgins",
         "Fin del Recorrido": "Provincias Unidas & Falucho",
-        "CGM": "Banfield",
+        "CGM": "Parque Baron",
         "Localidad": "Banfield",
         "Color_Generado": "#3cb44b",
         "Distancia": 1093.18,
@@ -19520,7 +19520,7 @@
         "Fecha_str": "13/04/2026",
         "Inicio Recorrido": "Santa Maria de Oro & Av. Eva Peron ",
         "Fin del Recorrido": "Santa Maria de Oro & 14 de Julio",
-        "CGM": "Lomas",
+        "CGM": "Temperley",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 978.02,
@@ -19650,7 +19650,7 @@
         "Fecha_str": "14/04/2026",
         "Inicio Recorrido": "Gral. Palacios & Pedernera",
         "Fin del Recorrido": "Pedernera & Avenida Adolfo Alsina ",
-        "CGM": "San Jose",
+        "CGM": "Lomas",
         "Localidad": "San Jose",
         "Color_Generado": "#3cb44b",
         "Distancia": 3033.03,
@@ -20094,7 +20094,7 @@
         "Fecha_str": "14/04/2026",
         "Inicio Recorrido": "Fuentealba & Giachino",
         "Fin del Recorrido": "Fuentealba & Da Vinci",
-        "CGM": "Fiorito",
+        "CGM": "Santa Catalina",
         "Localidad": "Villa Fiorito",
         "Color_Generado": "#3cb44b",
         "Distancia": 224.89,
@@ -20120,7 +20120,7 @@
         "Fecha_str": "14/04/2026",
         "Inicio Recorrido": "Giachino & Peñaloza",
         "Fin del Recorrido": "Giachino & Jeronimo Costa",
-        "CGM": "Centenario",
+        "CGM": "Santa Catalina",
         "Localidad": "Villa Centenario",
         "Color_Generado": "#3cb44b",
         "Distancia": 1433.4,
@@ -20170,7 +20170,7 @@
         "Fecha_str": "14/04/2026",
         "Inicio Recorrido": "Gral. Hornos & Ejercito de los Andes",
         "Fin del Recorrido": "Gral. Hornos & Gral. Rodriguez",
-        "CGM": "Lomas",
+        "CGM": "Centenario",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 4177.92,
@@ -20252,7 +20252,7 @@
         "Fecha_str": "14/04/2026",
         "Inicio Recorrido": "Heroes de Malvinas & Giachino",
         "Fin del Recorrido": "Heroes de Malvinas & Da Vinci",
-        "CGM": "Parque Baron",
+        "CGM": "Santa Catalina",
         "Localidad": "Lomas de Zamora ",
         "Color_Generado": "#3cb44b",
         "Distancia": 236.93,
@@ -20360,7 +20360,7 @@
         "Fecha_str": "14/04/2026",
         "Inicio Recorrido": "Leonardo Da Vinci & Cesar Ratti",
         "Fin del Recorrido": "Leonardo Da Vinci & Peñaloza",
-        "CGM": "Lamadrid",
+        "CGM": "Santa Catalina",
         "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 1251.78,
@@ -20406,7 +20406,7 @@
         "Fecha_str": "14/04/2026",
         "Inicio Recorrido": "Loyola & Homero",
         "Fin del Recorrido": "Loyola & O´Higgins",
-        "CGM": "San Jose",
+        "CGM": "Albertina",
         "Localidad": "San Jose",
         "Color_Generado": "#3cb44b",
         "Distancia": 1884.93,
@@ -20468,7 +20468,7 @@
         "Fecha_str": "14/04/2026",
         "Inicio Recorrido": "Meeks & Garibaldi",
         "Fin del Recorrido": "Meeks & Paso Bajo Nivel",
-        "CGM": "Llavallol",
+        "CGM": "Temperley",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 2176.63,
@@ -20534,7 +20534,7 @@
         "Fecha_str": "14/04/2026",
         "Inicio Recorrido": "Monte Olivo & Giachino",
         "Fin del Recorrido": "Monte Olivo & Da Vinci",
-        "CGM": "Budge",
+        "CGM": "Santa Catalina",
         "Localidad": "Ingeniero Budge",
         "Color_Generado": "#3cb44b",
         "Distancia": 225.08,
@@ -20606,7 +20606,7 @@
         "Fecha_str": "14/04/2026",
         "Inicio Recorrido": "Pedernera & Palacios",
         "Fin del Recorrido": "Pedernera & las vías del ferrocarril",
-        "CGM": "Santa Catalina",
+        "CGM": "Lomas",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 609.72,
@@ -20644,7 +20644,7 @@
         "Fecha_str": "14/04/2026",
         "Inicio Recorrido": "Perez Galdos & Pilcomayo",
         "Fin del Recorrido": "Perez Galdos & Ejercito de los Andes",
-        "CGM": "Santa Catalina",
+        "CGM": "Fiorito",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 1561.45,
@@ -20702,7 +20702,7 @@
         "Fecha_str": "14/04/2026",
         "Inicio Recorrido": "Ramallo & Homero",
         "Fin del Recorrido": "Ramallo & O´Higgins",
-        "CGM": "Lomas",
+        "CGM": "Albertina",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 1154.01,
@@ -20732,7 +20732,7 @@
         "Fecha_str": "14/04/2026",
         "Inicio Recorrido": "Roberto Arlt & Pilcomayo",
         "Fin del Recorrido": "Roberto Arlt & Ejercito de los Andes",
-        "CGM": "Santa Marta ",
+        "CGM": "Fiorito",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 2625.75,
@@ -20814,7 +20814,7 @@
         "Fecha_str": "14/04/2026",
         "Inicio Recorrido": "Santa Ana & Trejo",
         "Fin del Recorrido": "Santa Ana & Vicente Lopez",
-        "CGM": "Lomas",
+        "CGM": "Turdera",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 2789.03,
@@ -20912,7 +20912,7 @@
         "Fecha_str": "14/04/2026",
         "Inicio Recorrido": "Trejo y Sanabria & Puig",
         "Fin del Recorrido": "Trejo y Sanabria & Segurola",
-        "CGM": "Temperley",
+        "CGM": "Turdera",
         "Localidad": "Temperley",
         "Color_Generado": "#3cb44b",
         "Distancia": 436.96,
@@ -20938,7 +20938,7 @@
         "Fecha_str": "14/04/2026",
         "Inicio Recorrido": "Valparaiso & Zapallo",
         "Fin del Recorrido": "Valparaiso & O´Higgins",
-        "CGM": "San Jose",
+        "CGM": "Santa Marta",
         "Localidad": "San Jose",
         "Color_Generado": "#3cb44b",
         "Distancia": 3236.32,
@@ -20988,7 +20988,7 @@
         "Fecha_str": "14/04/2026",
         "Inicio Recorrido": "Vicente Lopez & Santa Maria",
         "Fin del Recorrido": "Vicente Lopez & Segurola",
-        "CGM": "Santa Marta ",
+        "CGM": "Turdera",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 2982.72,
@@ -21486,7 +21486,7 @@
         "Fecha_str": "16/04/2026",
         "Inicio Recorrido": "Jose Tallon & Jeronimo Costa",
         "Fin del Recorrido": "Jose Tallon & Peñaloza",
-        "CGM": "San Jose",
+        "CGM": "Santa Catalina",
         "Localidad": "San Jose",
         "Color_Generado": "#3cb44b",
         "Distancia": 1162.76,
@@ -21624,7 +21624,7 @@
         "Fecha_str": "16/04/2026",
         "Inicio Recorrido": "Tuyuti & Epecuen",
         "Fin del Recorrido": "Tuyuti & Escobar",
-        "CGM": "Centenario",
+        "CGM": "Lamadrid",
         "Localidad": "Villa Centenario",
         "Color_Generado": "#3cb44b",
         "Distancia": 1516.24,
@@ -22220,7 +22220,7 @@
         "Fecha_str": "17/04/2026",
         "Inicio Recorrido": "El Pampero & O´Higgins",
         "Fin del Recorrido": "El Pampero & Arana Goiri",
-        "CGM": "Centenario",
+        "CGM": "Santa marta",
         "Localidad": "Villa Centenario",
         "Color_Generado": "#3cb44b",
         "Distancia": 896.74,
@@ -22272,7 +22272,7 @@
         "Fecha_str": "17/04/2026",
         "Inicio Recorrido": "Gral Costa & Giachino",
         "Fin del Recorrido": "Gral Costa & Peñaloza",
-        "CGM": "Lomas",
+        "CGM": "Santa Catalina",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 2303.56,
@@ -22432,7 +22432,7 @@
         "Fecha_str": "17/04/2026",
         "Inicio Recorrido": "Larrazábal & Ribera",
         "Fin del Recorrido": "Larrazábal & Roque Crea",
-        "CGM": "San Jose",
+        "CGM": "Fiorito",
         "Localidad": "San Jose",
         "Color_Generado": "#3cb44b",
         "Distancia": 5031.51,
@@ -22602,7 +22602,7 @@
         "Fecha_str": "17/04/2026",
         "Inicio Recorrido": "Las Flores & Goodwyn",
         "Fin del Recorrido": "Las Flores & Gral Costa",
-        "CGM": "Lomas",
+        "CGM": "Santa Catalina",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 657.04,
@@ -22740,7 +22740,7 @@
         "Fecha_str": "17/04/2026",
         "Inicio Recorrido": "Mar del Plata & Bustos",
         "Fin del Recorrido": "Mar del Plata & O´Higgins",
-        "CGM": "Lomas",
+        "CGM": "Santa Marta",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 3805.3,
@@ -23032,7 +23032,7 @@
         "Fecha_str": "17/04/2026",
         "Inicio Recorrido": "Monte & Einstein",
         "Fin del Recorrido": "Monte & Padre Mujica",
-        "CGM": "Santa Catalina",
+        "CGM": "Lamadrid",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 1513.53,
@@ -23136,7 +23136,7 @@
         "Fecha_str": "17/04/2026",
         "Inicio Recorrido": "Oran & Einstein",
         "Fin del Recorrido": "Oran & Padre Mujica",
-        "CGM": "Parque Baron",
+        "CGM": "Lamadrid",
         "Localidad": "Lomas de Zamora ",
         "Color_Generado": "#3cb44b",
         "Distancia": 1513.53,
@@ -23332,7 +23332,7 @@
         "Fecha_str": "17/04/2026",
         "Inicio Recorrido": "Rodriguez & Morazan",
         "Fin del Recorrido": "Rodriguez & Pararguay",
-        "CGM": "Albertina",
+        "CGM": "Centenario",
         "Localidad": "Villa Albertina",
         "Color_Generado": "#3cb44b",
         "Distancia": 586.44,
@@ -23454,7 +23454,7 @@
         "Fecha_str": "17/04/2026",
         "Inicio Recorrido": "Spano & Santo Tomas",
         "Fin del Recorrido": "Spano & San Joaquin",
-        "CGM": "Temperley",
+        "CGM": "Turdera",
         "Localidad": "Temperley",
         "Color_Generado": "#3cb44b",
         "Distancia": 1116.79,
@@ -23496,7 +23496,7 @@
         "Fecha_str": "17/04/2026",
         "Inicio Recorrido": "Terrada & Escobar",
         "Fin del Recorrido": "Terrada & Arlucea",
-        "CGM": "Lamadrid",
+        "CGM": "Albertina",
         "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 3731.58,
@@ -23566,7 +23566,7 @@
         "Fecha_str": "17/04/2026",
         "Inicio Recorrido": "Venzanpo & Martell",
         "Fin del Recorrido": "Venzanpo & David Baud",
-        "CGM": "San Jose",
+        "CGM": "Santa Catalina",
         "Localidad": "San Jose",
         "Color_Generado": "#3cb44b",
         "Distancia": 1535.42,
@@ -23754,7 +23754,7 @@
         "Fecha_str": "20/04/2026",
         "Inicio Recorrido": "Evaristo Carriego & Camino de la Ribera Sur",
         "Fin del Recorrido": "Evaristo Carriego & Canada",
-        "CGM": "Santa Catalina",
+        "CGM": "Budge",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 8134.3,
@@ -23912,7 +23912,7 @@
         "Fecha_str": "20/04/2026",
         "Inicio Recorrido": "Garibaldi & Nestor de la Peña",
         "Fin del Recorrido": "Garibaldi & Luzuriaga",
-        "CGM": "Temperley",
+        "CGM": "Llavallol",
         "Localidad": "Temperley",
         "Color_Generado": "#3cb44b",
         "Distancia": 855,
@@ -23968,7 +23968,7 @@
         "Fecha_str": "20/04/2026",
         "Inicio Recorrido": "Lynch & Muiño",
         "Fin del Recorrido": "Lynch & Vasconcellos",
-        "CGM": "Santa Catalina",
+        "CGM": "San Jose",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 1388.21,
@@ -24040,7 +24040,7 @@
         "Fecha_str": "20/04/2026",
         "Inicio Recorrido": "Urunday & Falucho",
         "Fin del Recorrido": "Urunday & O´Higgins",
-        "CGM": "Temperley",
+        "CGM": "Parque Baron",
         "Localidad": "Temperley",
         "Color_Generado": "#3cb44b",
         "Distancia": 2043.95,
@@ -24958,7 +24958,7 @@
         "Fecha_str": "21/04/2026",
         "Inicio Recorrido": "Gowland & Lynch",
         "Fin del Recorrido": "Gowland & Lanus",
-        "CGM": "Lamadrid",
+        "CGM": "San Jose",
         "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 22334.13,
@@ -25512,7 +25512,7 @@
         "Fecha_str": "21/04/2026",
         "Inicio Recorrido": "Groussac & Lynch",
         "Fin del Recorrido": "Groussac & Lanus",
-        "CGM": "Lamadrid",
+        "CGM": "San Jose",
         "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 22334.13,
@@ -26136,7 +26136,7 @@
         "Fecha_str": "21/04/2026",
         "Inicio Recorrido": "Madrid & Oliden",
         "Fin del Recorrido": "Madrid & Juan XIII",
-        "CGM": "Santa Catalina",
+        "CGM": "Parque Baron",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 4883.6,
@@ -26284,7 +26284,7 @@
         "Fecha_str": "21/04/2026",
         "Inicio Recorrido": "Neuquen & Falucho",
         "Fin del Recorrido": "Neuquen & O´Higgins",
-        "CGM": "Lamadrid",
+        "CGM": "Santa Marta",
         "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 900.87,
@@ -26318,7 +26318,7 @@
         "Fecha_str": "21/04/2026",
         "Inicio Recorrido": "Nietzche & Lynch",
         "Fin del Recorrido": "Nietzche & Lanus",
-        "CGM": "Fiorito",
+        "CGM": "San Jose",
         "Localidad": "Villa Fiorito",
         "Color_Generado": "#3cb44b",
         "Distancia": 22334.13,
@@ -26872,7 +26872,7 @@
         "Fecha_str": "21/04/2026",
         "Inicio Recorrido": "Pretti & Gral. Frias",
         "Fin del Recorrido": "Pretti & Hipolito Yrigoyen",
-        "CGM": "Temperley",
+        "CGM": "Turdera",
         "Localidad": "Temperley",
         "Color_Generado": "#3cb44b",
         "Distancia": 789.62,
@@ -26980,7 +26980,7 @@
         "Fecha_str": "21/04/2026",
         "Inicio Recorrido": "Vespucio & Lynch",
         "Fin del Recorrido": "Vespucio & Lanus",
-        "CGM": "Banfield",
+        "CGM": "San Jose",
         "Localidad": "Banfield",
         "Color_Generado": "#3cb44b",
         "Distancia": 22334.13,
@@ -29018,7 +29018,7 @@
         "Fecha_str": "22/04/2026",
         "Inicio Recorrido": "Goodwyn & Gral. Costa",
         "Fin del Recorrido": "Goodwyn & Martell",
-        "CGM": "Lomas",
+        "CGM": "Santa Catalina",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 2684.49,
@@ -29108,7 +29108,7 @@
         "Fecha_str": "22/04/2026",
         "Inicio Recorrido": "La fontaine & Uspallata",
         "Fin del Recorrido": "La fontaine & Urunday",
-        "CGM": "San Jose",
+        "CGM": "Parque Baron",
         "Localidad": "San Jose",
         "Color_Generado": "#3cb44b",
         "Distancia": 475.58,
@@ -29134,7 +29134,7 @@
         "Fecha_str": "22/04/2026",
         "Inicio Recorrido": "Monseñor Piaggio & Gorriti",
         "Fin del Recorrido": "Monseñor Piaggio & Las Heras",
-        "CGM": "Lamadrid",
+        "CGM": "Lomas",
         "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 1333.86,
@@ -29176,7 +29176,7 @@
         "Fecha_str": "22/04/2026",
         "Inicio Recorrido": "Necol & Claudio de Alas",
         "Fin del Recorrido": "Necol & Andres Bello",
-        "CGM": "Santa Marta ",
+        "CGM": "Budge",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 521.71,
@@ -29206,7 +29206,7 @@
         "Fecha_str": "22/04/2026",
         "Inicio Recorrido": "Olmos & Falucho",
         "Fin del Recorrido": "Olmos & Homero",
-        "CGM": "Lamadrid",
+        "CGM": "Parque Baron",
         "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 650.84,
@@ -29690,7 +29690,7 @@
         "Fecha_str": "23/04/2026",
         "Inicio Recorrido": "Escobar & Falucho",
         "Fin del Recorrido": "Escobar & O´Higgins",
-        "CGM": "Budge",
+        "CGM": "Lamadrid",
         "Localidad": "Ingeniero Budge",
         "Color_Generado": "#3cb44b",
         "Distancia": 4042.47,
@@ -29854,7 +29854,7 @@
         "Fecha_str": "23/04/2026",
         "Inicio Recorrido": "Hidalgo & Falucho",
         "Fin del Recorrido": "Hidalgo & O'Higgins",
-        "CGM": "Albertina",
+        "CGM": "Parque Baron",
         "Localidad": "Villa Albertina",
         "Color_Generado": "#3cb44b",
         "Distancia": 2955.39,
@@ -30350,7 +30350,7 @@
         "Fecha_str": "23/04/2026",
         "Inicio Recorrido": "Madreselva & Moctezuma",
         "Fin del Recorrido": "Madreselva & Yatay",
-        "CGM": "Parque Baron",
+        "CGM": "San Jose",
         "Localidad": "Lomas de Zamora ",
         "Color_Generado": "#3cb44b",
         "Distancia": 152.86,
@@ -30376,7 +30376,7 @@
         "Fecha_str": "23/04/2026",
         "Inicio Recorrido": "Martell & Carlos Voss",
         "Fin del Recorrido": "Martell & Alberto Franco",
-        "CGM": "Lomas",
+        "CGM": "Santa Catalina",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 539.4,
@@ -30440,7 +30440,7 @@
         "Fecha_str": "23/04/2026",
         "Inicio Recorrido": "Moctezuma & Baltasar",
         "Fin del Recorrido": "Moctezuma & Madreselva",
-        "CGM": "Lomas",
+        "CGM": "San Jose",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 2550.24,
@@ -30514,7 +30514,7 @@
         "Fecha_str": "23/04/2026",
         "Inicio Recorrido": "Nicora & Alberti",
         "Fin del Recorrido": "Nicora & Lugano",
-        "CGM": "San Jose",
+        "CGM": "Lomas",
         "Localidad": "San Jose",
         "Color_Generado": "#3cb44b",
         "Distancia": 626.28,
@@ -30552,7 +30552,7 @@
         "Fecha_str": "23/04/2026",
         "Inicio Recorrido": "Pasajes & Carlos Voss",
         "Fin del Recorrido": "Pasajes & Alberto Franco",
-        "CGM": "Lomas",
+        "CGM": "Santa Catalina",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 367.78,
@@ -30578,7 +30578,7 @@
         "Fecha_str": "23/04/2026",
         "Inicio Recorrido": "Picasso & Néstor Kirchner",
         "Fin del Recorrido": "Picasso & Carlos Voss",
-        "CGM": "Fiorito",
+        "CGM": "Santa Catalina",
         "Localidad": "Villa Fiorito",
         "Color_Generado": "#3cb44b",
         "Distancia": 238.35,
@@ -31250,7 +31250,7 @@
         "Fecha_str": "23/04/2026",
         "Inicio Recorrido": "Tita Merello & Giachino",
         "Fin del Recorrido": "Tita Merello & Maturana",
-        "CGM": "Turdera",
+        "CGM": "Santa Catalina",
         "Localidad": "Turdera",
         "Color_Generado": "#3cb44b",
         "Distancia": 821.39,
@@ -31330,7 +31330,7 @@
         "Fecha_str": "23/04/2026",
         "Inicio Recorrido": "Vago & J.M. Fernandes",
         "Fin del Recorrido": "Vago & Lavalle",
-        "CGM": "Santa Marta ",
+        "CGM": "Temperley",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 1975.02,
@@ -31958,7 +31958,7 @@
         "Fecha_str": "24/04/2026",
         "Inicio Recorrido": "El Trebol y El Tala & Carhue",
         "Fin del Recorrido": "El Trebol y El Tala & Charcas",
-        "CGM": "Parque Baron",
+        "CGM": "San Jose",
         "Localidad": "Lomas de Zamora ",
         "Color_Generado": "#3cb44b",
         "Distancia": 222.86,
@@ -31984,7 +31984,7 @@
         "Fecha_str": "24/04/2026",
         "Inicio Recorrido": "Goya & Arana Goiri",
         "Fin del Recorrido": "Goya & Newton",
-        "CGM": "Santa Catalina",
+        "CGM": "Lamadrid",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 4929.89,
@@ -32078,7 +32078,7 @@
         "Fecha_str": "24/04/2026",
         "Inicio Recorrido": "Gral. Frias & Las Heras",
         "Fin del Recorrido": "Gral. Frias & Molina Arrotea",
-        "CGM": "Turdera",
+        "CGM": "Lomas",
         "Localidad": "Turdera",
         "Color_Generado": "#3cb44b",
         "Distancia": 821.99,
@@ -32268,7 +32268,7 @@
         "Fecha_str": "24/04/2026",
         "Inicio Recorrido": "Santa Fe & Las Heras",
         "Fin del Recorrido": "Santa Fe & Molina Arrotea",
-        "CGM": "Turdera",
+        "CGM": "Lomas ",
         "Localidad": "Turdera",
         "Color_Generado": "#3cb44b",
         "Distancia": 4308.68,
@@ -32484,7 +32484,7 @@
         "Fecha_str": "24/04/2026",
         "Inicio Recorrido": "Sdo. Rodriguez & Padre Mujica",
         "Fin del Recorrido": "Sdo. Rodriguez & Manzi",
-        "CGM": "Temperley",
+        "CGM": "Santa Catalina",
         "Localidad": "Temperley",
         "Color_Generado": "#3cb44b",
         "Distancia": 147.52,
@@ -32536,7 +32536,7 @@
         "Fecha_str": "24/04/2026",
         "Inicio Recorrido": "Unamuno & Rawson",
         "Fin del Recorrido": "Unamuno & Larroque",
-        "CGM": "Parque Baron",
+        "CGM": "Centenario",
         "Localidad": "Lomas de Zamora ",
         "Color_Generado": "#3cb44b",
         "Distancia": 2688.74,
@@ -32638,7 +32638,7 @@
         "Fecha_str": "25/04/2026",
         "Inicio Recorrido": "Esquel & Reaño",
         "Fin del Recorrido": "Esquel & Azamor",
-        "CGM": "Lamadrid",
+        "CGM": "Fiorito",
         "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 5512.69,
@@ -33366,7 +33366,7 @@
         "Fecha_str": "27/04/2026",
         "Inicio Recorrido": "Filardi & Pilcomayo",
         "Fin del Recorrido": "Filardi & Bermejo",
-        "CGM": "Lomas",
+        "CGM": "Fiorito",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 294.55,
@@ -33392,7 +33392,7 @@
         "Fecha_str": "27/04/2026",
         "Inicio Recorrido": "Frías & Garibaldi",
         "Fin del Recorrido": "Frías & Molina Arrotea",
-        "CGM": "Santa Catalina",
+        "CGM": "Lomas",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 3824.76,
@@ -33912,7 +33912,7 @@
         "Fecha_str": "27/04/2026",
         "Inicio Recorrido": "La Haya & Hornos",
         "Fin del Recorrido": "La Haya & Darwin",
-        "CGM": "Lomas",
+        "CGM": "Centenario",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 1318,
@@ -34692,7 +34692,7 @@
         "Fecha_str": "27/04/2026",
         "Inicio Recorrido": "Madeddu & Hornos",
         "Fin del Recorrido": "Madeddu & Darwin",
-        "CGM": "San Jose",
+        "CGM": "Centenario",
         "Localidad": "San Jose",
         "Color_Generado": "#3cb44b",
         "Distancia": 257.2,
@@ -34718,7 +34718,7 @@
         "Fecha_str": "27/04/2026",
         "Inicio Recorrido": "Mandelli & Giachino",
         "Fin del Recorrido": "Mandelli & Thomas Edison",
-        "CGM": "Santa Marta ",
+        "CGM": "Santa Catalina",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 261.59,
@@ -34952,7 +34952,7 @@
         "Fecha_str": "27/04/2026",
         "Inicio Recorrido": "Oslo & Muzzili",
         "Fin del Recorrido": "Oslo & Juan XIII",
-        "CGM": "Llavallol",
+        "CGM": "Parque Baron",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 4639.98,
@@ -35136,7 +35136,7 @@
         "Fecha_str": "27/04/2026",
         "Inicio Recorrido": "Pje. 6 & Giachino",
         "Fin del Recorrido": "Pje. 6 & Thomas Edison",
-        "CGM": "Lomas",
+        "CGM": "Santa Catalina",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 252.87,
@@ -35162,7 +35162,7 @@
         "Fecha_str": "27/04/2026",
         "Inicio Recorrido": "Quesada de Claudio & Alas",
         "Fin del Recorrido": "Quesada de Claudio & la Camino Negro",
-        "CGM": "San Jose",
+        "CGM": "Budge",
         "Localidad": "San Jose",
         "Color_Generado": "#3cb44b",
         "Distancia": 3470.41,
@@ -35422,7 +35422,7 @@
         "Fecha_str": "27/04/2026",
         "Inicio Recorrido": "Stella Maris & Giachino",
         "Fin del Recorrido": "Stella Maris & Thomas Edison",
-        "CGM": "Lamadrid",
+        "CGM": "Santa Catalina",
         "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 548.61,
@@ -54577,43 +54577,19 @@
         "CGM": "San Jose",
         "Localidad": "Temperley",
         "Color_Generado": "#3cb44b",
-        "Distancia": 1168.13,
+        "Distancia": 237.67,
         "Area": 0
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            -58.35492,
-            -34.74276
+            -58.3549250601998,
+            -34.7427474918299
           ],
           [
-            -58.35589,
-            -34.74324
-          ],
-          [
-            -58.35602,
-            -34.74334
-          ],
-          [
-            -58.35604,
-            -34.74327
-          ],
-          [
-            -58.35651,
-            -34.74349
-          ],
-          [
-            -58.35744,
-            -34.74398
-          ],
-          [
-            -58.35935,
-            -34.74494
-          ],
-          [
-            -58.36027,
-            -34.74545
+            -58.356014447332,
+            -34.7433312964154
           ]
         ]
       }
@@ -54627,47 +54603,19 @@
         "CGM": "San Jose",
         "Localidad": "Temperley",
         "Color_Generado": "#3cb44b",
-        "Distancia": 1340.37,
+        "Distancia": 287.04,
         "Area": 0
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            -58.35528,
-            -34.74183
+            -58.3543381526978,
+            -34.7435379730818
           ],
           [
-            -58.35708,
-            -34.7427
-          ],
-          [
-            -58.35804,
-            -34.7432
-          ],
-          [
-            -58.35855,
-            -34.74347
-          ],
-          [
-            -58.3584,
-            -34.74405
-          ],
-          [
-            -58.35832,
-            -34.74443
-          ],
-          [
-            -58.35852,
-            -34.74453
-          ],
-          [
-            -58.35935,
-            -34.74494
-          ],
-          [
-            -58.36027,
-            -34.74545
+            -58.3557097245498,
+            -34.7441670140239
           ]
         ]
       }
@@ -55565,71 +55513,19 @@
         "CGM": "Temperley",
         "Localidad": "Temperley",
         "Color_Generado": "#3cb44b",
-        "Distancia": 4128.61,
+        "Distancia": 4121.2,
         "Area": 0
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            -58.3811,
-            -34.76938
+            -58.3775591834704,
+            -34.7566266030241
           ],
           [
-            -58.38268,
-            -34.77022
-          ],
-          [
-            -58.38404,
-            -34.77092
-          ],
-          [
-            -58.38553,
-            -34.77173
-          ],
-          [
-            -58.38797,
-            -34.77303
-          ],
-          [
-            -58.39009,
-            -34.77419
-          ],
-          [
-            -58.39107,
-            -34.77301
-          ],
-          [
-            -58.39176,
-            -34.77202
-          ],
-          [
-            -58.39252,
-            -34.77105
-          ],
-          [
-            -58.39344,
-            -34.76999
-          ],
-          [
-            -58.39417,
-            -34.76897
-          ],
-          [
-            -58.39428,
-            -34.76876
-          ],
-          [
-            -58.39511,
-            -34.76771
-          ],
-          [
-            -58.39598,
-            -34.76636
-          ],
-          [
-            -58.39652,
-            -34.76666
+            -58.3965226,
+            -34.7666619
           ]
         ]
       }
@@ -55643,99 +55539,19 @@
         "CGM": "Turdera",
         "Localidad": "Turdera",
         "Color_Generado": "#3cb44b",
-        "Distancia": 1682.6,
+        "Distancia": 688.46,
         "Area": 0
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            -58.40066,
-            -34.78787
+            -58.4006572,
+            -34.787872
           ],
           [
-            -58.40242,
-            -34.78749
-          ],
-          [
-            -58.40261,
-            -34.78745
-          ],
-          [
-            -58.40258,
-            -34.78739
-          ],
-          [
-            -58.40256,
-            -34.78729
-          ],
-          [
-            -58.40257,
-            -34.78726
-          ],
-          [
-            -58.40258,
-            -34.78725
-          ],
-          [
-            -58.40262,
-            -34.78724
-          ],
-          [
-            -58.40283,
-            -34.78699
-          ],
-          [
-            -58.40289,
-            -34.78695
-          ],
-          [
-            -58.40291,
-            -34.7868
-          ],
-          [
-            -58.40298,
-            -34.78679
-          ],
-          [
-            -58.40302,
-            -34.78672
-          ],
-          [
-            -58.40191,
-            -34.78662
-          ],
-          [
-            -58.40093,
-            -34.78635
-          ],
-          [
-            -58.40034,
-            -34.78612
-          ],
-          [
-            -58.39995,
-            -34.78595
-          ],
-          [
-            -58.39921,
-            -34.78562
-          ],
-          [
-            -58.39922,
-            -34.78558
-          ],
-          [
-            -58.39931,
-            -34.78547
-          ],
-          [
-            -58.39954,
-            -34.78517
-          ],
-          [
-            -58.40026,
-            -34.78421
+            -58.3970344194804,
+            -34.7887272390295
           ]
         ]
       }
@@ -55749,103 +55565,19 @@
         "CGM": "Turdera",
         "Localidad": "Turdera",
         "Color_Generado": "#3cb44b",
-        "Distancia": 2982.72,
+        "Distancia": 530.55,
         "Area": 0
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            -58.40843,
-            -34.78933
+            -58.3970922807776,
+            -34.788720147314
           ],
           [
-            -58.40828,
-            -34.78936
-          ],
-          [
-            -58.40826,
-            -34.78933
-          ],
-          [
-            -58.40683,
-            -34.78951
-          ],
-          [
-            -58.40559,
-            -34.78964
-          ],
-          [
-            -58.4043,
-            -34.78983
-          ],
-          [
-            -58.40282,
-            -34.78998
-          ],
-          [
-            -58.40296,
-            -34.79069
-          ],
-          [
-            -58.4025,
-            -34.79048
-          ],
-          [
-            -58.40192,
-            -34.79016
-          ],
-          [
-            -58.39983,
-            -34.78903
-          ],
-          [
-            -58.3986,
-            -34.78838
-          ],
-          [
-            -58.39851,
-            -34.78839
-          ],
-          [
-            -58.39811,
-            -34.78847
-          ],
-          [
-            -58.39743,
-            -34.78864
-          ],
-          [
-            -58.39733,
-            -34.78868
-          ],
-          [
-            -58.39719,
-            -34.78869
-          ],
-          [
-            -58.39706,
-            -34.78871
-          ],
-          [
-            -58.39696,
-            -34.78877
-          ],
-          [
-            -58.396,
-            -34.79001
-          ],
-          [
-            -58.39557,
-            -34.79053
-          ],
-          [
-            -58.39558,
-            -34.79062
-          ],
-          [
-            -58.39561,
-            -34.79077
+            -58.39561459999999,
+            -34.7907741
           ]
         ]
       }
