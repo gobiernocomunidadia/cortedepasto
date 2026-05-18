@@ -15,7 +15,7 @@
 
     <style>
         :root {
-            --bg-main: #2A7E43; /* Un tono verde acorde al corte de pasto */
+            --bg-main: #2A7E43; 
             --blanco: #FFFFFF;
             --acento: #7ED957;
             --azul-inst: #19567C;
@@ -149,21 +149,34 @@
         let cgmLayer;
         let cortesLayer;
         let limiteElements = []; 
+
+        // --- FUNCIONES DE NORMALIZACIÓN DE FECHAS ---
+        function parseDateCustom(dateStr) {
+            if (!dateStr) return new Date(NaN);
+            if (dateStr.includes('/')) {
+                const parts = dateStr.split('/');
+                return new Date(parts[2], parts[1] - 1, parts[0]);
+            } else {
+                return new Date(dateStr);
+            }
+        }
+
+        function formatDateToShow(dateStr) {
+            if (!dateStr) return '-';
+            const d = parseDateCustom(dateStr);
+            if (isNaN(d.getTime())) return dateStr;
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
         
-        // --- FUNCIÓN DE COLORES POR DÍA PARA CORTES (GAMA AZULES CORPORATIVOS) ---
+        // --- FUNCIÓN DE COLORES POR DÍA (GAMA AZULES CORPORATIVOS) ---
         function getColorPorDiaSemana(fechaStr) {
-            if (!fechaStr) return '#19567C'; 
+            const fechaObj = parseDateCustom(fechaStr);
+            if (isNaN(fechaObj.getTime())) return '#19567C'; 
             
-            const partes = fechaStr.split('/');
-            if (partes.length !== 3) return '#19567C';
-            
-            const dia = parseInt(partes[0], 10);
-            const mes = parseInt(partes[1], 10) - 1; 
-            const anio = parseInt(partes[2], 10);
-            
-            const fechaObj = new Date(anio, mes, dia);
             const diaSemana = fechaObj.getDay(); 
-            
             const coloresAzul = {
                 1: '#03045E', // Lunes - Azul Marino Oscuro
                 2: '#023E8A', // Martes - Azul Fuerte
@@ -177,7 +190,7 @@
             return coloresAzul[diaSemana] || '#19567C';
         }
 
-        // --- GENERADOR DE ICONOS INTELIGENTE (PLAZAS/ESCUELAS) ---
+        // --- GENERADOR DE ICONOS INTELIGENTE (PLAZAS/ESCUELAS/PREDIOS) ---
         function getCustomIcon(type, strokeColor = '#FFFFFF') {
             let bgColor, letter;
             if (type === 'ESCUELA') {
@@ -185,13 +198,12 @@
                 letter = 'E';
             } else if (type === 'POLIDEPORTIVO') {
                 bgColor = '#0EA5E9'; // Celeste
-                letter = 'D'; // Deportes
+                letter = 'D'; // Deportes / Predios
             } else {
                 bgColor = '#84CC16'; // Verde Lima
                 letter = 'P'; // Plaza/Parque
             }
             
-            // El trazo exterior del ícono tomará el color azul del día de la semana
             const svg = `
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                     <circle cx="12" cy="12" r="10" fill="${bgColor}" stroke="${strokeColor}" stroke-width="3"/>
@@ -310,7 +322,7 @@
                 const fechasSet = new Set();
                 geoJson.features.forEach(f => {
                     if (f.properties && f.properties.Fecha_str) {
-                        fechasSet.add(f.properties.Fecha_str);
+                        fechasSet.add(formatDateToShow(f.properties.Fecha_str));
                     }
                 });
                 
@@ -323,7 +335,7 @@
 
                 sortedFechas.forEach(fecha => {
                     const opt = document.createElement('option');
-                    opt.value = fecha;
+                    opt.value = fecha; // Usamos el formato limpio DD/MM/YYYY como valor para filtrar fácilmente
                     opt.textContent = fecha;
                     selectFecha.appendChild(opt);
                 });
@@ -378,8 +390,9 @@
 
                 cortesLayer.setStyle((feature) => {
                     const featCgm = feature.getProperty('CGM');
-                    const featFecha = feature.getProperty('Fecha_str'); 
-                    const dynamicDayColor = getColorPorDiaSemana(featFecha); 
+                    const featFechaOriginal = feature.getProperty('Fecha_str'); 
+                    const featFechaClean = formatDateToShow(featFechaOriginal);
+                    const dynamicDayColor = getColorPorDiaSemana(featFechaOriginal); 
                     let isVisible = true;
 
                     if (globalCgm !== "TODOS") {
@@ -389,7 +402,7 @@
                     }
 
                     if (fechaFiltro !== "TODAS") {
-                        if (!featFecha || featFecha !== fechaFiltro) {
+                        if (featFechaClean !== fechaFiltro) {
                             isVisible = false;
                         }
                     }
@@ -402,9 +415,9 @@
                         const nombreUpper = nombre.toUpperCase();
                         
                         let type = 'PLAZA';
-                        if (nombreUpper.includes('ESCUELA') || nombreUpper.includes('COLEGIO') || nombreUpper.includes('JARDIN')) {
+                        if (nombreUpper.includes('ESCUELA') || nombreUpper.includes('COLEGIO') || nombreUpper.includes('JARDIN') || nombreUpper.includes('FORMACION')) {
                             type = 'ESCUELA';
-                        } else if (nombreUpper.includes('POLIDEPORTIVO') || nombreUpper.includes('CLUB')) {
+                        } else if (nombreUpper.includes('POLIDEPORTIVO') || nombreUpper.includes('CLUB') || nombreUpper.includes('PREDIO')) {
                             type = 'POLIDEPORTIVO';
                         }
 
@@ -435,8 +448,9 @@
                     
                     if (layerType === 'corte') {
                         const geomType = event.feature.getGeometry() ? event.feature.getGeometry().getType() : '';
-                        const fechaCorte = event.feature.getProperty('Fecha_str');
-                        const dynamicDayColor = getColorPorDiaSemana(fechaCorte);
+                        const fechaCorteOriginal = event.feature.getProperty('Fecha_str');
+                        const fechaCorteClean = formatDateToShow(fechaCorteOriginal);
+                        const dynamicDayColor = getColorPorDiaSemana(fechaCorteOriginal);
                         
                         if (geomType === 'Point') {
                             // Información especial para Puntos
@@ -446,26 +460,27 @@
                             let colorDin = '#84CC16';
                             let tipoLabel = 'Corte en Plaza / Parque';
                             
-                            if (nombreUpper.includes('ESCUELA') || nombreUpper.includes('COLEGIO') || nombreUpper.includes('JARDIN')) { 
+                            if (nombreUpper.includes('ESCUELA') || nombreUpper.includes('COLEGIO') || nombreUpper.includes('JARDIN') || nombreUpper.includes('FORMACION')) { 
                                 colorDin = '#F59E0B'; 
                                 tipoLabel = 'Corte en Institución Educativa'; 
                             }
-                            else if (nombreUpper.includes('POLIDEPORTIVO') || nombreUpper.includes('CLUB')) { 
+                            else if (nombreUpper.includes('POLIDEPORTIVO') || nombreUpper.includes('CLUB') || nombreUpper.includes('PREDIO')) { 
                                 colorDin = '#0EA5E9'; 
-                                tipoLabel = 'Corte en Deporte / Polideportivo'; 
+                                tipoLabel = 'Corte en Deporte / Polideportivo / Predio'; 
                             }
 
                             content += `<h3 style="font-weight: 800; font-size: 14px; color: ${colorDin}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">${tipoLabel}</h3>`;
                             content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Nombre:</b> ${nombre}</p>`;
-                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaCorte || '-'}</p>`;
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaCorteClean}</p>`;
                             content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${event.feature.getProperty('CGM') || '-'}</p>`;
-                            if (event.feature.getProperty('UBICACION') || event.feature.getProperty('DIRECCION')) {
-                                content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Ubicación:</b> ${event.feature.getProperty('UBICACION') || event.feature.getProperty('DIRECCION')}</p>`;
+                            if (event.feature.getProperty('UBICACION') || event.feature.getProperty('DIRECCION') || event.feature.getProperty('Localidad')) {
+                                const lugar = event.feature.getProperty('UBICACION') || event.feature.getProperty('DIRECCION') || event.feature.getProperty('Localidad');
+                                content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Ubicación:</b> ${lugar}</p>`;
                             }
                         } else {
                             // Información especial para Líneas o Polígonos
                             content += `<h3 style="font-weight: 800; font-size: 14px; color: ${dynamicDayColor}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Recorrido de Corte</h3>`;
-                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaCorte || '-'}</p>`;
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaCorteClean}</p>`;
                             content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${event.feature.getProperty('CGM') || '-'}</p>`;
                             
                             if(event.feature.getProperty('Inicio Recorrido')) {
