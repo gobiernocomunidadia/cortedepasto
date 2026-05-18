@@ -132,6 +132,15 @@
                     </div>
                 </div>
 
+                <!-- SECCIÓN RESPALDO: CARGADOR MANUAL LOCAL (Se activa si el CORS bloquea la carga local) -->
+                <div id="seccion-local-uploader" class="bg-amber-500/10 p-3 rounded-lg border border-amber-500/30 hidden">
+                    <h4 class="text-xs font-extrabold text-amber-700 uppercase mb-2 flex items-center gap-2">
+                        <i data-lucide="upload-cloud" class="h-4 w-4"></i> Cargar GeoJSON Local
+                    </h4>
+                    <p class="text-[10px] text-gray-600 mb-2">Para ver el mapa offline o local sin servidor CORS, selecciona tus archivos manualmente:</p>
+                    <input type="file" id="input-geojson-local" accept=".geojson, .json" class="w-full text-xs text-[#0F172A] file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700 cursor-pointer">
+                </div>
+
             </div>
         </aside>
 
@@ -294,6 +303,79 @@
             selectGlobalCgm.value = selectedVal;
         }
 
+        // --- LIMPIEZA DE GEOJSON DAÑADO ---
+        // Elimina recursivamente coordenadas corruptas con valor "null" o NaN para evitar que bloqueen Google Maps.
+        function sanitizeGeoJson(geoJson) {
+            if (!geoJson || !geoJson.features) return geoJson;
+            
+            const sanitizedFeatures = geoJson.features.map(feature => {
+                if (!feature.geometry || !feature.geometry.coordinates) return feature;
+                
+                const type = feature.geometry.type;
+                const coords = feature.geometry.coordinates;
+                
+                try {
+                    if (type === 'Point') {
+                        if (!Array.isArray(coords) || coords.length < 2 || coords[0] === null || coords[1] === null || isNaN(coords[0]) || isNaN(coords[1])) {
+                            feature.geometry = null;
+                        }
+                    } else if (type === 'LineString' || type === 'MultiPoint') {
+                        if (Array.isArray(coords)) {
+                            const clean = coords.filter(c => Array.isArray(c) && c.length >= 2 && c[0] !== null && c[1] !== null && !isNaN(c[0]) && !isNaN(c[1]));
+                            if (clean.length < 2 && type === 'LineString') {
+                                feature.geometry = null;
+                            } else {
+                                feature.geometry.coordinates = clean;
+                            }
+                        } else {
+                            feature.geometry = null;
+                        }
+                    } else if (type === 'Polygon' || type === 'MultiLineString') {
+                        if (Array.isArray(coords)) {
+                            const cleanRings = coords.map(ring => {
+                                if (!Array.isArray(ring)) return [];
+                                return ring.filter(c => Array.isArray(c) && c.length >= 2 && c[0] !== null && c[1] !== null && !isNaN(c[0]) && !isNaN(c[1]));
+                            }).filter(ring => ring.length > 0);
+                            
+                            if (cleanRings.length === 0) {
+                                feature.geometry = null;
+                            } else {
+                                feature.geometry.coordinates = cleanRings;
+                            }
+                        } else {
+                            feature.geometry = null;
+                        }
+                    } else if (type === 'MultiPolygon') {
+                        if (Array.isArray(coords)) {
+                            const cleanPolys = coords.map(poly => {
+                                if (!Array.isArray(poly)) return [];
+                                return poly.map(ring => {
+                                    if (!Array.isArray(ring)) return [];
+                                    return ring.filter(c => Array.isArray(c) && c.length >= 2 && c[0] !== null && c[1] !== null && !isNaN(c[0]) && !isNaN(c[1]));
+                                }).filter(ring => ring.length > 0);
+                            }).filter(poly => poly.length > 0);
+                            
+                            if (cleanPolys.length === 0) {
+                                feature.geometry = null;
+                            } else {
+                                feature.geometry.coordinates = cleanPolys;
+                            }
+                        } else {
+                            feature.geometry = null;
+                        }
+                    }
+                } catch (err) {
+                    feature.geometry = null;
+                }
+                return feature;
+            }).filter(f => f.geometry !== null && f.geometry !== undefined);
+
+            return {
+                ...geoJson,
+                features: sanitizedFeatures
+            };
+        }
+
         function startInfoWindowTimer() {
             if (infoWindowTimer) clearTimeout(infoWindowTimer);
             infoWindowTimer = setTimeout(() => {
@@ -380,7 +462,11 @@
                 });
                 updateCgmDropdown();
                 updateStyles(); 
-            }).catch(e => console.log('Aviso: CGM.geojson no cargado.'));
+            }).catch(e => {
+                console.log('Aviso: CGM.geojson no cargado automáticamente (común si no se ejecuta bajo servidor CORS).');
+                // Mostrar cargador manual de respaldo en la barra lateral
+                document.getElementById('seccion-local-uploader').classList.remove('hidden');
+            });
 
             cgmLayer.setMap(map);
 
@@ -388,9 +474,14 @@
             cortesLayer = new google.maps.Data();
             
             const procesarCortes = (geoJson) => {
-                cortesLayer.addGeoJson(geoJson);
-                const fechasSet = new Set();
+                // Remover datos antiguos si los hubiere
+                cortesLayer.forEach(feat => cortesLayer.remove(feat));
                 
+                // Sanitizar y limpiar el GeoJSON de cualquier coordenada "null" para evitar bloqueos
+                const sanitized = sanitizeGeoJson(geoJson);
+                cortesLayer.addGeoJson(sanitized);
+                
+                const fechasSet = new Set();
                 geoJson.features.forEach(f => {
                     if (f.properties && f.properties.Fecha_str) {
                         fechasSet.add(formatDateToShow(f.properties.Fecha_str));
@@ -403,6 +494,8 @@
                 updateCgmDropdown();
 
                 const selectFecha = document.getElementById('filtro-fecha');
+                selectFecha.innerHTML = '<option value="TODAS">TODAS LAS FECHAS</option>';
+                
                 const sortedFechas = Array.from(fechasSet).sort((a, b) => {
                     const d1 = parseDateCustom(a);
                     const d2 = parseDateCustom(b);
@@ -433,6 +526,7 @@
                 updateCortesStyles(); 
             };
 
+            // Intentar cargar automáticamente
             fetch('./cortedepasto.geojson' + noCache)
                 .then(r => {
                     if (!r.ok) throw new Error("Fallo el fetch remoto");
@@ -440,10 +534,28 @@
                 })
                 .then(procesarCortes)
                 .catch(e => {
-                    console.error('Error al intentar obtener cortedepasto.geojson.', e);
+                    console.log('cortedepasto.geojson no cargado automáticamente (CORS o archivo ausente). Activando cargador manual.');
+                    // Mostrar cargador manual de respaldo en la barra lateral
+                    document.getElementById('seccion-local-uploader').classList.remove('hidden');
                 });
 
             cortesLayer.setMap(map);
+
+            // --- EVENTO DE CARGA DE ARCHIVO MANUAL ---
+            document.getElementById('input-geojson-local').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    try {
+                        const geoJson = JSON.parse(evt.target.result);
+                        procesarCortes(geoJson);
+                    } catch(err) {
+                        console.error("Error al parsear el archivo GeoJSON:", err);
+                    }
+                };
+                reader.readAsText(file);
+            });
 
             // --- FUNCIONES DE ESTILOS Y FILTROS ---
             function updateStyles() {
