@@ -157,7 +157,9 @@
                 const parts = dateStr.split('/');
                 return new Date(parts[2], parts[1] - 1, parts[0]);
             } else {
-                return new Date(dateStr);
+                // Removemos textos entre paréntesis como "(hora estándar de Argentina)" que rompen el parser nativo
+                const cleanStr = dateStr.replace(/\s*\(.*\)\s*/, '').trim();
+                return new Date(cleanStr);
             }
         }
 
@@ -268,8 +270,11 @@
                 streetViewControl: false
             });
 
+            // Usamos un parámetro timestamp aleatorio en el fetch para evitar que el navegador use un archivo cacheado viejo
+            const noCache = '?v=' + new Date().getTime();
+
             // 1. Límite Lomas (Línea Punteada)
-            fetch('./municipios_Lomas de Zamora.geojson').then(r => r.json()).then(geoJson => {
+            fetch('./municipios_Lomas de Zamora.geojson' + noCache).then(r => r.json()).then(geoJson => {
                 geoJson.features.forEach(feature => {
                     if (feature.geometry.type === 'MultiPolygon' || feature.geometry.type === 'Polygon') {
                         const polys = feature.geometry.type === 'Polygon' ? [feature.geometry.coordinates] : feature.geometry.coordinates;
@@ -288,7 +293,7 @@
 
             // 2. Cargar CGM GeoJSON
             cgmLayer = new google.maps.Data();
-            fetch('./CGM.geojson').then(r => r.json()).then(geoJson => {
+            fetch('./CGM.geojson' + noCache).then(r => r.json()).then(geoJson => {
                 cgmLayer.addGeoJson(geoJson);
                 
                 const cgmSet = new Set();
@@ -316,7 +321,7 @@
 
             // 3. Cargar Cortes de Pasto GeoJSON (Líneas, Polígonos y Puntos juntos)
             cortesLayer = new google.maps.Data();
-            fetch('./cortedepasto.geojson').then(r => r.json()).then(geoJson => {
+            fetch('./cortedepasto.geojson' + noCache).then(r => r.json()).then(geoJson => {
                 cortesLayer.addGeoJson(geoJson);
                 
                 const fechasSet = new Set();
@@ -334,10 +339,12 @@
                 });
 
                 sortedFechas.forEach(fecha => {
-                    const opt = document.createElement('option');
-                    opt.value = fecha; // Usamos el formato limpio DD/MM/YYYY como valor para filtrar fácilmente
-                    opt.textContent = fecha;
-                    selectFecha.appendChild(opt);
+                    if(fecha !== '-') {
+                        const opt = document.createElement('option');
+                        opt.value = fecha; // Usamos el formato limpio DD/MM/YYYY como valor para filtrar fácilmente
+                        opt.textContent = fecha;
+                        selectFecha.appendChild(opt);
+                    }
                 });
                 
                 selectFecha.addEventListener('change', () => {
@@ -411,8 +418,9 @@
 
                     // Si es un punto (Plaza/Escuela), aplicamos ícono inteligente
                     if (geomType === 'Point') {
-                        const nombre = feature.getProperty('PLAZA') || feature.getProperty('NOMBRE') || feature.getProperty('Inicio Recorrido') || '';
-                        const nombreUpper = nombre.toUpperCase();
+                        const nombreRaw = feature.getProperty('PLAZA') || feature.getProperty('NOMBRE') || feature.getProperty('Inicio Recorrido') || '';
+                        // Eliminamos acentos para hacer coincidencias seguras
+                        const nombreUpper = nombreRaw.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
                         
                         let type = 'PLAZA';
                         if (nombreUpper.includes('ESCUELA') || nombreUpper.includes('COLEGIO') || nombreUpper.includes('JARDIN') || nombreUpper.includes('FORMACION')) {
@@ -454,8 +462,8 @@
                         
                         if (geomType === 'Point') {
                             // Información especial para Puntos
-                            const nombre = event.feature.getProperty('PLAZA') || event.feature.getProperty('NOMBRE') || event.feature.getProperty('Inicio Recorrido') || 'Lugar de Interés';
-                            const nombreUpper = nombre.toUpperCase();
+                            const nombreRaw = event.feature.getProperty('PLAZA') || event.feature.getProperty('NOMBRE') || event.feature.getProperty('Inicio Recorrido') || 'Lugar de Interés';
+                            const nombreUpper = nombreRaw.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
                             
                             let colorDin = '#84CC16';
                             let tipoLabel = 'Corte en Plaza / Parque';
@@ -470,7 +478,7 @@
                             }
 
                             content += `<h3 style="font-weight: 800; font-size: 14px; color: ${colorDin}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">${tipoLabel}</h3>`;
-                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Nombre:</b> ${nombre}</p>`;
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Nombre:</b> ${nombreRaw}</p>`;
                             content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaCorteClean}</p>`;
                             content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${event.feature.getProperty('CGM') || '-'}</p>`;
                             if (event.feature.getProperty('UBICACION') || event.feature.getProperty('DIRECCION') || event.feature.getProperty('Localidad')) {
@@ -489,7 +497,7 @@
                             if(event.feature.getProperty('Fin del Recorrido')) {
                                 content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fin:</b> ${event.feature.getProperty('Fin del Recorrido')}</p>`;
                             }
-                            if(event.feature.getProperty('Distancia')) {
+                            if(event.feature.getProperty('Distancia') && event.feature.getProperty('Distancia') > 0) {
                                 content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Distancia:</b> ${event.feature.getProperty('Distancia')} m</p>`;
                             }
                             if(event.feature.getProperty('Area') && event.feature.getProperty('Area') > 0) {
