@@ -158,7 +158,7 @@
         let cgmLayer;
         let cortesLayer;
         let limiteElements = []; 
-        const cgmSet = new Set(); // Repositorio global de CGMs detectados
+        const cgmMap = new Map(); // Mapa de CGM normalizado -> Nombre original para evitar duplicados en el select
 
         // --- FUNCIÓN DE NORMALIZACIÓN DE CGMs (Evita fallos por espacios o acentos en el JSON) ---
         function normalizeCgmName(cgmName) {
@@ -168,6 +168,53 @@
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "") 
                 .toUpperCase();
+        }
+
+        // --- FUNCIÓN DE BÚSQUEDA DE PROPIEDAD CGM INSENSIBLE A MAYÚSCULAS/MINÚSCULAS ---
+        function getFeatureCgmProperty(feature) {
+            if (!feature) return "";
+            let cgm = feature.getProperty('CGM') || feature.getProperty('cgm') || feature.getProperty('Cgm');
+            if (cgm) return cgm;
+            
+            let found = "";
+            feature.forEach((val, key) => {
+                if (key.toLowerCase() === 'cgm') {
+                    found = val;
+                }
+            });
+            return found;
+        }
+
+        function getGeoJsonFeatureCgm(f) {
+            if (!f || !f.properties) return "";
+            if (f.properties.CGM) return f.properties.CGM;
+            if (f.properties.cgm) return f.properties.cgm;
+            if (f.properties.Cgm) return f.properties.Cgm;
+            
+            for (let key in f.properties) {
+                if (key.toLowerCase() === 'cgm') {
+                    return f.properties[key];
+                }
+            }
+            return "";
+        }
+
+        // --- REGISTRAR CGM DE FORMA ÚNICA ---
+        function registerCgm(cgmName) {
+            if (!cgmName) return;
+            const trimmed = cgmName.trim();
+            if (!trimmed) return;
+            const normalized = normalizeCgmName(trimmed);
+            
+            if (!cgmMap.has(normalized)) {
+                cgmMap.set(normalized, trimmed);
+            } else {
+                const existing = cgmMap.get(normalized);
+                // Preferir formato tipo oración (capitalizado) sobre todo mayúsculas
+                if (existing === existing.toUpperCase() && trimmed !== trimmed.toUpperCase()) {
+                    cgmMap.set(normalized, trimmed);
+                }
+            }
         }
 
         // --- PARSEO LITERAL DE FECHAS SEGURO ---
@@ -289,22 +336,23 @@
             
             selectGlobalCgm.innerHTML = '<option value="TODOS">TODOS LOS CGM</option>';
             
-            const sortedCgms = Array.from(cgmSet).sort();
-            sortedCgms.forEach(cgmName => {
-                if (cgmName) {
-                    const opt = document.createElement('option');
-                    opt.value = normalizeCgmName(cgmName);
-                    const formattedName = cgmName.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
-                    opt.textContent = formattedName;
-                    selectGlobalCgm.appendChild(opt);
-                }
+            const sortedNormalized = Array.from(cgmMap.keys()).sort((a, b) => {
+                return cgmMap.get(a).localeCompare(cgmMap.get(b));
+            });
+
+            sortedNormalized.forEach(normalized => {
+                const properName = cgmMap.get(normalized);
+                const opt = document.createElement('option');
+                opt.value = normalized;
+                const formattedName = properName.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+                opt.textContent = formattedName;
+                selectGlobalCgm.appendChild(opt);
             });
             
             selectGlobalCgm.value = selectedVal;
         }
 
         // --- LIMPIEZA DE GEOJSON DAÑADO ---
-        // Elimina recursivamente coordenadas corruptas con valor "null" o NaN para evitar que bloqueen Google Maps.
         function sanitizeGeoJson(geoJson) {
             if (!geoJson || !geoJson.features) return geoJson;
             
@@ -427,6 +475,18 @@
                 streetViewControl: false
             });
 
+            // --- REGISTRAR LOS LISTENERS DE CAMBIOS GLOBALES DE FORMA SEGURA Y ÚNICA ---
+            const selectGlobalCgm = document.getElementById('filtro-global-cgm');
+            selectGlobalCgm.addEventListener('change', () => {
+                updateStyles();
+                updateCortesStyles();
+            });
+
+            const selectFecha = document.getElementById('filtro-fecha');
+            selectFecha.addEventListener('change', () => {
+                updateCortesStyles();
+            });
+
             const noCache = '?v=' + new Date().getTime();
 
             // 1. Límite Lomas (Línea Punteada)
@@ -456,28 +516,26 @@
                 cgmLayer.addGeoJson(geoJson);
                 
                 geoJson.features.forEach(f => {
-                    if (f.properties && f.properties.CGM) {
-                        cgmSet.add(f.properties.CGM.trim());
+                    const cgmValue = getGeoJsonFeatureCgm(f);
+                    if (cgmValue) {
+                        registerCgm(cgmValue);
                     }
                 });
                 updateCgmDropdown();
                 updateStyles(); 
             }).catch(e => {
                 console.log('Aviso: CGM.geojson no cargado automáticamente (común si no se ejecuta bajo servidor CORS).');
-                // Mostrar cargador manual de respaldo en la barra lateral
                 document.getElementById('seccion-local-uploader').classList.remove('hidden');
             });
 
             cgmLayer.setMap(map);
 
-            // 3. Cargar Cortes de Pasto GeoJSON (Líneas, Polígonos y Puntos)
+            // 3. Cargar Cortes de Pasto GeoJSON
             cortesLayer = new google.maps.Data();
             
             const procesarCortes = (geoJson) => {
-                // Remover datos antiguos si los hubiere
                 cortesLayer.forEach(feat => cortesLayer.remove(feat));
                 
-                // Sanitizar y limpiar el GeoJSON de cualquier coordenada "null" para evitar bloqueos
                 const sanitized = sanitizeGeoJson(geoJson);
                 cortesLayer.addGeoJson(sanitized);
                 
@@ -486,14 +544,16 @@
                     if (f.properties && f.properties.Fecha_str) {
                         fechasSet.add(formatDateToShow(f.properties.Fecha_str));
                     }
-                    if (f.properties && f.properties.CGM) {
-                        cgmSet.add(f.properties.CGM.trim());
+                    const cgmValue = getGeoJsonFeatureCgm(f);
+                    if (cgmValue) {
+                        registerCgm(cgmValue);
                     }
                 });
                 
                 updateCgmDropdown();
 
                 const selectFecha = document.getElementById('filtro-fecha');
+                const selectedVal = selectFecha.value;
                 selectFecha.innerHTML = '<option value="TODAS">TODAS LAS FECHAS</option>';
                 
                 const sortedFechas = Array.from(fechasSet).sort((a, b) => {
@@ -513,20 +573,15 @@
                     }
                 });
                 
-                selectFecha.addEventListener('change', () => {
-                    updateCortesStyles();
-                });
-
-                const selectGlobalCgm = document.getElementById('filtro-global-cgm');
-                selectGlobalCgm.addEventListener('change', () => {
-                    updateStyles();
-                    updateCortesStyles();
-                });
+                if (fechasSet.has(selectedVal)) {
+                    selectFecha.value = selectedVal;
+                } else {
+                    selectFecha.value = "TODAS";
+                }
 
                 updateCortesStyles(); 
             };
 
-            // Intentar cargar automáticamente
             fetch('./cortedepasto.geojson' + noCache)
                 .then(r => {
                     if (!r.ok) throw new Error("Fallo el fetch remoto");
@@ -535,13 +590,34 @@
                 .then(procesarCortes)
                 .catch(e => {
                     console.log('cortedepasto.geojson no cargado automáticamente (CORS o archivo ausente). Activando cargador manual.');
-                    // Mostrar cargador manual de respaldo en la barra lateral
                     document.getElementById('seccion-local-uploader').classList.remove('hidden');
                 });
 
             cortesLayer.setMap(map);
 
-            // --- EVENTO DE CARGA DE ARCHIVO MANUAL ---
+            // --- EVENTO DE CARGA DE ARCHIVO MANUAL INTELIGENTE ---
+            const loadGeoJsonData = (geoJson) => {
+                const name = (geoJson.name || "").toLowerCase();
+                const isCgm = name.includes("cgm") || geoJson.features.some(f => f.geometry && (f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon') && !f.properties.Fecha_str);
+                
+                if (isCgm) {
+                    cgmLayer.forEach(feat => cgmLayer.remove(feat));
+                    cgmLayer.addGeoJson(geoJson);
+                    geoJson.features.forEach(f => {
+                        const cgmValue = getGeoJsonFeatureCgm(f);
+                        if (cgmValue) {
+                            registerCgm(cgmValue);
+                        }
+                    });
+                    updateCgmDropdown();
+                    updateStyles();
+                    console.log("CGM.geojson cargado manualmente de forma exitosa.");
+                } else {
+                    procesarCortes(geoJson);
+                    console.log("cortedepasto.geojson cargado manualmente de forma exitosa.");
+                }
+            };
+
             document.getElementById('input-geojson-local').addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (!file) return;
@@ -549,7 +625,7 @@
                 reader.onload = function(evt) {
                     try {
                         const geoJson = JSON.parse(evt.target.result);
-                        procesarCortes(geoJson);
+                        loadGeoJsonData(geoJson);
                     } catch(err) {
                         console.error("Error al parsear el archivo GeoJSON:", err);
                     }
@@ -563,7 +639,7 @@
                 const globalCgm = globalCgmSelect ? globalCgmSelect.value : "TODOS";
 
                 cgmLayer.setStyle((feature) => {
-                    const featCgm = feature.getProperty('CGM');
+                    const featCgm = getFeatureCgmProperty(feature);
                     const cleanFeatCgm = normalizeCgmName(featCgm);
                     let isVisible = true;
                     let opacidad = 0.25;
@@ -598,7 +674,7 @@
                 const fechaFiltro = fechaSelect ? fechaSelect.value : "TODAS";
 
                 cortesLayer.setStyle((feature) => {
-                    const featCgm = feature.getProperty('CGM');
+                    const featCgm = getFeatureCgmProperty(feature);
                     const cleanFeatCgm = normalizeCgmName(featCgm);
                     const featFechaOriginal = feature.getProperty('Fecha_str'); 
                     const featFechaClean = formatDateToShow(featFechaOriginal);
@@ -682,7 +758,7 @@
                             content += `<h3 style="font-weight: 800; font-size: 14px; color: ${colorDin}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">${tipoLabel}</h3>`;
                             content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Nombre:</b> ${nombreRaw}</p>`;
                             content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaCorteClean}</p>`;
-                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${event.feature.getProperty('CGM') || '-'}</p>`;
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${getFeatureCgmProperty(event.feature) || '-'}</p>`;
                             
                             const localidad = event.feature.getProperty('Localidad');
                             if (localidad) {
@@ -696,7 +772,7 @@
                             // Líneas o Polígonos
                             content += `<h3 style="font-weight: 800; font-size: 14px; color: ${dynamicDayColor}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Recorrido de Corte</h3>`;
                             content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaCorteClean}</p>`;
-                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${event.feature.getProperty('CGM') || '-'}</p>`;
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${getFeatureCgmProperty(event.feature) || '-'}</p>`;
                             
                             const localidad = event.feature.getProperty('Localidad');
                             if (localidad) {
@@ -719,7 +795,7 @@
                             }
                         }
                     } else { // CGM
-                        content += `<h3 style="font-weight: 800; font-size: 14px; color: ${colorTitle}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">CGM: ${event.feature.getProperty('CGM')}</h3>`;
+                        content += `<h3 style="font-weight: 800; font-size: 14px; color: ${colorTitle}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">CGM: ${getFeatureCgmProperty(event.feature)}</h3>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Manzanas:</b> ${event.feature.getProperty('Manzanas') || '-'}</p>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Cuadras:</b> ${event.feature.getProperty('Cuadras') || '-'}</p>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Viviendas:</b> ${event.feature.getProperty('Viviendas') || '-'}</p>`;
