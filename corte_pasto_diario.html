@@ -173,15 +173,21 @@
         // --- FUNCIÓN DE BÚSQUEDA DE PROPIEDAD CGM INSENSIBLE A MAYÚSCULAS/MINÚSCULAS ---
         function getFeatureCgmProperty(feature) {
             if (!feature) return "";
-            let cgm = feature.getProperty('CGM') || feature.getProperty('cgm') || feature.getProperty('Cgm');
-            if (cgm) return cgm;
+            let cgm = feature.getProperty('CGM');
+            if (cgm !== undefined && cgm !== null) return String(cgm);
+            cgm = feature.getProperty('cgm');
+            if (cgm !== undefined && cgm !== null) return String(cgm);
+            cgm = feature.getProperty('Cgm');
+            if (cgm !== undefined && cgm !== null) return String(cgm);
             
             let found = "";
-            feature.forEach((val, key) => {
-                if (key.toLowerCase() === 'cgm') {
-                    found = val;
-                }
-            });
+            if (typeof feature.forEachProperty === 'function') {
+                feature.forEachProperty((val, key) => {
+                    if (key.toLowerCase() === 'cgm') {
+                        found = String(val);
+                    }
+                });
+            }
             return found;
         }
 
@@ -352,7 +358,7 @@
             selectGlobalCgm.value = selectedVal;
         }
 
-        // --- LIMPIEZA DE GEOJSON DAÑADO ---
+        // --- SANITIZACIÓN EXTREMA Y RECUPERACIÓN DE GEOMETRÍAS DAÑADAS ---
         function sanitizeGeoJson(geoJson) {
             if (!geoJson || !geoJson.features) return geoJson;
             
@@ -370,10 +376,14 @@
                     } else if (type === 'LineString' || type === 'MultiPoint') {
                         if (Array.isArray(coords)) {
                             const clean = coords.filter(c => Array.isArray(c) && c.length >= 2 && c[0] !== null && c[1] !== null && !isNaN(c[0]) && !isNaN(c[1]));
-                            if (clean.length < 2 && type === 'LineString') {
-                                feature.geometry = null;
-                            } else {
+                            if (clean.length >= 2) {
                                 feature.geometry.coordinates = clean;
+                            } else if (clean.length === 1) {
+                                // Fallback a Punto para no perder el registro en el mapa
+                                feature.geometry.type = 'Point';
+                                feature.geometry.coordinates = clean[0];
+                            } else {
+                                feature.geometry = null;
                             }
                         } else {
                             feature.geometry = null;
@@ -385,10 +395,23 @@
                                 return ring.filter(c => Array.isArray(c) && c.length >= 2 && c[0] !== null && c[1] !== null && !isNaN(c[0]) && !isNaN(c[1]));
                             }).filter(ring => ring.length > 0);
                             
-                            if (cleanRings.length === 0) {
-                                feature.geometry = null;
+                            if (cleanRings.length > 0) {
+                                const mainRing = cleanRings[0];
+                                if (mainRing.length >= 3 && type === 'Polygon') {
+                                    feature.geometry.coordinates = cleanRings;
+                                } else if (mainRing.length >= 2) {
+                                    // Fallback a LineString
+                                    feature.geometry.type = 'LineString';
+                                    feature.geometry.coordinates = mainRing;
+                                } else if (mainRing.length === 1) {
+                                    // Fallback a Punto
+                                    feature.geometry.type = 'Point';
+                                    feature.geometry.coordinates = mainRing[0];
+                                } else {
+                                    feature.geometry = null;
+                                }
                             } else {
-                                feature.geometry.coordinates = cleanRings;
+                                feature.geometry = null;
                             }
                         } else {
                             feature.geometry = null;
@@ -403,16 +426,17 @@
                                 }).filter(ring => ring.length > 0);
                             }).filter(poly => poly.length > 0);
                             
-                            if (cleanPolys.length === 0) {
-                                feature.geometry = null;
-                            } else {
+                            if (cleanPolys.length > 0) {
                                 feature.geometry.coordinates = cleanPolys;
+                            } else {
+                                feature.geometry = null;
                             }
                         } else {
                             feature.geometry = null;
                         }
                     }
                 } catch (err) {
+                    console.error("Error sanitizando geometría:", err);
                     feature.geometry = null;
                 }
                 return feature;
@@ -534,7 +558,10 @@
             cortesLayer = new google.maps.Data();
             
             const procesarCortes = (geoJson) => {
-                cortesLayer.forEach(feat => cortesLayer.remove(feat));
+                // Limpieza segura recolectando features primero para evitar fallos de iteración
+                const featuresToRemove = [];
+                cortesLayer.forEach(feat => featuresToRemove.push(feat));
+                featuresToRemove.forEach(feat => cortesLayer.remove(feat));
                 
                 const sanitized = sanitizeGeoJson(geoJson);
                 cortesLayer.addGeoJson(sanitized);
@@ -561,7 +588,7 @@
                     const d2 = parseDateCustom(b);
                     if (!d1) return 1;
                     if (!d2) return -1;
-                    return d1 - d2;
+                    return d1 - d2; // Ordenamiento cronológico ascendente perfecto
                 });
 
                 sortedFechas.forEach(fecha => {
@@ -601,7 +628,10 @@
                 const isCgm = name.includes("cgm") || geoJson.features.some(f => f.geometry && (f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon') && !f.properties.Fecha_str);
                 
                 if (isCgm) {
-                    cgmLayer.forEach(feat => cgmLayer.remove(feat));
+                    const featuresToRemoveCgm = [];
+                    cgmLayer.forEach(feat => featuresToRemoveCgm.push(feat));
+                    featuresToRemoveCgm.forEach(feat => cgmLayer.remove(feat));
+
                     cgmLayer.addGeoJson(geoJson);
                     geoJson.features.forEach(f => {
                         const cgmValue = getGeoJsonFeatureCgm(f);
