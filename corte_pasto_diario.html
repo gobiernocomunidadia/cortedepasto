@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Corte de Pasto - Lomas de Zamora</title>
+    <title>Mapa Ambiente Lomas - Lomas de Zamora</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,9 +15,9 @@
 
     <style>
         :root {
-            --bg-main: #2A7E43; 
+            --bg-main: #1E5E3A; /* Tono verde bosque corporativo para Ambiente */
             --blanco: #FFFFFF;
-            --acento: #7ED957;
+            --acento: #86EFAC;  /* Verde claro de acento */
             --azul-inst: #19567C;
         }
 
@@ -66,10 +66,10 @@
     <header class="bg-[var(--bg-main)] shadow-lg border-b-4 border-[var(--acento)] z-20 py-6 px-4 shrink-0">
         <div class="max-w-[1600px] mx-auto flex items-center justify-center gap-4">
             <div class="bg-white text-[var(--bg-main)] rounded-full h-14 w-14 flex items-center justify-center shadow-md">
-                <i class="fa-solid fa-leaf text-2xl"></i>
+                <i class="fa-solid fa-seedling text-2xl"></i>
             </div>
             <div class="flex flex-col">
-                <h1 class="text-3xl font-extrabold tracking-tight uppercase leading-none">Corte de Pasto</h1>
+                <h1 class="text-3xl font-extrabold tracking-tight uppercase leading-none">Mapa Ambiente Lomas</h1>
             </div>
         </div>
     </header>
@@ -79,7 +79,7 @@
         <aside class="w-full lg:w-80 bg-white rounded-xl shadow-md border border-[#E6EDF3] flex flex-col max-h-[calc(100vh-200px)] overflow-hidden shrink-0 z-20">
             <div class="p-4 border-b bg-[#F3F6F9] flex items-center gap-2">
                 <i data-lucide="filter" class="text-[var(--bg-main)] h-5 w-5"></i>
-                <h3 class="font-bold text-[#0F172A] uppercase text-sm">Filtros Operativos</h3>
+                <h3 class="font-bold text-[#0F172A] uppercase text-sm">Capas de Información</h3>
             </div>
             
             <div class="p-5 overflow-y-auto custom-scrollbar flex-1 space-y-6">
@@ -115,7 +115,7 @@
                 <!-- SECCIÓN: CORTES DE PASTO -->
                 <div class="bg-[var(--bg-main)]/10 p-3 rounded-lg border border-[var(--bg-main)]/30">
                     <h4 class="text-xs font-extrabold text-[var(--bg-main)] uppercase mb-3 flex items-center gap-2">
-                        <i data-lucide="scissors" class="h-4 w-4"></i> Cortes de Pasto
+                        <i data-lucide="scissors" class="h-4 w-4"></i> Corte de Pasto
                     </h4>
                     <div class="space-y-3">
                         <label class="flex items-center gap-3 cursor-pointer">
@@ -151,68 +151,88 @@
         let limiteElements = []; 
         const cgmSet = new Set(); // Repositorio global de CGMs detectados
 
-        // --- FUNCIÓN DE NORMALIZACIÓN DE CGMs (Evita fallos por trailing spaces, acentos o mayúsculas/minúsculas) ---
+        // --- FUNCIÓN DE NORMALIZACIÓN DE CGMs (Evita fallos por espacios o acentos en el JSON) ---
         function normalizeCgmName(cgmName) {
             if (!cgmName) return "";
             return cgmName
                 .trim()
                 .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "") // Elimina acentos/tildes de forma segura
+                .replace(/[\u0300-\u036f]/g, "") 
                 .toUpperCase();
         }
 
-        // --- FUNCIONES DE NORMALIZACIÓN Y PARSEO DE FECHAS SEGURO ---
+        // --- PARSEO LITERAL DE FECHAS SEGURO ---
         function parseDateCustom(dateStr) {
-            if (!dateStr) return new Date(NaN);
+            if (!dateStr) return null;
             dateStr = dateStr.trim();
             
             // Caso 1: Formato DD/MM/YYYY o D/M/YYYY
-            const dmyRegex = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
-            const dmyMatch = dateStr.match(dmyRegex);
-            if (dmyMatch) {
-                const day = parseInt(dmyMatch[1], 10);
-                const month = parseInt(dmyMatch[2], 10) - 1; 
-                const year = parseInt(dmyMatch[3], 10);
-                return new Date(year, month, day);
+            if (dateStr.includes('/')) {
+                const parts = dateStr.split('/');
+                if (parts.length === 3) {
+                    const day = parseInt(parts[0], 10);
+                    const month = parseInt(parts[1], 10) - 1; 
+                    const year = parseInt(parts[2], 10);
+                    if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                        return new Date(year, month, day);
+                    }
+                }
             }
             
-            // Caso 2: Formatos de cadena de texto (ej: "Sat Feb 21 2026 ...")
-            const wordRegex = /^[A-Za-z]{3}\s+([A-Za-z]{3})\s+(\d{1,2})\s+(\d{4})/;
-            const wordMatch = dateStr.match(wordRegex);
-            if (wordMatch) {
-                const monthStr = wordMatch[1];
-                const day = parseInt(wordMatch[2], 10);
-                const year = parseInt(wordMatch[3], 10);
-                
-                const months = {
-                    Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
-                    Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
-                };
-                const month = months[monthStr] !== undefined ? months[monthStr] : 0;
-                return new Date(year, month, day);
+            // Caso 2: Formato extendido de zona horaria (ej: "Sat Feb 21 2026...")
+            const parts = dateStr.split(/\s+/);
+            if (parts.length >= 4) {
+                const yearIndex = parts.findIndex(p => /^\d{4}$/.test(p));
+                if (yearIndex !== -1) {
+                    const year = parseInt(parts[yearIndex], 10);
+                    const dayIndex = parts.findIndex((p, idx) => /^\d{1,2}$/.test(p) && idx !== yearIndex);
+                    if (dayIndex !== -1) {
+                        const day = parseInt(parts[dayIndex], 10);
+                        const monthsMap = {
+                            jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11,
+                            ene: 0, abr: 3, ago: 7, dic: 11
+                        };
+                        let month = -1;
+                        for (let p of parts) {
+                            const cleanP = p.toLowerCase().substring(0, 3);
+                            if (monthsMap[cleanP] !== undefined) {
+                                month = monthsMap[cleanP];
+                                break;
+                            }
+                        }
+                        if (month !== -1 && !isNaN(day) && !isNaN(year)) {
+                            return new Date(year, month, day);
+                        }
+                    }
+                }
             }
             
-            // Fallback eliminando los paréntesis molestos
+            // Fallback
             const cleanStr = dateStr.replace(/\s*\(.*\)\s*/, '').trim();
-            return new Date(cleanStr);
+            const d = new Date(cleanStr);
+            if (!isNaN(d.getTime())) {
+                return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            }
+            return null;
         }
 
         function formatDateToShow(dateStr) {
             if (!dateStr) return '-';
-            const d = parseDateCustom(dateStr);
-            if (isNaN(d.getTime())) return dateStr;
-            const day = String(d.getDate()).padStart(2, '0');
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const year = d.getFullYear();
+            const parsed = parseDateCustom(dateStr);
+            if (!parsed) return dateStr;
+            const day = String(parsed.getDate()).padStart(2, '0');
+            const month = String(parsed.getMonth() + 1).padStart(2, '0');
+            const year = parsed.getFullYear();
             return `${day}/${month}/${year}`;
         }
         
         // --- FUNCIÓN DE COLORES POR DÍA (GAMA AZULES CORPORATIVOS) ---
         function getColorPorDiaSemana(fechaStr) {
-            const fechaObj = parseDateCustom(fechaStr);
-            if (isNaN(fechaObj.getTime())) return '#19567C'; 
+            const parsed = parseDateCustom(fechaStr);
+            if (!parsed) return '#19567C'; 
             
-            const diaSemana = fechaObj.getDay(); 
+            const diaSemana = parsed.getDay(); // 0 = Domingo, 1 = Lunes, etc.
+            
             const coloresAzul = {
                 1: '#03045E', // Lunes - Azul Marino Oscuro
                 2: '#023E8A', // Martes - Azul Fuerte
@@ -265,14 +285,12 @@
                 if (cgmName) {
                     const opt = document.createElement('option');
                     opt.value = normalizeCgmName(cgmName);
-                    // Formatea estéticamente (Ej: "Santa Catalina" o "Lomas")
                     const formattedName = cgmName.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
                     opt.textContent = formattedName;
                     selectGlobalCgm.appendChild(opt);
                 }
             });
             
-            // Mantiene el filtro seleccionado previamente si todavía existe
             selectGlobalCgm.value = selectedVal;
         }
 
@@ -337,9 +355,9 @@
                         polys.forEach(poly => {
                             poly.forEach(ring => {
                                 const path = ring.map(coord => ({ lat: coord[1], lng: coord[0] }));
-                                const p = new google.maps.Polygon({ paths: path, strokeOpacity: 0, fillColor: '#2A7E43', fillOpacity: 0.03, map: map, zIndex: 2 });
+                                const p = new google.maps.Polygon({ paths: path, strokeOpacity: 0, fillColor: '#1E5E3A', fillOpacity: 0.03, map: map, zIndex: 2 });
                                 const lineSymbol = { path: 'M 0,-1 0,1', strokeOpacity: 1, scale: 3 };
-                                const l = new google.maps.Polyline({ path: path, strokeOpacity: 0, icons: [{ icon: lineSymbol, offset: '0', repeat: '15px' }], strokeColor: '#2A7E43', strokeWeight: 3, map: map, zIndex: 3 });
+                                const l = new google.maps.Polyline({ path: path, strokeOpacity: 0, icons: [{ icon: lineSymbol, offset: '0', repeat: '15px' }], strokeColor: '#1E5E3A', strokeWeight: 3, map: map, zIndex: 3 });
                                 limiteElements.push(p, l);
                             });
                         });
@@ -362,11 +380,11 @@
                 });
                 updateCgmDropdown();
                 updateStyles(); 
-            }).catch(e => console.log('Aviso: CGM.geojson no cargado. Se utilizarán únicamente los CGMs mapeados en cortedepasto.geojson'));
+            }).catch(e => console.log('Aviso: CGM.geojson no cargado.'));
 
             cgmLayer.setMap(map);
 
-            // 3. Cargar Cortes de Pasto GeoJSON (Líneas, Polígonos y Puntos juntos)
+            // 3. Cargar Cortes de Pasto GeoJSON (Líneas, Polígonos y Puntos)
             cortesLayer = new google.maps.Data();
             
             const procesarCortes = (geoJson) => {
@@ -382,15 +400,14 @@
                     }
                 });
                 
-                // Actualizar los desplegables de CGMs recolectados
                 updateCgmDropdown();
 
                 const selectFecha = document.getElementById('filtro-fecha');
                 const sortedFechas = Array.from(fechasSet).sort((a, b) => {
                     const d1 = parseDateCustom(a);
                     const d2 = parseDateCustom(b);
-                    if (isNaN(d1.getTime())) return 1;
-                    if (isNaN(d2.getTime())) return -1;
+                    if (!d1) return 1;
+                    if (!d2) return -1;
                     return d1 - d2;
                 });
 
@@ -416,7 +433,6 @@
                 updateCortesStyles(); 
             };
 
-            // Intentar cargar exclusivamente del archivo cortedepasto.geojson
             fetch('./cortedepasto.geojson' + noCache)
                 .then(r => {
                     if (!r.ok) throw new Error("Fallo el fetch remoto");
@@ -424,7 +440,7 @@
                 })
                 .then(procesarCortes)
                 .catch(e => {
-                    console.error('Error al intentar obtener cortedepasto.geojson. Asegúrate de tener el archivo alojado en el mismo directorio.', e);
+                    console.error('Error al intentar obtener cortedepasto.geojson.', e);
                 });
 
             cortesLayer.setMap(map);
@@ -451,9 +467,9 @@
                     }
 
                     return {
-                        fillColor: '#7ED957', 
+                        fillColor: '#86EFAC', 
                         fillOpacity: opacidad, 
-                        strokeColor: '#2A7E43', 
+                        strokeColor: '#1E5E3A', 
                         strokeWeight: grosor,        
                         strokeOpacity: 0.9, 
                         zIndex: 1,
@@ -493,7 +509,6 @@
 
                     const geomType = feature.getGeometry() ? feature.getGeometry().getType() : '';
 
-                    // Si es un punto (Plaza/Escuela/Predio), aplicamos ícono inteligente con color dinámico
                     if (geomType === 'Point') {
                         const nombreRaw = feature.getProperty('Inicio Recorrido') || feature.getProperty('PLAZA') || feature.getProperty('NOMBRE') || '';
                         const nombreUpper = nombreRaw.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
@@ -511,7 +526,7 @@
                             visible: isVisible
                         };
                     } else {
-                        // Si es línea o polígono (recorridos o áreas de corte)
+                        // Línea o Polígono
                         return {
                             fillColor: dynamicDayColor,
                             fillOpacity: 0.6,
@@ -537,7 +552,6 @@
                         const dynamicDayColor = getColorPorDiaSemana(fechaCorteOriginal);
                         
                         if (geomType === 'Point') {
-                            // Información de Puntos
                             const nombreRaw = event.feature.getProperty('Inicio Recorrido') || event.feature.getProperty('PLAZA') || event.feature.getProperty('NOMBRE') || 'Lugar de Interés';
                             const nombreUpper = nombreRaw.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
                             
@@ -567,7 +581,7 @@
                                 content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Ubicación:</b> ${ubicacion}</p>`;
                             }
                         } else {
-                            // Información de Líneas o Polígonos
+                            // Líneas o Polígonos
                             content += `<h3 style="font-weight: 800; font-size: 14px; color: ${dynamicDayColor}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Recorrido de Corte</h3>`;
                             content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaCorteClean}</p>`;
                             content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${event.feature.getProperty('CGM') || '-'}</p>`;
