@@ -14485,7 +14485,7 @@
         "Inicio Recorrido": "Rodriguez & Tavano",
         "Fin del Recorrido": "Rodriguez & Camino Negro",
         "CGM": "Albertina",
-        "Localidad": "Llavallol",
+        "Localidad": "Villa Albertina",
         "Color_Generado": "#3cb44b",
         "Distancia": 3922.76,
         "Area": 0
@@ -20047,7 +20047,7 @@
         "Inicio Recorrido": "Loyola & Homero",
         "Fin del Recorrido": "Loyola & O´Higgins",
         "CGM": "Albertina",
-        "Localidad": "San Jose",
+        "Localidad": "Villa Albertina",
         "Color_Generado": "#3cb44b",
         "Distancia": 1309.98,
         "Area": 0
@@ -20307,7 +20307,7 @@
         "Inicio Recorrido": "Ramallo & Homero",
         "Fin del Recorrido": "Ramallo & O´Higgins",
         "CGM": "Albertina",
-        "Localidad": "Lomas de Zamora",
+        "Localidad": "Villa Albertina",
         "Color_Generado": "#3cb44b",
         "Distancia": 1300.14,
         "Area": 0
@@ -36831,7 +36831,7 @@
         "Inicio Recorrido": "Tartagal & O´Higgins",
         "Fin del Recorrido": "Tartagal & Homero",
         "CGM": "Albertina",
-        "Localidad": "Lomas de Zamora ",
+        "Localidad": "Villa Albertina",
         "Color_Generado": "#3cb44b",
         "Distancia": 0,
         "Area": 0
@@ -37831,7 +37831,7 @@
         "Inicio Recorrido": "Falucho & Martin Rodriguez",
         "Fin del Recorrido": "Falucho & Ginebra",
         "CGM": "Albertina",
-        "Localidad": "Lomas de Zamora ",
+        "Localidad": "Villa Albertina",
         "Color_Generado": "#3cb44b",
         "Distancia": 3351.25,
         "Area": 0
@@ -42487,7 +42487,7 @@
         "Inicio Recorrido": "La Haya & Falucho",
         "Fin del Recorrido": "La Haya & Pres. Juan Domingo Perón",
         "CGM": "Albertina",
-        "Localidad": "Ingeniero Budge",
+        "Localidad": "Villa Albertina",
         "Color_Generado": "#3cb44b",
         "Distancia": 3421.7,
         "Area": 0
@@ -44369,7 +44369,7 @@
         "Inicio Recorrido": "Marsella & Falucho",
         "Fin del Recorrido": "Marsella & Pres. Juan Domingo Perón",
         "CGM": "Albertina",
-        "Localidad": "Ingeniero Budge",
+        "Localidad": "Villa Albertina",
         "Color_Generado": "#3cb44b",
         "Distancia": 3430.64,
         "Area": 0
@@ -46599,7 +46599,7 @@
         "Inicio Recorrido": "Escuela Secundaria N°26",
         "Fin del Recorrido": null,
         "CGM": "Albertina",
-        "Localidad": "Ingeniero Budge",
+        "Localidad": "Villa Albertina",
         "Color_Generado": "#3cb44b",
         "Distancia": 0,
         "Area": 0
@@ -46619,7 +46619,7 @@
         "Inicio Recorrido": "Plaza De Los Militantes",
         "Fin del Recorrido": null,
         "CGM": "Albertina",
-        "Localidad": "Ingeniero Budge",
+        "Localidad": "Villa Albertina",
         "Color_Generado": "#3cb44b",
         "Distancia": 0,
         "Area": 0
@@ -47949,7 +47949,7 @@
         "Inicio Recorrido": "Barcelona & Falucho",
         "Fin del Recorrido": "Barcelona & Cam. Pres. Juan Domingo Perón",
         "CGM": "Albertina",
-        "Localidad": "Ingeniero Budge",
+        "Localidad": "Villa Albertina",
         "Color_Generado": "#3cb44b",
         "Distancia": 3534.69,
         "Area": 0
@@ -49555,7 +49555,7 @@
         "Inicio Recorrido": "Guaminí & Martín Rodríguez",
         "Fin del Recorrido": "Guaminí & Ginebra",
         "CGM": "Albertina",
-        "Localidad": "Ingeniero Budge",
+        "Localidad": "Villa Albertina",
         "Color_Generado": "#3cb44b",
         "Distancia": 3249.57,
         "Area": 0
@@ -51013,7 +51013,7 @@
         "Inicio Recorrido": "Puerto Argentino & Falucho",
         "Fin del Recorrido": "Puerto Argentino & Cam. Pres. Juan Domingo Perón",
         "CGM": "Albertina",
-        "Localidad": "Ingeniero Budge",
+        "Localidad": "Villa Albertina",
         "Color_Generado": "#3cb44b",
         "Distancia": 3432,
         "Area": 0
@@ -52789,7 +52789,7 @@
         "Inicio Recorrido": "Homero & Escobar",
         "Fin del Recorrido": "Homero & Arlucea",
         "CGM": "Albertina",
-        "Localidad": "Ingeniero Budge",
+        "Localidad": "Villa Albertina",
         "Color_Generado": "#3cb44b",
         "Distancia": 3241.5,
         "Area": 0
