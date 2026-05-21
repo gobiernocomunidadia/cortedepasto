@@ -19,6 +19,7 @@
             --blanco: #FFFFFF;
             --acento: #86EFAC;  /* Verde claro de acento */
             --azul-inst: #19567C;
+            --color-barrido: #1E5E3A; /* Color verde institucional para Barrido */
         }
 
         body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-main); color: var(--blanco); margin: 0; min-height: 100vh; }
@@ -112,6 +113,32 @@
                     </div>
                 </div>
 
+                <!-- SECCIÓN: BARRIDO -->
+                <div class="bg-[var(--color-barrido)]/10 p-3 rounded-lg border border-[var(--color-barrido)]/30">
+                    <h4 class="text-xs font-extrabold text-[var(--color-barrido)] uppercase mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-broom text-sm"></i> Barrido
+                    </h4>
+                    <div class="space-y-3">
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" id="cb-barrido" checked class="w-4 h-4 accent-[var(--color-barrido)]">
+                            <span class="text-sm text-[#0F172A] font-bold">Ver Barrido</span>
+                        </label>
+                        <div class="flex flex-col gap-1 mt-2 pl-7 mb-3">
+                            <label class="text-xs font-semibold text-gray-600">Filtrar por Barrendero:</label>
+                            <select id="filtro-barrendero" class="w-full text-xs p-1.5 border border-gray-300 rounded focus:outline-none focus:border-[var(--color-barrido)] font-semibold text-[#0F172A] cursor-pointer">
+                                <option value="TODOS">TODOS LOS BARRENDEROS</option>
+                                <!-- Se llena dinámicamente -->
+                            </select>
+                        </div>
+                        
+                        <!-- CAPA: ZONAS BARRIDO COVELIA -->
+                        <label class="flex items-center gap-3 cursor-pointer pt-3 border-t border-[var(--color-barrido)]/20">
+                            <input type="checkbox" id="cb-covelia" checked class="w-4 h-4 accent-[var(--color-barrido)]">
+                            <span class="text-sm text-[#0F172A] font-bold">Zonas Barrido Covelia</span>
+                        </label>
+                    </div>
+                </div>
+
                 <!-- SECCIÓN: CORTES DE PASTO -->
                 <div class="bg-[var(--bg-main)]/10 p-3 rounded-lg border border-[var(--bg-main)]/30">
                     <h4 class="text-xs font-extrabold text-[var(--bg-main)] uppercase mb-3 flex items-center gap-2">
@@ -138,7 +165,7 @@
                         <i data-lucide="upload-cloud" class="h-4 w-4"></i> Cargar GeoJSON Local
                     </h4>
                     <p class="text-[10px] text-gray-600 mb-2">Para ver el mapa offline o local sin servidor CORS, selecciona tus archivos manualmente:</p>
-                    <input type="file" id="input-geojson-local" accept=".geojson, .json" class="w-full text-xs text-[#0F172A] file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700 cursor-pointer">
+                    <input type="file" id="input-geojson-local" accept=".geojson, .json" class="w-full text-xs text-[#0F172A] file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700 cursor-pointer" multiple>
                 </div>
 
             </div>
@@ -157,6 +184,8 @@
         let infoWindowTimer;
         let cgmLayer;
         let cortesLayer;
+        let barridoLayer;
+        let coveliaLayer;
         let limiteElements = []; 
         const cgmMap = new Map(); // Mapa de CGM normalizado -> Nombre original para evitar duplicados en el select
 
@@ -358,7 +387,7 @@
             selectGlobalCgm.value = selectedVal;
         }
 
-        // --- SANITIZACIÓN EXTREMA Y RECUPERACIÓN DE GEOMETRÍAS DAÑADAS ---
+        // --- LIMPIEZA DE GEOJSON DAÑADO Y RECONSTRUCCIÓN DEFENSIVA ---
         function sanitizeGeoJson(geoJson) {
             if (!geoJson || !geoJson.features) return geoJson;
             
@@ -379,7 +408,6 @@
                             if (clean.length >= 2) {
                                 feature.geometry.coordinates = clean;
                             } else if (clean.length === 1) {
-                                // Fallback a Punto para no perder el registro en el mapa
                                 feature.geometry.type = 'Point';
                                 feature.geometry.coordinates = clean[0];
                             } else {
@@ -400,11 +428,9 @@
                                 if (mainRing.length >= 3 && type === 'Polygon') {
                                     feature.geometry.coordinates = cleanRings;
                                 } else if (mainRing.length >= 2) {
-                                    // Fallback a LineString
                                     feature.geometry.type = 'LineString';
                                     feature.geometry.coordinates = mainRing;
                                 } else if (mainRing.length === 1) {
-                                    // Fallback a Punto
                                     feature.geometry.type = 'Point';
                                     feature.geometry.coordinates = mainRing[0];
                                 } else {
@@ -504,11 +530,18 @@
             selectGlobalCgm.addEventListener('change', () => {
                 updateStyles();
                 updateCortesStyles();
+                updateBarridoStyles();
+                updateCoveliaStyles();
             });
 
             const selectFecha = document.getElementById('filtro-fecha');
             selectFecha.addEventListener('change', () => {
                 updateCortesStyles();
+            });
+
+            const selectBarrendero = document.getElementById('filtro-barrendero');
+            selectBarrendero.addEventListener('change', () => {
+                updateBarridoStyles();
             });
 
             const noCache = '?v=' + new Date().getTime();
@@ -558,7 +591,6 @@
             cortesLayer = new google.maps.Data();
             
             const procesarCortes = (geoJson) => {
-                // Limpieza segura recolectando features primero para evitar fallos de iteración
                 const featuresToRemove = [];
                 cortesLayer.forEach(feat => featuresToRemove.push(feat));
                 featuresToRemove.forEach(feat => cortesLayer.remove(feat));
@@ -588,7 +620,7 @@
                     const d2 = parseDateCustom(b);
                     if (!d1) return 1;
                     if (!d2) return -1;
-                    return d1 - d2; // Ordenamiento cronológico ascendente perfecto
+                    return d1 - d2;
                 });
 
                 sortedFechas.forEach(fecha => {
@@ -616,16 +648,106 @@
                 })
                 .then(procesarCortes)
                 .catch(e => {
-                    console.log('cortedepasto.geojson no cargado automáticamente (CORS o archivo ausente). Activando cargador manual.');
+                    console.log('cortedepasto.geojson no cargado automáticamente. Activando cargador manual.');
                     document.getElementById('seccion-local-uploader').classList.remove('hidden');
                 });
 
             cortesLayer.setMap(map);
 
+
+            // 4. Cargar Barrido GeoJSON (ZONAS BARRENDEROS MAYO 2026.geojson)
+            barridoLayer = new google.maps.Data();
+
+            const procesarBarrido = (geoJson) => {
+                const featuresToRemove = [];
+                barridoLayer.forEach(feat => featuresToRemove.push(feat));
+                featuresToRemove.forEach(feat => barridoLayer.remove(feat));
+
+                const sanitized = sanitizeGeoJson(geoJson);
+                barridoLayer.addGeoJson(sanitized);
+
+                const barrenderosSet = new Set();
+                geoJson.features.forEach(f => {
+                    if (f.properties && f.properties.BARRENDERO) {
+                        barrenderosSet.add(f.properties.BARRENDERO.trim());
+                    }
+                    const cgmValue = getGeoJsonFeatureCgm(f);
+                    if (cgmValue) {
+                        registerCgm(cgmValue);
+                    }
+                });
+
+                updateCgmDropdown();
+
+                const selectBarrendero = document.getElementById('filtro-barrendero');
+                const selectedVal = selectBarrendero.value;
+                selectBarrendero.innerHTML = '<option value="TODOS">TODOS LOS BARRENDEROS</option>';
+
+                const sortedBarrenderos = Array.from(barrenderosSet).sort();
+                sortedBarrenderos.forEach(barrendero => {
+                    const opt = document.createElement('option');
+                    opt.value = barrendero;
+                    opt.textContent = barrendero;
+                    selectBarrendero.appendChild(opt);
+                });
+
+                if (barrenderosSet.has(selectedVal)) {
+                    selectBarrendero.value = selectedVal;
+                } else {
+                    selectBarrendero.value = "TODOS";
+                }
+
+                updateBarridoStyles();
+            };
+
+            fetch('./ZONAS BARRENDEROS MAYO 2026.geojson' + noCache)
+                .then(r => {
+                    if (!r.ok) throw new Error("Fallo el fetch remoto de Barrido");
+                    return r.json();
+                })
+                .then(procesarBarrido)
+                .catch(e => {
+                    console.log('ZONAS BARRENDEROS MAYO 2026.geojson no cargado automáticamente. Activando cargador manual.');
+                    document.getElementById('seccion-local-uploader').classList.remove('hidden');
+                });
+
+            barridoLayer.setMap(map);
+
+
+            // 5. Cargar Zonas Barrido Covelia GeoJSON (Zonificacion Barrido Covelia.geojson)
+            coveliaLayer = new google.maps.Data();
+
+            const procesarCovelia = (geoJson) => {
+                const featuresToRemove = [];
+                coveliaLayer.forEach(feat => featuresToRemove.push(feat));
+                featuresToRemove.forEach(feat => coveliaLayer.remove(feat));
+
+                const sanitized = sanitizeGeoJson(geoJson);
+                coveliaLayer.addGeoJson(sanitized);
+
+                updateCoveliaStyles();
+            };
+
+            fetch('./Zonificacion Barrido Covelia.geojson' + noCache)
+                .then(r => {
+                    if (!r.ok) throw new Error("Fallo el fetch remoto de Covelia");
+                    return r.json();
+                })
+                .then(procesarCovelia)
+                .catch(e => {
+                    console.log('Zonificacion Barrido Covelia.geojson no cargado automáticamente. Activando cargador manual.');
+                    document.getElementById('seccion-local-uploader').classList.remove('hidden');
+                });
+
+            coveliaLayer.setMap(map);
+
+
             // --- EVENTO DE CARGA DE ARCHIVO MANUAL INTELIGENTE ---
             const loadGeoJsonData = (geoJson) => {
                 const name = (geoJson.name || "").toLowerCase();
-                const isCgm = name.includes("cgm") || geoJson.features.some(f => f.geometry && (f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon') && !f.properties.Fecha_str);
+                const isCgm = name.includes("cgm") || geoJson.features.some(f => f.geometry && (f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon') && !f.properties.Fecha_str && !f.properties.BARRENDERO && !f.properties.Zona);
+                const isBarrido = name.includes("barrendero") || name.includes("barrido") || geoJson.features.some(f => f.properties && f.properties.BARRENDERO);
+                const isCovelia = name.includes("covelia") || geoJson.features.some(f => f.properties && f.properties.Zona);
                 
                 if (isCgm) {
                     const featuresToRemoveCgm = [];
@@ -642,6 +764,12 @@
                     updateCgmDropdown();
                     updateStyles();
                     console.log("CGM.geojson cargado manualmente de forma exitosa.");
+                } else if (isBarrido) {
+                    procesarBarrido(geoJson);
+                    console.log("ZONAS BARRENDEROS MAYO 2026.geojson cargado manualmente de forma exitosa.");
+                } else if (isCovelia) {
+                    procesarCovelia(geoJson);
+                    console.log("Zonificacion Barrido Covelia.geojson cargado manualmente de forma exitosa.");
                 } else {
                     procesarCortes(geoJson);
                     console.log("cortedepasto.geojson cargado manualmente de forma exitosa.");
@@ -649,18 +777,21 @@
             };
 
             document.getElementById('input-geojson-local').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    try {
-                        const geoJson = JSON.parse(evt.target.result);
-                        loadGeoJsonData(geoJson);
-                    } catch(err) {
-                        console.error("Error al parsear el archivo GeoJSON:", err);
-                    }
-                };
-                reader.readAsText(file);
+                const files = e.target.files;
+                if (!files || files.length === 0) return;
+                
+                Array.from(files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
+                        try {
+                            const geoJson = JSON.parse(evt.target.result);
+                            loadGeoJsonData(geoJson);
+                        } catch(err) {
+                            console.error("Error al parsear el archivo GeoJSON:", err);
+                        }
+                    };
+                    reader.readAsText(file);
+                });
             });
 
             // --- FUNCIONES DE ESTILOS Y FILTROS ---
@@ -757,7 +888,59 @@
                 });
             }
 
-            // Ventanas Emergentes base para CGM y Cortes
+            function updateBarridoStyles() {
+                const globalCgmSelect = document.getElementById('filtro-global-cgm');
+                const globalCgm = globalCgmSelect ? globalCgmSelect.value : "TODOS";
+
+                const barrenderoSelect = document.getElementById('filtro-barrendero');
+                const barrenderoFiltro = barrenderoSelect ? barrenderoSelect.value : "TODOS";
+
+                barridoLayer.setStyle((feature) => {
+                    const featCgm = getFeatureCgmProperty(feature);
+                    const cleanFeatCgm = normalizeCgmName(featCgm);
+                    const featBarrendero = feature.getProperty('BARRENDERO') ? feature.getProperty('BARRENDERO').trim() : "";
+                    let isVisible = true;
+
+                    // Filtro Global CGM
+                    if (globalCgm !== "TODOS") {
+                        if (cleanFeatCgm !== globalCgm) {
+                            isVisible = false;
+                        }
+                    }
+
+                    // Filtro específico de Barrendero
+                    if (barrenderoFiltro !== "TODOS") {
+                        if (featBarrendero !== barrenderoFiltro) {
+                            isVisible = false;
+                        }
+                    }
+
+                    return {
+                        strokeColor: 'var(--color-barrido)',
+                        strokeWeight: 5,
+                        strokeOpacity: 0.85,
+                        zIndex: 4,
+                        visible: isVisible
+                    };
+                });
+            }
+
+            function updateCoveliaStyles() {
+                // Al no contener CGM específico de manera nativa, lo mostramos independientemente del CGM activo
+                coveliaLayer.setStyle((feature) => {
+                    return {
+                        fillColor: 'var(--color-barrido)',
+                        fillOpacity: 0.15,
+                        strokeColor: 'var(--color-barrido)',
+                        strokeWeight: 2,
+                        strokeOpacity: 0.8,
+                        zIndex: 2,
+                        visible: true
+                    };
+                });
+            }
+
+            // Ventanas Emergentes base para CGM, Cortes, Barrido y Covelia
             function bindPopup(layer, colorTitle, layerType = 'cgm') {
                 layer.addListener('click', function(event) {
                     let content = `<div style="font-family: 'Montserrat', sans-serif; min-width: 200px; position: relative;">`;
@@ -799,7 +982,7 @@
                                 content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Ubicación:</b> ${ubicacion}</p>`;
                             }
                         } else {
-                            // Líneas o Polígonos
+                            // Líneas o Polígonos de Corte
                             content += `<h3 style="font-weight: 800; font-size: 14px; color: ${dynamicDayColor}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Recorrido de Corte</h3>`;
                             content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaCorteClean}</p>`;
                             content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${getFeatureCgmProperty(event.feature) || '-'}</p>`;
@@ -824,6 +1007,26 @@
                                 content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Área:</b> ${area} m²</p>`;
                             }
                         }
+                    } else if (layerType === 'barrido') {
+                        // Información de Barrido
+                        content += `<h3 style="font-weight: 800; font-size: 14px; color: var(--color-barrido); border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Barrido</h3>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Calle:</b> ${event.feature.getProperty('CALLE') || '-'}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Barrendero:</b> ${event.feature.getProperty('BARRENDERO') || '-'}</p>`;
+                        
+                        const legajo = event.feature.getProperty('LEGAJO/DNI');
+                        if (legajo !== undefined && legajo !== null && legajo !== "") {
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Legajo:</b> ${legajo}</p>`;
+                        }
+                        
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${getFeatureCgmProperty(event.feature) || '-'}</p>`;
+
+                    } else if (layerType === 'covelia') {
+                        // Información de Zonas Covelia
+                        content += `<h3 style="font-weight: 800; font-size: 14px; color: var(--color-barrido); border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Zona Covelia: ${event.feature.getProperty('Zona') || '-'}</h3>`;
+                        const area = event.feature.getProperty('Area');
+                        if (area) {
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Superficie:</b> ${area} km²</p>`;
+                        }
                     } else { // CGM
                         content += `<h3 style="font-weight: 800; font-size: 14px; color: ${colorTitle}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">CGM: ${getFeatureCgmProperty(event.feature)}</h3>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Manzanas:</b> ${event.feature.getProperty('Manzanas') || '-'}</p>`;
@@ -847,6 +1050,8 @@
 
             bindPopup(cgmLayer, '#2A7E43', 'cgm');
             bindPopup(cortesLayer, '#19567C', 'corte');
+            bindPopup(barridoLayer, 'var(--color-barrido)', 'barrido');
+            bindPopup(coveliaLayer, 'var(--color-barrido)', 'covelia');
 
             // Toggles de Capas
             document.getElementById('cb-limite').addEventListener('change', (e) => {
@@ -860,6 +1065,14 @@
 
             document.getElementById('cb-cortes').addEventListener('change', (e) => {
                 e.target.checked ? cortesLayer.setMap(map) : cortesLayer.setMap(null);
+            });
+
+            document.getElementById('cb-barrido').addEventListener('change', (e) => {
+                e.target.checked ? barridoLayer.setMap(map) : barridoLayer.setMap(null);
+            });
+
+            document.getElementById('cb-covelia').addEventListener('change', (e) => {
+                e.target.checked ? coveliaLayer.setMap(map) : coveliaLayer.setMap(null);
             });
         }
     </script>
