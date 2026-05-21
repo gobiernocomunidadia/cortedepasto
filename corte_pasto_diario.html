@@ -13,6 +13,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 
+    <!-- Librería Pako para descompresión de archivos GZIP (.gz) en tiempo real -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
+
     <style>
         :root {
             --bg-main: #1E5E3A; /* Tono verde bosque corporativo para Ambiente */
@@ -201,8 +204,8 @@
                     <h4 class="text-xs font-extrabold text-amber-700 uppercase mb-2 flex items-center gap-2">
                         <i data-lucide="upload-cloud" class="h-4 w-4"></i> Cargar GeoJSON Local
                     </h4>
-                    <p class="text-[10px] text-gray-600 mb-2">Para ver el mapa offline o local sin servidor CORS, selecciona tus archivos manualmente (.geojson, .json):</p>
-                    <input type="file" id="input-geojson-local" accept=".geojson, .json" class="w-full text-xs text-[#0F172A] file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700 cursor-pointer" multiple>
+                    <p class="text-[10px] text-gray-600 mb-2">Para ver el mapa offline o local sin servidor CORS, selecciona tus archivos manualmente (.geojson, .json, .gz):</p>
+                    <input type="file" id="input-geojson-local" accept=".geojson, .json, .gz" class="w-full text-xs text-[#0F172A] file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700 cursor-pointer" multiple>
                 </div>
 
             </div>
@@ -940,7 +943,7 @@
             recoleccionLayer.setMap(document.getElementById('cb-recoleccion').checked ? map : null);
 
 
-            // 7. Cargar Recorridos Mensuales GeoJSON (covelia_mensual_polylines.geojson) (Inicia deseleccionado)
+            // 7. Cargar Recorridos Mensuales GeoJSON (Soporta covelia_mensual_polylines.geojson.gz comprimido con GZIP)
             recorridosLayer = new google.maps.Data();
 
             const procesarRecorridos = (geoJson) => {
@@ -998,7 +1001,7 @@
                         const opt = document.createElement('option');
                         opt.value = dom;
                         opt.textContent = dom;
-                        selectDominio.appendChild(opt); 
+                        selectDominio.appendChild(opt); // Se inyecta correctamente el nodo OPTION de manera nativa
                     });
                     if (dominiosSet.has(selectedVal)) {
                         selectDominio.value = selectedVal;
@@ -1010,15 +1013,49 @@
                 updateRecorridosStyles();
             };
 
-            fetch('./covelia_mensual_polylines.geojson' + noCache)
+            // Intentar cargar primero el archivo comprimido .gz utilizando la librería pako con autodetección
+            fetch('./covelia_mensual_polylines.geojson.gz' + noCache)
                 .then(r => {
-                    if (!r.ok) throw new Error("Fallo el fetch de Recorridos");
-                    return r.json();
+                    if (!r.ok) throw new Error("No se pudo descargar el archivo .gz");
+                    return r.arrayBuffer();
                 })
-                .then(procesarRecorridos)
+                .then(buffer => {
+                    // Intentamos decodificar como UTF-8 plano para ver si el servidor ya lo entregó descomprimido de manera transparente (Content-Encoding)
+                    const decoder = new TextDecoder('utf-8');
+                    try {
+                        const text = decoder.decode(buffer);
+                        if (text.trim().startsWith('{')) {
+                            const geoJson = JSON.parse(text);
+                            procesarRecorridos(geoJson);
+                            console.log("Archivo .gz cargado (el servidor o navegador ya lo había descomprimido automáticamente).");
+                            return;
+                        }
+                    } catch (e) {
+                        // No era texto plano, procedemos a descomprimir con pako
+                    }
+
+                    if (typeof pako !== 'undefined') {
+                        const decompressed = pako.ungzip(new Uint8Array(buffer), { to: 'string' });
+                        const geoJson = JSON.parse(decompressed);
+                        procesarRecorridos(geoJson);
+                        console.log("Archivo .gz descomprimido exitosamente en memoria con Pako.");
+                    } else {
+                        throw new Error("Pako no está listo en el cliente");
+                    }
+                })
                 .catch(e => {
-                    console.log('covelia_mensual_polylines.geojson no cargado automáticamente.');
-                    document.getElementById('seccion-local-uploader').classList.remove('hidden');
+                    console.log('No se pudo procesar .gz de forma directa. Intentando con el fallback .geojson...', e);
+                    // Fallback al archivo GeoJSON plano
+                    fetch('./covelia_mensual_polylines.geojson' + noCache)
+                        .then(r => {
+                            if (!r.ok) throw new Error("Fallo el fetch de .geojson");
+                            return r.json();
+                        })
+                        .then(procesarRecorridos)
+                        .catch(err => {
+                            console.error('No se pudo encontrar ninguna de las dos fuentes de recorridos.', err);
+                            document.getElementById('seccion-local-uploader').classList.remove('hidden');
+                        });
                 });
 
             // Se sincroniza con el estado inicial del checkbox (desmarcado por defecto)
@@ -1065,16 +1102,37 @@
                 
                 Array.from(files).forEach(file => {
                     const reader = new FileReader();
-                    reader.onload = function(evt) {
-                        try {
-                            const rawText = evt.target.result;
-                            const geoJson = JSON.parse(rawText);
-                            loadGeoJsonData(geoJson);
-                        } catch(err) {
-                            console.error("Error al parsear el archivo cargado:", err);
-                        }
-                    };
-                    reader.readAsText(file);
+                    const lowerName = file.name.toLowerCase();
+                    
+                    if (lowerName.endsWith('.gz')) {
+                        reader.onload = function(evt) {
+                            try {
+                                if (typeof pako !== 'undefined') {
+                                    const arrayBuffer = evt.target.result;
+                                    const decompressed = pako.ungzip(new Uint8Array(arrayBuffer), { to: 'string' });
+                                    const geoJson = JSON.parse(decompressed);
+                                    loadGeoJsonData(geoJson);
+                                    console.log("Archivo comprimido .gz local cargado y descomprimido con éxito.");
+                                } else {
+                                    console.error("Librería Pako no está cargada. No se pudo descomprimir el archivo GZ local.");
+                                }
+                            } catch(err) {
+                                console.error("Error al descomprimir el archivo .gz cargado localmente:", err);
+                            }
+                        };
+                        reader.readAsArrayBuffer(file);
+                    } else {
+                        reader.onload = function(evt) {
+                            try {
+                                const rawText = evt.target.result;
+                                const geoJson = JSON.parse(rawText);
+                                loadGeoJsonData(geoJson);
+                            } catch(err) {
+                                console.error("Error al parsear el archivo cargado:", err);
+                            }
+                        };
+                        reader.readAsText(file);
+                    }
                 });
             });
 
