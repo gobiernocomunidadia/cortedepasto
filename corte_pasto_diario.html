@@ -98,7 +98,7 @@
                     </select>
                 </div>
 
-                <!-- SECCIÓN: DIVISIÓN TERRITORIAL -->
+                <!-- SECCIÓN: DIVISIÓN TERRITORIAL (Se mantiene activa) -->
                 <div class="bg-[var(--bg-main)]/10 p-3 rounded-lg border border-[var(--bg-main)]/30">
                     <h4 class="text-xs font-extrabold text-[var(--bg-main)] uppercase mb-3 flex items-center gap-2">
                         <i data-lucide="map" class="h-4 w-4"></i> División Territorial
@@ -115,14 +115,14 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN: BARRIDO -->
+                <!-- SECCIÓN: BARRIDO (Inicia desmarcado) -->
                 <div class="bg-[var(--color-barrido)]/10 p-3 rounded-lg border border-[var(--color-barrido)]/30">
                     <h4 class="text-xs font-extrabold text-[var(--color-barrido)] uppercase mb-3 flex items-center gap-2">
                         <i class="fa-solid fa-broom text-sm"></i> Barrido
                     </h4>
                     <div class="space-y-3">
                         <label class="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" id="cb-barrido" checked class="w-4 h-4 accent-[var(--color-barrido)]">
+                            <input type="checkbox" id="cb-barrido" class="w-4 h-4 accent-[var(--color-barrido)]">
                             <span class="text-sm text-[#0F172A] font-bold">Ver Barrido</span>
                         </label>
                         <div class="flex flex-col gap-1 mt-2 pl-7 mb-3">
@@ -135,40 +135,62 @@
                         
                         <!-- CAPA: ZONAS BARRIDO COVELIA -->
                         <label class="flex items-center gap-3 cursor-pointer pt-3 border-t border-[var(--color-barrido)]/20">
-                            <input type="checkbox" id="cb-covelia" checked class="w-4 h-4 accent-[var(--color-barrido)]">
+                            <input type="checkbox" id="cb-covelia" class="w-4 h-4 accent-[var(--color-barrido)]">
                             <span class="text-sm text-[#0F172A] font-bold">Rutas Barrido Covelia</span>
                         </label>
                     </div>
                 </div>
 
-                <!-- SECCIÓN: COVELIA RECOLECCIÓN -->
+                <!-- SECCIÓN: COVELIA RECOLECCIÓN (Inicia desmarcado) -->
                 <div class="bg-[var(--color-recoleccion)]/10 p-3 rounded-lg border border-[var(--color-recoleccion)]/30">
                     <h4 class="text-xs font-extrabold text-[var(--color-recoleccion)] uppercase mb-3 flex items-center gap-2">
                         <i class="fa-solid fa-truck text-sm"></i> Covelia Recolección
                     </h4>
                     <div class="space-y-3">
                         <label class="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" id="cb-recoleccion" checked class="w-4 h-4 accent-[var(--color-recoleccion)]">
+                            <input type="checkbox" id="cb-recoleccion" class="w-4 h-4 accent-[var(--color-recoleccion)]">
                             <span class="text-sm text-[#0F172A] font-bold">Rutas Recoleccion Covelia</span>
                         </label>
-                        <div class="flex flex-col gap-1 mt-2 pl-7">
+                        <div class="flex flex-col gap-1 mt-2 pl-7 mb-3">
                             <label class="text-xs font-semibold text-gray-600">Filtrar por Turno:</label>
                             <select id="filtro-recoleccion-turno" class="w-full text-xs p-1.5 border border-gray-300 rounded focus:outline-none focus:border-[var(--color-recoleccion)] font-semibold text-[#0F172A] cursor-pointer">
                                 <option value="TODOS">TODOS LOS TURNOS</option>
                                 <!-- Se llena dinámicamente -->
                             </select>
                         </div>
+
+                        <!-- SUB-CAPA: RECORRIDOS (Inicia desmarcado) -->
+                        <div class="pt-3 border-t border-[var(--color-recoleccion)]/20 mt-3 space-y-3">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" id="cb-recorridos" class="w-4 h-4 accent-[var(--color-recoleccion)]">
+                                <span class="text-sm text-[#0F172A] font-bold">Recorridos Covelia</span>
+                            </label>
+                            <div class="flex flex-col gap-1 pl-7">
+                                <label class="text-xs font-semibold text-gray-600">Filtrar por Fecha:</label>
+                                <select id="filtro-recorridos-fecha" class="w-full text-xs p-1.5 border border-gray-300 rounded focus:outline-none focus:border-[var(--color-recoleccion)] font-semibold text-[#0F172A] cursor-pointer">
+                                    <option value="TODAS">TODAS LAS FECHAS</option>
+                                    <!-- Se llena dinámicamente -->
+                                </select>
+                            </div>
+                            <div class="flex flex-col gap-1 pl-7">
+                                <label class="text-xs font-semibold text-gray-600">Filtrar por Dominio:</label>
+                                <select id="filtro-recorridos-dominio" class="w-full text-xs p-1.5 border border-gray-300 rounded focus:outline-none focus:border-[var(--color-recoleccion)] font-semibold text-[#0F172A] cursor-pointer">
+                                    <option value="TODOS">TODOS LOS DOMINIOS</option>
+                                    <!-- Se llena dinámicamente -->
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- SECCIÓN: CORTES DE PASTO -->
+                <!-- SECCIÓN: CORTES DE PASTO (Inicia desmarcado) -->
                 <div class="bg-[var(--bg-main)]/10 p-3 rounded-lg border border-[var(--bg-main)]/30">
                     <h4 class="text-xs font-extrabold text-[var(--bg-main)] uppercase mb-3 flex items-center gap-2">
                         <i data-lucide="scissors" class="h-4 w-4"></i> Corte de Pasto
                     </h4>
                     <div class="space-y-3">
                         <label class="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" id="cb-cortes" checked class="w-4 h-4 accent-[var(--bg-main)]">
+                            <input type="checkbox" id="cb-cortes" class="w-4 h-4 accent-[var(--bg-main)]">
                             <span class="text-sm text-[#0F172A] font-bold">Ver Cortes de Pasto</span>
                         </label>
                         <div class="flex flex-col gap-1 mt-2 pl-7">
@@ -184,10 +206,10 @@
                 <!-- SECCIÓN RESPALDO: CARGADOR MANUAL LOCAL (Se activa si el CORS bloquea la carga local) -->
                 <div id="seccion-local-uploader" class="bg-amber-500/10 p-3 rounded-lg border border-amber-500/30 hidden">
                     <h4 class="text-xs font-extrabold text-amber-700 uppercase mb-2 flex items-center gap-2">
-                        <i data-lucide="upload-cloud" class="h-4 w-4"></i> Cargar GeoJSON Local
+                        <i data-lucide="upload-cloud" class="h-4 w-4"></i> Cargar GeoJSON/KML Local
                     </h4>
-                    <p class="text-[10px] text-gray-600 mb-2">Para ver el mapa offline o local sin servidor CORS, selecciona tus archivos manualmente:</p>
-                    <input type="file" id="input-geojson-local" accept=".geojson, .json" class="w-full text-xs text-[#0F172A] file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700 cursor-pointer" multiple>
+                    <p class="text-[10px] text-gray-600 mb-2">Para ver el mapa offline o local sin servidor CORS, selecciona tus archivos manualmente (.geojson, .kml):</p>
+                    <input type="file" id="input-geojson-local" accept=".geojson, .json, .kml" class="w-full text-xs text-[#0F172A] file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700 cursor-pointer" multiple>
                 </div>
 
             </div>
@@ -209,10 +231,120 @@
         let barridoLayer;
         let coveliaLayer;
         let recoleccionLayer;
+        let recorridosLayer; 
         let limiteElements = []; 
         const cgmMap = new Map(); // Mapa de CGM normalizado -> Nombre original para evitar duplicados en el select
         let barridoGeoJsonData = null; // Almacenamiento global para los datos de barrido y filtrado dinámico
         let recoleccionGeoJsonData = null; // Almacenamiento global para recolección
+
+        // --- PARSER DE KML A GEOJSON (Permite leer barrido.kml en memoria al instante) ---
+        function kmlToGeoJson(xmlString) {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlString, "text/xml");
+            const geojson = {
+                type: "FeatureCollection",
+                features: []
+            };
+
+            const placemarks = xmlDoc.getElementsByTagName("Placemark");
+            for (let i = 0; i < placemarks.length; i++) {
+                const placemark = placemarks[i];
+                const properties = {};
+
+                // Parsear propiedades extendidas (ExtendedData -> SimpleData)
+                const simpleDatas = placemark.getElementsByTagName("SimpleData");
+                for (let j = 0; j < simpleDatas.length; j++) {
+                    const sd = simpleDatas[j];
+                    const name = sd.getAttribute("name");
+                    const value = sd.textContent;
+                    if (name) {
+                        properties[name] = value;
+                    }
+                }
+
+                // Metadata de respaldo
+                const nameNode = placemark.getElementsByTagName("name")[0];
+                if (nameNode && !properties.name) {
+                    properties.name = nameNode.textContent;
+                }
+                const descNode = placemark.getElementsByTagName("description")[0];
+                if (descNode && !properties.description) {
+                    properties.description = descNode.textContent;
+                }
+
+                // Parser de coordenadas KML ("lon,lat,alt lon,lat,alt ...")
+                function parseCoordsString(coordsStr) {
+                    if (!coordsStr) return [];
+                    return coordsStr.trim().split(/\s+/).map(coord => {
+                        const parts = coord.split(',').map(Number);
+                        return [parts[0], parts[1]]; // Google Maps usa [lng, lat] para GeoJSON
+                    }).filter(c => !isNaN(c[0]) && !isNaN(c[1]));
+                }
+
+                let geometry = null;
+                const lineStrings = placemark.getElementsByTagName("LineString");
+                const polygons = placemark.getElementsByTagName("Polygon");
+                const points = placemark.getElementsByTagName("Point");
+                const multiGeometries = placemark.getElementsByTagName("MultiGeometry");
+
+                if (multiGeometries.length > 0) {
+                    const coordsList = [];
+                    const mgLineStrings = multiGeometries[0].getElementsByTagName("LineString");
+                    for (let k = 0; k < mgLineStrings.length; k++) {
+                        const coordNode = mgLineStrings[k].getElementsByTagName("coordinates")[0];
+                        if (coordNode) {
+                            const parsed = parseCoordsString(coordNode.textContent);
+                            if (parsed.length > 0) coordsList.push(parsed);
+                        }
+                    }
+                    if (coordsList.length > 0) {
+                        geometry = {
+                            type: "MultiLineString",
+                            coordinates: coordsList
+                        };
+                    }
+                } else if (lineStrings.length > 0) {
+                    const coordNode = lineStrings[0].getElementsByTagName("coordinates")[0];
+                    if (coordNode) {
+                        geometry = {
+                            type: "LineString",
+                            coordinates: parseCoordsString(coordNode.textContent)
+                        };
+                    }
+                } else if (polygons.length > 0) {
+                    const outerBoundary = polygons[0].getElementsByTagName("outerBoundaryIs")[0];
+                    if (outerBoundary) {
+                        const coordNode = outerBoundary.getElementsByTagName("coordinates")[0];
+                        if (coordNode) {
+                            geometry = {
+                                type: "Polygon",
+                                coordinates: [parseCoordsString(coordNode.textContent)]
+                            };
+                        }
+                    }
+                } else if (points.length > 0) {
+                    const coordNode = points[0].getElementsByTagName("coordinates")[0];
+                    if (coordNode) {
+                        const parsed = parseCoordsString(coordNode.textContent);
+                        if (parsed.length > 0) {
+                            geometry = {
+                                type: "Point",
+                                coordinates: parsed[0]
+                            };
+                        }
+                    }
+                }
+
+                if (geometry) {
+                    geojson.features.push({
+                        type: "Feature",
+                        properties: properties,
+                        geometry: geometry
+                    });
+                }
+            }
+            return geojson;
+        }
 
         // --- FUNCIÓN DE NORMALIZACIÓN DE CGMs (Evita fallos por espacios o acentos en el JSON) ---
         function normalizeCgmName(cgmName) {
@@ -282,7 +414,6 @@
                 cgmMap.set(normalized, trimmed);
             } else {
                 const existing = cgmMap.get(normalized);
-                // Preferir formato tipo oración (capitalizado) sobre todo mayúsculas
                 if (existing === existing.toUpperCase() && trimmed !== trimmed.toUpperCase()) {
                     cgmMap.set(normalized, trimmed);
                 }
@@ -307,7 +438,19 @@
                 }
             }
             
-            // Caso 2: Formato extendido de zona horaria (ej: "Sat Feb 21 2026...")
+            // Caso 2: Formatos de fecha YYYY-MM-DD
+            const ymdRegex = /^(\d{4})-(\d{2})-(\d{2})$/;
+            const ymdMatch = dateStr.match(ymdRegex);
+            if (ymdMatch) {
+                const year = parseInt(ymdMatch[1], 10);
+                const month = parseInt(ymdMatch[2], 10) - 1;
+                const day = parseInt(ymdMatch[3], 10);
+                if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                    return new Date(year, month, day);
+                }
+            }
+
+            // Caso 3: Formato extendido de zona horaria (ej: "Sat Feb 21 2026...")
             const parts = dateStr.split(/\s+/);
             if (parts.length >= 4) {
                 const yearIndex = parts.findIndex(p => /^\d{4}$/.test(p));
@@ -359,22 +502,21 @@
             const parsed = parseDateCustom(fechaStr);
             if (!parsed) return '#19567C'; 
             
-            const diaSemana = parsed.getDay(); // 0 = Domingo, 1 = Lunes, etc.
+            const diaSemana = parsed.getDay(); 
             
             const coloresAzul = {
-                1: '#03045E', // Lunes - Azul Marino Oscuro
-                2: '#023E8A', // Martes - Azul Fuerte
-                3: '#0077B6', // Miércoles - Azul Medio
-                4: '#0096C7', // Jueves - Azul Celeste Oscuro
-                5: '#00B4D8', // Viernes - Celeste
-                6: '#48CAE4', // Sábado - Celeste Claro
-                0: '#90E0EF'  // Domingo - Cyan Muy Claro
+                1: '#03045E', // Lunes
+                2: '#023E8A', // Martes
+                3: '#0077B6', // Miércoles
+                4: '#0096C7', // Jueves
+                5: '#00B4D8', // Viernes
+                6: '#48CAE4', // Sábado
+                0: '#90E0EF'  // Domingo
             };
-            
             return coloresAzul[diaSemana] || '#19567C';
         }
 
-        // --- CONVERTIDOR DE HSL A HEXADECIMAL PARA MÁXIMA COMPATIBILIDAD ---
+        // --- CONVERTIDOR DE HSL A HEXADECIMAL ---
         function hslToHex(h, s, l) {
             l /= 100;
             const a = s * Math.min(l, 1 - l) / 100;
@@ -386,9 +528,9 @@
             return `#${f(0)}${f(8)}${f(4)}`;
         }
 
-        // --- GENERADOR DETERMINISTA DE 63 TONALIDADES DE VERDE DISTINTAS ---
+        // --- GENERADOR DETERMINISTA DE 63 TONALIDADES DE VERDE ---
         function getColorForRoute(ruta) {
-            if (!ruta) return '#10B981'; // Verde base
+            if (!ruta) return '#10B981'; 
             let hash = 0;
             const str = String(ruta);
             for (let i = 0; i < str.length; i++) {
@@ -396,13 +538,9 @@
             }
             hash = Math.abs(hash);
             
-            // Rango verde en HSL: 85 (amarillo-verde) a 155 (menta/esmeralda)
             const h = 85 + (hash % 71); 
-            // Saturación visible pero corporativa: 55% a 95%
             const s = 55 + (hash % 41);
-            // Luminosidad media para no perder contraste: 35% a 58%
             const l = 33 + (hash % 26);
-            
             return hslToHex(h, s, l);
         }
 
@@ -410,14 +548,14 @@
         function getCustomIcon(type, strokeColor = '#FFFFFF') {
             let bgColor, letter;
             if (type === 'ESCUELA') {
-                bgColor = '#F59E0B'; // Naranja
+                bgColor = '#F59E0B'; 
                 letter = 'E';
             } else if (type === 'POLIDEPORTIVO') {
-                bgColor = '#0EA5E9'; // Celeste
-                letter = 'D'; // Deportes / Predios / DOTA
+                bgColor = '#0EA5E9'; 
+                letter = 'D'; 
             } else {
-                bgColor = '#84CC16'; // Verde Lima
-                letter = 'P'; // Plaza/Parque
+                bgColor = '#84CC16'; 
+                letter = 'P'; 
             }
             
             const svg = `
@@ -452,11 +590,10 @@
                 opt.textContent = formattedName;
                 selectGlobalCgm.appendChild(opt);
             });
-            
             selectGlobalCgm.value = selectedVal;
         }
 
-        // --- ACTUALIZACIÓN DINÁMICA DEL SELECTOR DE BARRENDEROS BASADO EN EL CGM SELECCIONADO ---
+        // --- ACTUALIZACIÓN DINÁMICA DEL SELECTOR DE BARRENDEROS BASADO EN EL CGM ---
         function updateBarrenderoDropdown() {
             if (!barridoGeoJsonData) return;
 
@@ -472,7 +609,6 @@
                     const featCgm = getGeoJsonFeatureCgm(f);
                     const cleanFeatCgm = normalizeCgmName(featCgm);
 
-                    // Si el CGM global es "TODOS" o el CGM de la feature coincide con el filtrado global
                     if (globalCgm === "TODOS" || cleanFeatCgm === globalCgm) {
                         barrenderosSet.add(f.properties.BARRENDERO.trim());
                     }
@@ -489,7 +625,6 @@
                     selectBarrendero.appendChild(opt);
                 });
 
-                // Conservar selección si el barrendero sigue disponible en la lista filtrada, sino volver a TODOS
                 if (barrenderosSet.has(selectedVal)) {
                     selectBarrendero.value = selectedVal;
                 } else {
@@ -636,15 +771,16 @@
                 streetViewControl: false
             });
 
-            // --- REGISTRAR LOS LISTENERS DE CAMBIOS GLOBALES DE FORMA SEGURA Y ÚNICA ---
+            // --- REGISTRAR LOS LISTENERS DE CAMBIOS GLOBALES ---
             const selectGlobalCgm = document.getElementById('filtro-global-cgm');
             selectGlobalCgm.addEventListener('change', () => {
                 updateStyles();
                 updateCortesStyles();
-                updateBarrenderoDropdown(); // Se recalculan dinámicamente los barrenderos según la zona CGM elegida
+                updateBarrenderoDropdown(); 
                 updateBarridoStyles();
                 updateCoveliaStyles();
                 updateRecoleccionStyles();
+                updateRecorridosStyles();
             });
 
             const selectFecha = document.getElementById('filtro-fecha');
@@ -656,6 +792,20 @@
             selectBarrendero.addEventListener('change', () => {
                 updateBarridoStyles();
             });
+
+            const selectRecorridosFecha = document.getElementById('filtro-recorridos-fecha');
+            if (selectRecorridosFecha) {
+                selectRecorridosFecha.addEventListener('change', () => {
+                    updateRecorridosStyles();
+                });
+            }
+
+            const selectRecorridosDominio = document.getElementById('filtro-recorridos-dominio');
+            if (selectRecorridosDominio) {
+                selectRecorridosDominio.addEventListener('change', () => {
+                    updateRecorridosStyles();
+                });
+            }
 
             const noCache = '?v=' + new Date().getTime();
 
@@ -694,13 +844,14 @@
                 updateCgmDropdown();
                 updateStyles(); 
             }).catch(e => {
-                console.log('Aviso: CGM.geojson no cargado automáticamente (común si no se ejecuta bajo servidor CORS).');
+                console.log('Aviso: CGM.geojson no cargado automáticamente.');
                 document.getElementById('seccion-local-uploader').classList.remove('hidden');
             });
 
-            cgmLayer.setMap(map);
+            // Se sincroniza con el estado inicial del checkbox (checked por defecto)
+            cgmLayer.setMap(document.getElementById('cb-cgm').checked ? map : null);
 
-            // 3. Cargar Cortes de Pasto GeoJSON
+            // 3. Cargar Cortes de Pasto GeoJSON (Inicia deseleccionado)
             cortesLayer = new google.maps.Data();
             
             const procesarCortes = (geoJson) => {
@@ -765,10 +916,11 @@
                     document.getElementById('seccion-local-uploader').classList.remove('hidden');
                 });
 
-            cortesLayer.setMap(map);
+            // Se sincroniza con el estado inicial del checkbox (desmarcado por defecto)
+            cortesLayer.setMap(document.getElementById('cb-cortes').checked ? map : null);
 
 
-            // 4. Cargar Barrido GeoJSON (ZONAS BARRENDEROS MAYO 2026.geojson)
+            // 4. Cargar Barrido GeoJSON (ZONAS BARRENDEROS MAYO 2026.geojson) (Inicia deseleccionado)
             barridoLayer = new google.maps.Data();
 
             const procesarBarrido = (geoJson) => {
@@ -779,10 +931,8 @@
                 const sanitized = sanitizeGeoJson(geoJson);
                 barridoLayer.addGeoJson(sanitized);
 
-                // Almacenar globalmente para actualización dinámica de barrenderos según CGM
                 barridoGeoJsonData = geoJson;
 
-                // Registra los CGMs presentes en los datos de barrido
                 geoJson.features.forEach(f => {
                     const cgmValue = getGeoJsonFeatureCgm(f);
                     if (cgmValue) {
@@ -791,7 +941,7 @@
                 });
 
                 updateCgmDropdown();
-                updateBarrenderoDropdown(); // Carga de forma filtrada por el CGM activo
+                updateBarrenderoDropdown(); 
                 updateBarridoStyles();
             };
 
@@ -802,14 +952,15 @@
                 })
                 .then(procesarBarrido)
                 .catch(e => {
-                    console.log('ZONAS BARRENDEROS MAYO 2026.geojson no cargado automáticamente. Activando cargador manual.');
+                    console.log('ZONAS BARRENDEROS MAYO 2026.geojson no cargado automáticamente.');
                     document.getElementById('seccion-local-uploader').classList.remove('hidden');
                 });
 
-            barridoLayer.setMap(map);
+            // Se sincroniza con el estado inicial del checkbox (desmarcado por defecto)
+            barridoLayer.setMap(document.getElementById('cb-barrido').checked ? map : null);
 
 
-            // 5. Cargar Rutas Barrido Covelia GeoJSON (barrido.geojson) con tonalidades diferentes para cada una de las 63 rutas
+            // 5. Cargar Rutas Barrido Covelia en formato KML (barrido.kml) (Inicia deseleccionado)
             coveliaLayer = new google.maps.Data();
 
             const procesarCovelia = (geoJson) => {
@@ -820,24 +971,36 @@
                 const sanitized = sanitizeGeoJson(geoJson);
                 coveliaLayer.addGeoJson(sanitized);
 
+                geoJson.features.forEach(f => {
+                    const cgmValue = getGeoJsonFeatureCgm(f);
+                    if (cgmValue) {
+                        registerCgm(cgmValue);
+                    }
+                });
+
+                updateCgmDropdown();
                 updateCoveliaStyles();
             };
 
-            fetch('./barrido.geojson' + noCache)
+            fetch('./barrido.kml' + noCache)
                 .then(r => {
-                    if (!r.ok) throw new Error("Fallo el fetch remoto de Covelia");
-                    return r.json();
+                    if (!r.ok) throw new Error("Fallo el fetch remoto de KML de Covelia");
+                    return r.text();
                 })
-                .then(procesarCovelia)
+                .then(kmlText => {
+                    const parsedGeoJson = kmlToGeoJson(kmlText);
+                    procesarCovelia(parsedGeoJson);
+                })
                 .catch(e => {
-                    console.log('barrido.geojson no cargado automáticamente. Activando cargador manual.');
+                    console.log('barrido.kml no cargado automáticamente. Activando cargador manual.');
                     document.getElementById('seccion-local-uploader').classList.remove('hidden');
                 });
 
-            coveliaLayer.setMap(map);
+            // Se sincroniza con el estado inicial del checkbox (desmarcado por defecto)
+            coveliaLayer.setMap(document.getElementById('cb-covelia').checked ? map : null);
 
 
-            // 6. Cargar Covelia Recoleccion GeoJSON (Zonas Covelia Recoleccion.geojson)
+            // 6. Cargar Covelia Recoleccion GeoJSON (Zonas Covelia Recoleccion.geojson) (Inicia deseleccionado)
             recoleccionLayer = new google.maps.Data();
 
             const procesarRecoleccion = (geoJson) => {
@@ -887,25 +1050,112 @@
 
             fetch('./Zonas Covelia Recoleccion.geojson' + noCache)
                 .then(r => {
-                    if (!r.ok) throw new Error("Fallo el fetch remoto de Recoleccion");
+                    if (!r.ok) throw new Error("Fallo el fetch de Recoleccion");
                     return r.json();
                 })
                 .then(procesarRecoleccion)
                 .catch(e => {
-                    console.log('Zonas Covelia Recoleccion.geojson no cargado automáticamente. Activando cargador manual.');
+                    console.log('Zonas Covelia Recoleccion.geojson no cargado automáticamente.');
                     document.getElementById('seccion-local-uploader').classList.remove('hidden');
                 });
 
-            recoleccionLayer.setMap(map);
+            // Se sincroniza con el estado inicial del checkbox (desmarcado por defecto)
+            recoleccionLayer.setMap(document.getElementById('cb-recoleccion').checked ? map : null);
 
 
-            // --- EVENTO DE CARGA DE ARCHIVO MANUAL INTELIGENTE ---
+            // 7. Cargar Recorridos Mensuales GeoJSON (covelia_mensual_polylines.geojson) (Inicia deseleccionado)
+            recorridosLayer = new google.maps.Data();
+
+            const procesarRecorridos = (geoJson) => {
+                const featuresToRemove = [];
+                recorridosLayer.forEach(feat => featuresToRemove.push(feat));
+                featuresToRemove.forEach(feat => recorridosLayer.remove(feat));
+
+                const sanitized = sanitizeGeoJson(geoJson);
+                recorridosLayer.addGeoJson(sanitized);
+
+                const fechasSet = new Set();
+                const dominiosSet = new Set();
+
+                geoJson.features.forEach(f => {
+                    if (f.properties) {
+                        if (f.properties.Fecha) {
+                            fechasSet.add(formatDateToShow(f.properties.Fecha));
+                        }
+                        if (f.properties.Dominio) {
+                            dominiosSet.add(f.properties.Dominio.trim());
+                        }
+                    }
+                });
+
+                const selectFecha = document.getElementById('filtro-recorridos-fecha');
+                if (selectFecha) {
+                    const selectedVal = selectFecha.value;
+                    selectFecha.innerHTML = '<option value="TODAS">TODAS LAS FECHAS</option>';
+                    const sortedFechas = Array.from(fechasSet).sort((a, b) => {
+                        const d1 = parseDateCustom(a);
+                        const d2 = parseDateCustom(b);
+                        if (!d1) return 1;
+                        if (!d2) return -1;
+                        return d1 - d2;
+                    });
+                    sortedFechas.forEach(fecha => {
+                        const opt = document.createElement('option');
+                        opt.value = fecha;
+                        opt.textContent = fecha;
+                        selectFecha.appendChild(opt);
+                    });
+                    if (fechasSet.has(selectedVal)) {
+                        selectFecha.value = selectedVal;
+                    } else {
+                        selectFecha.value = "TODAS";
+                    }
+                }
+
+                const selectDominio = document.getElementById('filtro-recorridos-dominio');
+                if (selectDominio) {
+                    const selectedVal = selectDominio.value;
+                    selectDominio.innerHTML = '<option value="TODOS">TODOS LOS DOMINIOS</option>';
+                    const sortedDominios = Array.from(dominiosSet).sort();
+                    sortedDominios.forEach(dom => {
+                        const opt = document.createElement('option');
+                        opt.value = dom;
+                        opt.textContent = dom;
+                        selectDominio.appendChild(dom);
+                    });
+                    if (dominiosSet.has(selectedVal)) {
+                        selectDominio.value = selectedVal;
+                    } else {
+                        selectDominio.value = "TODOS";
+                    }
+                }
+
+                updateRecorridosStyles();
+            };
+
+            fetch('./covelia_mensual_polylines.geojson' + noCache)
+                .then(r => {
+                    if (!r.ok) throw new Error("Fallo el fetch de Recorridos");
+                    return r.json();
+                })
+                .then(procesarRecorridos)
+                .catch(e => {
+                    console.log('covelia_mensual_polylines.geojson no cargado automáticamente.');
+                    document.getElementById('seccion-local-uploader').classList.remove('hidden');
+                });
+
+            // Se sincroniza con el estado inicial del checkbox (desmarcado por defecto)
+            recorridosLayer.setMap(document.getElementById('cb-recorridos').checked ? map : null);
+
+
+            // --- EVENTO DE CARGA DE ARCHIVO MANUAL INTELIGENTE (Soporta GeoJSON y KML) ---
             const loadGeoJsonData = (geoJson) => {
                 const name = (geoJson.name || "").toLowerCase();
-                const isCgm = name.includes("cgm") || geoJson.features.some(f => f.geometry && (f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon') && !f.properties.Fecha_str && !f.properties.BARRENDERO && !f.properties.Ruta && !f.properties.RUTA);
+                const isCgm = name.includes("cgm") || geoJson.features.some(f => f.geometry && (f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon') && !f.properties.Fecha_str && !f.properties.BARRENDERO && !f.properties.Ruta && !f.properties.RUTA && !f.properties.Dominio);
                 const isBarrido = name.includes("barrendero") || name.includes("barrido.geojson") || geoJson.features.some(f => f.properties && f.properties.BARRENDERO);
-                const isCovelia = name.includes("covelia") || name.includes("barrido") || geoJson.features.some(f => f.properties && f.properties.Ruta);
+                const isCovelia = name.includes("covelia") || name.includes("barrido") || geoJson.features.some(f => f.properties && f.properties.Ruta && !f.properties.Dominio);
                 const isRecoleccion = name.includes("recoleccion") || geoJson.features.some(f => f.properties && f.properties.RUTA);
+                const isRecorridos = name.includes("recorridos") || name.includes("polylines") || geoJson.features.some(f => f.properties && f.properties.Dominio);
                 
                 if (isCgm) {
                     const featuresToRemoveCgm = [];
@@ -915,25 +1165,20 @@
                     cgmLayer.addGeoJson(geoJson);
                     geoJson.features.forEach(f => {
                         const cgmValue = getGeoJsonFeatureCgm(f);
-                        if (cgmValue) {
-                            registerCgm(cgmValue);
-                        }
+                        if (cgmValue) registerCgm(cgmValue);
                     });
                     updateCgmDropdown();
                     updateStyles();
-                    console.log("CGM.geojson cargado manualmente de forma exitosa.");
                 } else if (isBarrido) {
                     procesarBarrido(geoJson);
-                    console.log("ZONAS BARRENDEROS MAYO 2026.geojson cargado manualmente de forma exitosa.");
                 } else if (isCovelia) {
                     procesarCovelia(geoJson);
-                    console.log("barrido.geojson cargado manualmente de forma exitosa.");
                 } else if (isRecoleccion) {
                     procesarRecoleccion(geoJson);
-                    console.log("Zonas Covelia Recoleccion.geojson cargado manualmente de forma exitosa.");
+                } else if (isRecorridos) {
+                    procesarRecorridos(geoJson);
                 } else {
                     procesarCortes(geoJson);
-                    console.log("cortedepasto.geojson cargado manualmente de forma exitosa.");
                 }
             };
 
@@ -945,10 +1190,19 @@
                     const reader = new FileReader();
                     reader.onload = function(evt) {
                         try {
-                            const geoJson = JSON.parse(evt.target.result);
-                            loadGeoJsonData(geoJson);
+                            const rawText = evt.target.result;
+                            const lowerName = file.name.toLowerCase();
+                            
+                            // Si el usuario carga un KML localmente, lo transformamos primero a GeoJSON
+                            if (lowerName.endsWith('.kml')) {
+                                const geoJson = kmlToGeoJson(rawText);
+                                loadGeoJsonData(geoJson);
+                            } else {
+                                const geoJson = JSON.parse(rawText);
+                                loadGeoJsonData(geoJson);
+                            }
                         } catch(err) {
-                            console.error("Error al parsear el archivo GeoJSON:", err);
+                            console.error("Error al parsear el archivo cargado:", err);
                         }
                     };
                     reader.readAsText(file);
@@ -1003,14 +1257,12 @@
                     const dynamicDayColor = getColorPorDiaSemana(featFechaOriginal); 
                     let isVisible = true;
 
-                    // Filtro Global CGM
                     if (globalCgm !== "TODOS") {
                         if (cleanFeatCgm !== globalCgm) {
                             isVisible = false;
                         }
                     }
 
-                    // Filtro de Fecha
                     if (fechaFiltro !== "TODAS") {
                         if (featFechaClean !== fechaFiltro) {
                             isVisible = false;
@@ -1036,7 +1288,6 @@
                             visible: isVisible
                         };
                     } else {
-                        // Línea o Polígono
                         return {
                             fillColor: dynamicDayColor,
                             fillOpacity: 0.6,
@@ -1062,14 +1313,12 @@
                     const featBarrendero = feature.getProperty('BARRENDERO') ? feature.getProperty('BARRENDERO').trim() : "";
                     let isVisible = true;
 
-                    // Filtro Global CGM
                     if (globalCgm !== "TODOS") {
                         if (cleanFeatCgm !== globalCgm) {
                             isVisible = false;
                         }
                     }
 
-                    // Filtro específico de Barrendero
                     if (barrenderoFiltro !== "TODOS") {
                         if (featBarrendero !== barrenderoFiltro) {
                             isVisible = false;
@@ -1095,14 +1344,12 @@
                     const cleanFeatCgm = normalizeCgmName(featCgm);
                     let isVisible = true;
 
-                    // Filtro Global CGM aplicado a Covelia
                     if (globalCgm !== "TODOS") {
                         if (cleanFeatCgm !== globalCgm) {
                             isVisible = false;
                         }
                     }
 
-                    // Obtener la tonalidad de verde determinista para esta ruta específica de las 63 disponibles
                     const rutaNum = feature.getProperty('Ruta') || feature.getProperty('ruta') || feature.getProperty('RUTA') || "";
                     const dynamicGreen = getColorForRoute(rutaNum);
 
@@ -1129,14 +1376,12 @@
                     const featTurno = getFeatureTurnoProperty(feature);
                     let isVisible = true;
 
-                    // Filtro Global CGM aplicado si el registro tiene CGM especificado
                     if (globalCgm !== "TODOS" && cleanFeatCgm) {
                         if (cleanFeatCgm !== globalCgm) {
                             isVisible = false;
                         }
                     }
 
-                    // Filtro específico de Turno
                     if (turnoFiltro !== "TODOS") {
                         if (featTurno !== turnoFiltro) {
                             isVisible = false;
@@ -1155,7 +1400,44 @@
                 });
             }
 
-            // Ventanas Emergentes base para CGM, Cortes, Barrido, Covelia y Recoleccion
+            function updateRecorridosStyles() {
+                const fechaSelect = document.getElementById('filtro-recorridos-fecha');
+                const fechaFiltro = fechaSelect ? fechaSelect.value : "TODAS";
+
+                const dominioSelect = document.getElementById('filtro-recorridos-dominio');
+                const dominioFiltro = dominioSelect ? dominioSelect.value : "TODOS";
+
+                recorridosLayer.setStyle((feature) => {
+                    const featFechaOriginal = feature.getProperty('Fecha');
+                    const featFechaClean = formatDateToShow(featFechaOriginal);
+                    const featDominio = feature.getProperty('Dominio') ? feature.getProperty('Dominio').trim() : "";
+                    let isVisible = true;
+
+                    if (fechaFiltro !== "TODAS") {
+                        if (featFechaClean !== fechaFiltro) {
+                            isVisible = false;
+                        }
+                    }
+
+                    if (dominioFiltro !== "TODOS") {
+                        if (featDominio !== dominioFiltro) {
+                            isVisible = false;
+                        }
+                    }
+
+                    const dynamicGreen = getColorForRoute(featDominio || "");
+
+                    return {
+                        strokeColor: dynamicGreen,
+                        strokeWeight: 5,
+                        strokeOpacity: 0.9,
+                        zIndex: 4,
+                        visible: isVisible
+                    };
+                });
+            }
+
+            // Ventanas Emergentes base para CGM, Cortes, Barrido, Covelia, Recoleccion y Recorridos
             function bindPopup(layer, colorTitle, layerType = 'cgm') {
                 layer.addListener('click', function(event) {
                     let content = `<div style="font-family: 'Montserrat', sans-serif; min-width: 200px; position: relative;">`;
@@ -1197,7 +1479,6 @@
                                 content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Ubicación:</b> ${ubicacion}</p>`;
                             }
                         } else {
-                            // Líneas o Polígonos de Corte
                             content += `<h3 style="font-weight: 800; font-size: 14px; color: ${dynamicDayColor}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Recorrido de Corte</h3>`;
                             content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaCorteClean}</p>`;
                             content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${getFeatureCgmProperty(event.feature) || '-'}</p>`;
@@ -1223,7 +1504,6 @@
                             }
                         }
                     } else if (layerType === 'barrido') {
-                        // Información de Barrido Municipal
                         content += `<h3 style="font-weight: 800; font-size: 14px; color: var(--color-barrido); border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Barrido</h3>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Calle:</b> ${event.feature.getProperty('CALLE') || '-'}</p>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Barrendero:</b> ${event.feature.getProperty('BARRENDERO') || '-'}</p>`;
@@ -1232,11 +1512,9 @@
                         if (legajo !== undefined && legajo !== null && legajo !== "") {
                             content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Legajo:</b> ${legajo}</p>`;
                         }
-                        
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${getFeatureCgmProperty(event.feature) || '-'}</p>`;
 
                     } else if (layerType === 'covelia') {
-                        // Información de Zonas Covelia (Rutas de línea de barrido.geojson)
                         const ruta = event.feature.getProperty('Ruta') || event.feature.getProperty('ruta') || event.feature.getProperty('RUTA') || '-';
                         const dynamicGreen = getColorForRoute(ruta);
                         content += `<h3 style="font-weight: 800; font-size: 14px; color: ${dynamicGreen}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Barrido Covelia - Ruta ${ruta}</h3>`;
@@ -1249,7 +1527,6 @@
                             content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Extensión:</b> ${metros} m</p>`;
                         }
                     } else if (layerType === 'recoleccion') {
-                        // Información de Recolección Covelia
                         const ruta = event.feature.getProperty('RUTA') || '-';
                         content += `<h3 style="font-weight: 800; font-size: 14px; color: var(--color-recoleccion); border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Recolección Covelia - Ruta ${ruta}</h3>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Frecuencia semanal:</b> ${event.feature.getProperty('FRECUENCIA') || '-'}</p>`;
@@ -1261,17 +1538,26 @@
                         if (cgmVal) {
                             content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${cgmVal}</p>`;
                         }
+                    } else if (layerType === 'recorridos') {
+                        const dominio = event.feature.getProperty('Dominio') || '-';
+                        const dynamicColor = getColorForRoute(dominio);
+                        const fechaOriginal = event.feature.getProperty('Fecha');
+                        const fechaClean = formatDateToShow(fechaOriginal);
+                        const puntos = event.feature.getProperty('n_puntos') || '-';
+
+                        content += `<h3 style="font-weight: 800; font-size: 14px; color: ${dynamicColor}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Recorrido Covelia</h3>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Dominio:</b> ${dominio}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaClean}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Puntos Registrados:</b> ${puntos}</p>`;
                     } else { // CGM
                         content += `<h3 style="font-weight: 800; font-size: 14px; color: ${colorTitle}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">CGM: ${getFeatureCgmProperty(event.feature)}</h3>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Manzanas:</b> ${event.feature.getProperty('Manzanas') || '-'}</p>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Cuadras:</b> ${event.feature.getProperty('Cuadras') || '-'}</p>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Viviendas:</b> ${event.feature.getProperty('Viviendas') || '-'}</p>`;
                     }
-                    
                     content += `</div>`;
                     
                     infoWindow.setContent(content);
-                    
                     if (event.feature.getGeometry().getType() === 'Point') {
                         infoWindow.setPosition(event.feature.getGeometry().get());
                     } else {
@@ -1287,6 +1573,7 @@
             bindPopup(barridoLayer, 'var(--color-barrido)', 'barrido');
             bindPopup(coveliaLayer, 'var(--color-covelia)', 'covelia');
             bindPopup(recoleccionLayer, 'var(--color-recoleccion)', 'recoleccion');
+            bindPopup(recorridosLayer, 'var(--color-covelia)', 'recorridos');
 
             // Toggles de Capas
             document.getElementById('cb-limite').addEventListener('change', (e) => {
@@ -1312,6 +1599,10 @@
 
             document.getElementById('cb-recoleccion').addEventListener('change', (e) => {
                 e.target.checked ? recoleccionLayer.setMap(map) : recoleccionLayer.setMap(null);
+            });
+
+            document.getElementById('cb-recorridos').addEventListener('change', (e) => {
+                e.target.checked ? recorridosLayer.setMap(map) : recorridosLayer.setMap(null);
             });
         }
     </script>
