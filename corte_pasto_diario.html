@@ -188,6 +188,7 @@
         let coveliaLayer;
         let limiteElements = []; 
         const cgmMap = new Map(); // Mapa de CGM normalizado -> Nombre original para evitar duplicados en el select
+        let barridoGeoJsonData = null; // Almacenamiento global para los datos de barrido y filtrado dinámico
 
         // --- FUNCIÓN DE NORMALIZACIÓN DE CGMs (Evita fallos por espacios o acentos en el JSON) ---
         function normalizeCgmName(cgmName) {
@@ -387,6 +388,48 @@
             selectGlobalCgm.value = selectedVal;
         }
 
+        // --- ACTUALIZACIÓN DINÁMICA DEL SELECTOR DE BARRENDEROS BASADO EN EL CGM SELECCIONADO ---
+        function updateBarrenderoDropdown() {
+            if (!barridoGeoJsonData) return;
+
+            const globalCgmSelect = document.getElementById('filtro-global-cgm');
+            const globalCgm = globalCgmSelect ? globalCgmSelect.value : "TODOS";
+
+            const selectBarrendero = document.getElementById('filtro-barrendero');
+            const selectedVal = selectBarrendero ? selectBarrendero.value : "TODOS";
+
+            const barrenderosSet = new Set();
+            barridoGeoJsonData.features.forEach(f => {
+                if (f.properties && f.properties.BARRENDERO) {
+                    const featCgm = getGeoJsonFeatureCgm(f);
+                    const cleanFeatCgm = normalizeCgmName(featCgm);
+
+                    // Si el CGM global es "TODOS" o el CGM de la feature coincide con el filtrado global
+                    if (globalCgm === "TODOS" || cleanFeatCgm === globalCgm) {
+                        barrenderosSet.add(f.properties.BARRENDERO.trim());
+                    }
+                }
+            });
+
+            if (selectBarrendero) {
+                selectBarrendero.innerHTML = '<option value="TODOS">TODOS LOS BARRENDEROS</option>';
+                const sortedBarrenderos = Array.from(barrenderosSet).sort();
+                sortedBarrenderos.forEach(barrendero => {
+                    const opt = document.createElement('option');
+                    opt.value = barrendero;
+                    opt.textContent = barrendero;
+                    selectBarrendero.appendChild(opt);
+                });
+
+                // Conservar selección si el barrendero sigue disponible en la lista filtrada, sino volver a TODOS
+                if (barrenderosSet.has(selectedVal)) {
+                    selectBarrendero.value = selectedVal;
+                } else {
+                    selectBarrendero.value = "TODOS";
+                }
+            }
+        }
+
         // --- LIMPIEZA DE GEOJSON DAÑADO Y RECONSTRUCCIÓN DEFENSIVA ---
         function sanitizeGeoJson(geoJson) {
             if (!geoJson || !geoJson.features) return geoJson;
@@ -530,6 +573,7 @@
             selectGlobalCgm.addEventListener('change', () => {
                 updateStyles();
                 updateCortesStyles();
+                updateBarrenderoDropdown(); // Se recalculan dinámicamente los barrenderos según la zona CGM elegida
                 updateBarridoStyles();
                 updateCoveliaStyles();
             });
@@ -666,11 +710,11 @@
                 const sanitized = sanitizeGeoJson(geoJson);
                 barridoLayer.addGeoJson(sanitized);
 
-                const barrenderosSet = new Set();
+                // Almacenar globalmente para actualización dinámica de barrenderos según CGM
+                barridoGeoJsonData = geoJson;
+
+                // Registra los CGMs presentes en los datos de barrido
                 geoJson.features.forEach(f => {
-                    if (f.properties && f.properties.BARRENDERO) {
-                        barrenderosSet.add(f.properties.BARRENDERO.trim());
-                    }
                     const cgmValue = getGeoJsonFeatureCgm(f);
                     if (cgmValue) {
                         registerCgm(cgmValue);
@@ -678,25 +722,7 @@
                 });
 
                 updateCgmDropdown();
-
-                const selectBarrendero = document.getElementById('filtro-barrendero');
-                const selectedVal = selectBarrendero.value;
-                selectBarrendero.innerHTML = '<option value="TODOS">TODOS LOS BARRENDEROS</option>';
-
-                const sortedBarrenderos = Array.from(barrenderosSet).sort();
-                sortedBarrenderos.forEach(barrendero => {
-                    const opt = document.createElement('option');
-                    opt.value = barrendero;
-                    opt.textContent = barrendero;
-                    selectBarrendero.appendChild(opt);
-                });
-
-                if (barrenderosSet.has(selectedVal)) {
-                    selectBarrendero.value = selectedVal;
-                } else {
-                    selectBarrendero.value = "TODOS";
-                }
-
+                updateBarrenderoDropdown(); // Carga de forma filtrada por el CGM activo
                 updateBarridoStyles();
             };
 
