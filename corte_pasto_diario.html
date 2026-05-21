@@ -10,7 +10,7 @@
     
     <!-- Fuentes e Íconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght=300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
@@ -20,6 +20,7 @@
             --acento: #86EFAC;  /* Verde claro de acento */
             --azul-inst: #19567C;
             --color-barrido: #1E5E3A; /* Color verde institucional para Barrido */
+            --color-covelia: #10B981; /* Color verde esmeralda brillante para Covelia */
         }
 
         body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-main); color: var(--blanco); margin: 0; min-height: 100vh; }
@@ -751,6 +752,14 @@
                 const sanitized = sanitizeGeoJson(geoJson);
                 coveliaLayer.addGeoJson(sanitized);
 
+                geoJson.features.forEach(f => {
+                    const cgmValue = getGeoJsonFeatureCgm(f);
+                    if (cgmValue) {
+                        registerCgm(cgmValue);
+                    }
+                });
+
+                updateCgmDropdown();
                 updateCoveliaStyles();
             };
 
@@ -771,9 +780,9 @@
             // --- EVENTO DE CARGA DE ARCHIVO MANUAL INTELIGENTE ---
             const loadGeoJsonData = (geoJson) => {
                 const name = (geoJson.name || "").toLowerCase();
-                const isCgm = name.includes("cgm") || geoJson.features.some(f => f.geometry && (f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon') && !f.properties.Fecha_str && !f.properties.BARRENDERO && !f.properties.Zona);
+                const isCgm = name.includes("cgm") || geoJson.features.some(f => f.geometry && (f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon') && !f.properties.Fecha_str && !f.properties.BARRENDERO && !f.properties.Ruta);
                 const isBarrido = name.includes("barrendero") || name.includes("barrido") || geoJson.features.some(f => f.properties && f.properties.BARRENDERO);
-                const isCovelia = name.includes("covelia") || geoJson.features.some(f => f.properties && f.properties.Zona);
+                const isCovelia = name.includes("covelia") || geoJson.features.some(f => f.properties && f.properties.Ruta);
                 
                 if (isCgm) {
                     const featuresToRemoveCgm = [];
@@ -952,16 +961,27 @@
             }
 
             function updateCoveliaStyles() {
-                // Al no contener CGM específico de manera nativa, lo mostramos independientemente del CGM activo
+                const globalCgmSelect = document.getElementById('filtro-global-cgm');
+                const globalCgm = globalCgmSelect ? globalCgmSelect.value : "TODOS";
+
                 coveliaLayer.setStyle((feature) => {
+                    const featCgm = getFeatureCgmProperty(feature);
+                    const cleanFeatCgm = normalizeCgmName(featCgm);
+                    let isVisible = true;
+
+                    // Filtro Global CGM aplicado a Covelia
+                    if (globalCgm !== "TODOS") {
+                        if (cleanFeatCgm !== globalCgm) {
+                            isVisible = false;
+                        }
+                    }
+
                     return {
-                        fillColor: 'var(--color-barrido)',
-                        fillOpacity: 0.15,
-                        strokeColor: 'var(--color-barrido)',
-                        strokeWeight: 2,
-                        strokeOpacity: 0.8,
-                        zIndex: 2,
-                        visible: true
+                        strokeColor: 'var(--color-covelia)',
+                        strokeWeight: 4,
+                        strokeOpacity: 0.9,
+                        zIndex: 3,
+                        visible: isVisible
                     };
                 });
             }
@@ -1034,8 +1054,8 @@
                             }
                         }
                     } else if (layerType === 'barrido') {
-                        // Información de Barrido
-                        content += `<h3 style="font-weight: 800; font-size: 14px; color: var(--color-barrido); border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Barrido</h3>`;
+                        // Información de Barrido Municipal
+                        content += `<h3 style="font-weight: 800; font-size: 14px; color: var(--color-barrido); border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Barrido Municipal</h3>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Calle:</b> ${event.feature.getProperty('CALLE') || '-'}</p>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Barrendero:</b> ${event.feature.getProperty('BARRENDERO') || '-'}</p>`;
                         
@@ -1047,11 +1067,16 @@
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${getFeatureCgmProperty(event.feature) || '-'}</p>`;
 
                     } else if (layerType === 'covelia') {
-                        // Información de Zonas Covelia
-                        content += `<h3 style="font-weight: 800; font-size: 14px; color: var(--color-barrido); border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Zona Covelia: ${event.feature.getProperty('Zona') || '-'}</h3>`;
-                        const area = event.feature.getProperty('Area');
-                        if (area) {
-                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Superficie:</b> ${area} km²</p>`;
+                        // Información de Zonas Covelia (Nuevos datos de línea)
+                        const ruta = event.feature.getProperty('Ruta') || '-';
+                        content += `<h3 style="font-weight: 800; font-size: 14px; color: var(--color-covelia); border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Barrido Covelia - Ruta ${ruta}</h3>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${getFeatureCgmProperty(event.feature) || '-'}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Turno:</b> ${event.feature.getProperty('Turno') || '-'}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Frecuencia:</b> ${event.feature.getProperty('Frecuencia') || '-'}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Horario:</b> ${event.feature.getProperty('Horario') || '-'}</p>`;
+                        const metros = event.feature.getProperty('Metros');
+                        if (metros) {
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Extensión:</b> ${metros} m</p>`;
                         }
                     } else { // CGM
                         content += `<h3 style="font-weight: 800; font-size: 14px; color: ${colorTitle}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">CGM: ${getFeatureCgmProperty(event.feature)}</h3>`;
@@ -1077,7 +1102,7 @@
             bindPopup(cgmLayer, '#2A7E43', 'cgm');
             bindPopup(cortesLayer, '#19567C', 'corte');
             bindPopup(barridoLayer, 'var(--color-barrido)', 'barrido');
-            bindPopup(coveliaLayer, 'var(--color-barrido)', 'covelia');
+            bindPopup(coveliaLayer, 'var(--color-covelia)', 'covelia');
 
             // Toggles de Capas
             document.getElementById('cb-limite').addEventListener('change', (e) => {
