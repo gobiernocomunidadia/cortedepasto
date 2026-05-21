@@ -1010,14 +1010,14 @@
                 updateRecorridosStyles();
             };
 
-            fetch('./covelia_mensual_polylines.geojson' + noCache)
+            fetch('./covelia_mensual_polylines.geojson.gz' + noCache)
                 .then(r => {
                     if (!r.ok) throw new Error("Fallo el fetch de Recorridos");
                     return r.json();
                 })
                 .then(procesarRecorridos)
                 .catch(e => {
-                    console.log('covelia_mensual_polylines.geojson no cargado automáticamente.');
+                    console.log('covelia_mensual_polylines.geojson.gz no cargado automáticamente.');
                     document.getElementById('seccion-local-uploader').classList.remove('hidden');
                 });
 
