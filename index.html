@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Corte de Pasto - Lomas de Zamora</title>
+    <title>Mapa Ambiente Lomas - Lomas de Zamora</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,10 +15,13 @@
 
     <style>
         :root {
-            --bg-main: #2A7E43; /* Un tono verde acorde al corte de pasto */
+            --bg-main: #1E5E3A; /* Tono verde bosque corporativo para Ambiente */
             --blanco: #FFFFFF;
-            --acento: #7ED957;
+            --acento: #86EFAC;  /* Verde claro de acento */
             --azul-inst: #19567C;
+            --color-barrido: #1E5E3A; /* Color verde institucional para Barrido */
+            --color-covelia: #10B981; /* Color verde de respaldo para Covelia Barrido */
+            --color-recoleccion: #15803D; /* Color verde esmeralda profundo para Covelia Recolección */
         }
 
         body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-main); color: var(--blanco); margin: 0; min-height: 100vh; }
@@ -66,10 +69,10 @@
     <header class="bg-[var(--bg-main)] shadow-lg border-b-4 border-[var(--acento)] z-20 py-6 px-4 shrink-0">
         <div class="max-w-[1600px] mx-auto flex items-center justify-center gap-4">
             <div class="bg-white text-[var(--bg-main)] rounded-full h-14 w-14 flex items-center justify-center shadow-md">
-                <i class="fa-solid fa-leaf text-2xl"></i>
+                <i class="fa-solid fa-seedling text-2xl"></i>
             </div>
             <div class="flex flex-col">
-                <h1 class="text-3xl font-extrabold tracking-tight uppercase leading-none">Corte de Pasto</h1>
+                <h1 class="text-3xl font-extrabold tracking-tight uppercase leading-none">Mapa Ambiente Lomas</h1>
             </div>
         </div>
     </header>
@@ -79,7 +82,7 @@
         <aside class="w-full lg:w-80 bg-white rounded-xl shadow-md border border-[#E6EDF3] flex flex-col max-h-[calc(100vh-200px)] overflow-hidden shrink-0 z-20">
             <div class="p-4 border-b bg-[#F3F6F9] flex items-center gap-2">
                 <i data-lucide="filter" class="text-[var(--bg-main)] h-5 w-5"></i>
-                <h3 class="font-bold text-[#0F172A] uppercase text-sm">Filtros Operativos</h3>
+                <h3 class="font-bold text-[#0F172A] uppercase text-sm">Capas de Información</h3>
             </div>
             
             <div class="p-5 overflow-y-auto custom-scrollbar flex-1 space-y-6">
@@ -112,14 +115,75 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN: CORTES DE PASTO -->
-                <div class="bg-[var(--bg-main)]/10 p-3 rounded-lg border border-[var(--bg-main)]/30">
-                    <h4 class="text-xs font-extrabold text-[var(--bg-main)] uppercase mb-3 flex items-center gap-2">
-                        <i data-lucide="scissors" class="h-4 w-4"></i> Cortes de Pasto
+                <!-- SECCIÓN: BARRIDO (Inicia desmarcado) -->
+                <div class="bg-[var(--color-barrido)]/10 p-3 rounded-lg border border-[var(--color-barrido)]/30">
+                    <h4 class="text-xs font-extrabold text-[var(--color-barrido)] uppercase mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-broom text-sm"></i> Barrido
                     </h4>
                     <div class="space-y-3">
                         <label class="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" id="cb-cortes" checked class="w-4 h-4 accent-[var(--bg-main)]">
+                            <input type="checkbox" id="cb-barrido" class="w-4 h-4 accent-[var(--color-barrido)]">
+                            <span class="text-sm text-[#0F172A] font-bold">Ver Barrido</span>
+                        </label>
+                        <div class="flex flex-col gap-1 mt-2 pl-7 mb-3">
+                            <label class="text-xs font-semibold text-gray-600">Filtrar por Barrendero:</label>
+                            <select id="filtro-barrendero" class="w-full text-xs p-1.5 border border-gray-300 rounded focus:outline-none focus:border-[var(--color-barrido)] font-semibold text-[#0F172A] cursor-pointer">
+                                <option value="TODOS">TODOS LOS BARRENDEROS</option>
+                                <!-- Se llena dinámicamente -->
+                            </select>
+                        </div>
+                        
+                        <!-- CAPA: RUTAS BARRIDO COVELIA (Inicia desmarcado) -->
+                        <label class="flex items-center gap-3 cursor-pointer pt-3 border-t border-[var(--color-barrido)]/20">
+                            <input type="checkbox" id="cb-covelia" class="w-4 h-4 accent-[var(--color-barrido)]">
+                            <span class="text-sm text-[#0F172A] font-bold">Rutas Barrido Covelia</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN: COVELIA RECOLECCIÓN (Inicia desmarcado) -->
+                <div class="bg-[var(--color-recoleccion)]/10 p-3 rounded-lg border border-[var(--color-recoleccion)]/30">
+                    <h4 class="text-xs font-extrabold text-[var(--color-recoleccion)] uppercase mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-truck text-sm"></i> Covelia Recolección
+                    </h4>
+                    <div class="space-y-3">
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" id="cb-recoleccion" class="w-4 h-4 accent-[var(--color-recoleccion)]">
+                            <span class="text-sm text-[#0F172A] font-bold">Rutas Recoleccion Covelia</span>
+                        </label>
+
+                        <!-- SUB-CAPA: RECORRIDOS (Inicia desmarcado) -->
+                        <div class="pt-3 border-t border-[var(--color-recoleccion)]/20 mt-3 space-y-3">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" id="cb-recorridos" class="w-4 h-4 accent-[var(--color-recoleccion)]">
+                                <span class="text-sm text-[#0F172A] font-bold">Recorridos Covelia</span>
+                            </label>
+                            <div class="flex flex-col gap-1 pl-7">
+                                <label class="text-xs font-semibold text-gray-600">Filtrar por Fecha:</label>
+                                <select id="filtro-recorridos-fecha" class="w-full text-xs p-1.5 border border-gray-300 rounded focus:outline-none focus:border-[var(--color-recoleccion)] font-semibold text-[#0F172A] cursor-pointer">
+                                    <option value="TODAS">TODAS LAS FECHAS</option>
+                                    <!-- Se llena dinámicamente -->
+                                </select>
+                            </div>
+                            <div class="flex flex-col gap-1 pl-7">
+                                <label class="text-xs font-semibold text-gray-600">Filtrar por Dominio:</label>
+                                <select id="filtro-recorridos-dominio" class="w-full text-xs p-1.5 border border-gray-300 rounded focus:outline-none focus:border-[var(--color-recoleccion)] font-semibold text-[#0F172A] cursor-pointer">
+                                    <option value="TODOS">TODOS LOS DOMINIOS</option>
+                                    <!-- Se llena dinámicamente -->
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN: CORTES DE PASTO (Inicia desmarcado) -->
+                <div class="bg-[var(--bg-main)]/10 p-3 rounded-lg border border-[var(--bg-main)]/30">
+                    <h4 class="text-xs font-extrabold text-[var(--bg-main)] uppercase mb-3 flex items-center gap-2">
+                        <i data-lucide="scissors" class="h-4 w-4"></i> Corte de Pasto
+                    </h4>
+                    <div class="space-y-3">
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" id="cb-cortes" class="w-4 h-4 accent-[var(--bg-main)]">
                             <span class="text-sm text-[#0F172A] font-bold">Ver Cortes de Pasto</span>
                         </label>
                         <div class="flex flex-col gap-1 mt-2 pl-7">
@@ -130,6 +194,15 @@
                             </select>
                         </div>
                     </div>
+                </div>
+
+                <!-- SECCIÓN RESPALDO: CARGADOR MANUAL LOCAL (Se activa si el CORS bloquea la carga local) -->
+                <div id="seccion-local-uploader" class="bg-amber-500/10 p-3 rounded-lg border border-amber-500/30 hidden">
+                    <h4 class="text-xs font-extrabold text-amber-700 uppercase mb-2 flex items-center gap-2">
+                        <i data-lucide="upload-cloud" class="h-4 w-4"></i> Cargar GeoJSON Local
+                    </h4>
+                    <p class="text-[10px] text-gray-600 mb-2">Para ver el mapa offline o local sin servidor CORS, selecciona tus archivos manualmente (.geojson, .json):</p>
+                    <input type="file" id="input-geojson-local" accept=".geojson, .json" class="w-full text-xs text-[#0F172A] file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700 cursor-pointer" multiple>
                 </div>
 
             </div>
@@ -148,50 +221,242 @@
         let infoWindowTimer;
         let cgmLayer;
         let cortesLayer;
+        let barridoLayer;
+        let coveliaLayer;
+        let recoleccionLayer;
+        let recorridosLayer; 
         let limiteElements = []; 
+        const cgmMap = new Map(); // Mapa de CGM normalizado -> Nombre original para evitar duplicados en el select
+        let barridoGeoJsonData = null; // Almacenamiento global para los datos de barrido y filtrado dinámico
+        let recoleccionGeoJsonData = null; // Almacenamiento global para recolección
+
+        // --- FUNCIÓN DE NORMALIZACIÓN DE CGMs (Evita fallos por espacios o acentos en el JSON) ---
+        function normalizeCgmName(cgmName) {
+            if (!cgmName) return "";
+            return cgmName
+                .trim()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "") 
+                .toUpperCase();
+        }
+
+        // --- FUNCIÓN DE BÚSQUEDA DE PROPIEDAD CGM INSENSIBLE A MAYÚSCULAS/MINÚSCULAS ---
+        function getFeatureCgmProperty(feature) {
+            if (!feature) return "";
+            let cgm = feature.getProperty('CGM');
+            if (cgm !== undefined && cgm !== null) return String(cgm);
+            cgm = feature.getProperty('cgm');
+            if (cgm !== undefined && cgm !== null) return String(cgm);
+            cgm = feature.getProperty('Cgm');
+            if (cgm !== undefined && cgm !== null) return String(cgm);
+            
+            let found = "";
+            if (typeof feature.forEachProperty === 'function') {
+                feature.forEachProperty((val, key) => {
+                    if (key.toLowerCase() === 'cgm') {
+                        found = String(val);
+                    }
+                });
+            }
+            return found;
+        }
+
+        function getGeoJsonFeatureCgm(f) {
+            if (!f || !f.properties) return "";
+            if (f.properties.CGM) return f.properties.CGM;
+            if (f.properties.cgm) return f.properties.cgm;
+            if (f.properties.Cgm) return f.properties.Cgm;
+            
+            for (let key in f.properties) {
+                if (key.toLowerCase() === 'cgm') {
+                    return f.properties[key];
+                }
+            }
+            return "";
+        }
+
+        // --- FUNCIÓN DE BÚSQUEDA DE PROPIEDAD TURNO INSENSIBLE A MAYÚSCULAS ---
+        function getFeatureTurnoProperty(feature) {
+            if (!feature) return "";
+            let turno = feature.getProperty('TURNO');
+            if (turno !== undefined && turno !== null) return String(turno).trim();
+            turno = feature.getProperty('turno');
+            if (turno !== undefined && turno !== null) return String(turno).trim();
+            turno = feature.getProperty('Turno');
+            if (turno !== undefined && turno !== null) return String(turno).trim();
+            return "";
+        }
+
+        // --- REGISTRAR CGM DE FORMA ÚNICA ---
+        function registerCgm(cgmName) {
+            if (!cgmName) return;
+            const trimmed = cgmName.trim();
+            if (!trimmed) return;
+            const normalized = normalizeCgmName(trimmed);
+            
+            if (!cgmMap.has(normalized)) {
+                cgmMap.set(normalized, trimmed);
+            } else {
+                const existing = cgmMap.get(normalized);
+                if (existing === existing.toUpperCase() && trimmed !== trimmed.toUpperCase()) {
+                    cgmMap.set(normalized, trimmed);
+                }
+            }
+        }
+
+        // --- PARSEO LITERAL DE FECHAS SEGURO ---
+        function parseDateCustom(dateStr) {
+            if (!dateStr) return null;
+            dateStr = dateStr.trim();
+            
+            // Caso 1: Formato DD/MM/YYYY o D/M/YYYY
+            if (dateStr.includes('/')) {
+                const parts = dateStr.split('/');
+                if (parts.length === 3) {
+                    const day = parseInt(parts[0], 10);
+                    const month = parseInt(parts[1], 10) - 1; 
+                    const year = parseInt(parts[2], 10);
+                    if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                        return new Date(year, month, day);
+                    }
+                }
+            }
+            
+            // Caso 2: Formatos de fecha YYYY-MM-DD
+            const ymdRegex = /^(\d{4})-(\d{2})-(\d{2})$/;
+            const ymdMatch = dateStr.match(ymdRegex);
+            if (ymdMatch) {
+                const year = parseInt(ymdMatch[1], 10);
+                const month = parseInt(ymdMatch[2], 10) - 1;
+                const day = parseInt(ymdMatch[3], 10);
+                if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                    return new Date(year, month, day);
+                }
+            }
+
+            // Caso 3: Formato extendido de zona horaria (ej: "Sat Feb 21 2026...")
+            const parts = dateStr.split(/\s+/);
+            if (parts.length >= 4) {
+                const yearIndex = parts.findIndex(p => /^\d{4}$/.test(p));
+                if (yearIndex !== -1) {
+                    const year = parseInt(parts[yearIndex], 10);
+                    const dayIndex = parts.findIndex((p, idx) => /^\d{1,2}$/.test(p) && idx !== yearIndex);
+                    if (dayIndex !== -1) {
+                        const day = parseInt(parts[dayIndex], 10);
+                        const monthsMap = {
+                            jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11,
+                            ene: 0, abr: 3, ago: 7, dic: 11
+                        };
+                        let month = -1;
+                        for (let p of parts) {
+                            const cleanP = p.toLowerCase().substring(0, 3);
+                            if (monthsMap[cleanP] !== undefined) {
+                                month = monthsMap[cleanP];
+                                break;
+                            }
+                        }
+                        if (month !== -1 && !isNaN(day) && !isNaN(year)) {
+                            return new Date(year, month, day);
+                        }
+                    }
+                }
+            }
+            
+            // Fallback
+            const cleanStr = dateStr.replace(/\s*\(.*\)\s*/, '').trim();
+            const d = new Date(cleanStr);
+            if (!isNaN(d.getTime())) {
+                return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            }
+            return null;
+        }
+
+        function formatDateToShow(dateStr) {
+            if (!dateStr) return '-';
+            const parsed = parseDateCustom(dateStr);
+            if (!parsed) return dateStr;
+            const day = String(parsed.getDate()).padStart(2, '0');
+            const month = String(parsed.getMonth() + 1).padStart(2, '0');
+            const year = parsed.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
         
-        // --- FUNCIÓN DE COLORES POR DÍA PARA CORTES (GAMA AZULES CORPORATIVOS) ---
+        // --- FUNCIÓN DE COLORES POR DÍA (GAMA AZULES CORPORATIVOS) ---
         function getColorPorDiaSemana(fechaStr) {
-            if (!fechaStr) return '#19567C'; 
+            const parsed = parseDateCustom(fechaStr);
+            if (!parsed) return '#19567C'; 
             
-            const partes = fechaStr.split('/');
-            if (partes.length !== 3) return '#19567C';
-            
-            const dia = parseInt(partes[0], 10);
-            const mes = parseInt(partes[1], 10) - 1; 
-            const anio = parseInt(partes[2], 10);
-            
-            const fechaObj = new Date(anio, mes, dia);
-            const diaSemana = fechaObj.getDay(); 
+            const diaSemana = parsed.getDay(); 
             
             const coloresAzul = {
-                1: '#03045E', // Lunes - Azul Marino Oscuro
-                2: '#023E8A', // Martes - Azul Fuerte
-                3: '#0077B6', // Miércoles - Azul Medio
-                4: '#0096C7', // Jueves - Azul Celeste Oscuro
-                5: '#00B4D8', // Viernes - Celeste
-                6: '#48CAE4', // Sábado - Celeste Claro
-                0: '#90E0EF'  // Domingo - Cyan Muy Claro
+                1: '#03045E', // Lunes
+                2: '#023E8A', // Martes
+                3: '#0077B6', // Miércoles
+                4: '#0096C7', // Jueves
+                5: '#00B4D8', // Viernes
+                6: '#48CAE4', // Sábado
+                0: '#90E0EF'  // Domingo
             };
-            
             return coloresAzul[diaSemana] || '#19567C';
         }
 
-        // --- GENERADOR DE ICONOS INTELIGENTE (PLAZAS/ESCUELAS) ---
+        // --- CONVERTIDOR DE HSL A HEXADECIMAL ---
+        function hslToHex(h, s, l) {
+            l /= 100;
+            const a = s * Math.min(l, 1 - l) / 100;
+            const f = n => {
+                const k = (n + h / 30) % 12;
+                const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                return Math.round(255 * color).toString(16).padStart(2, '0');
+            };
+            return `#${f(0)}${f(8)}${f(4)}`;
+        }
+
+        // --- GENERADOR DETERMINISTA DE 63 TONALIDADES DE VERDE ---
+        function getColorForRoute(ruta) {
+            if (!ruta) return '#10B981'; 
+            let hash = 0;
+            const str = String(ruta);
+            for (let i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            hash = Math.abs(hash);
+            
+            const h = 85 + (hash % 71); 
+            const s = 55 + (hash % 41);
+            const l = 33 + (hash % 26);
+            return hslToHex(h, s, l);
+        }
+
+        // --- GAMA DE VERDES CORPORATIVOS POR TIPO DE TURNO PARA RECOLECCIÓN (MAÑANA, NOCHE, FERIAS) ---
+        function getRecoleccionColor(turno) {
+            if (!turno) return '#15803D'; // Verde esmeralda por defecto
+            const cleanTurno = turno.trim().toUpperCase();
+            
+            if (cleanTurno.includes('MAÑANA') || cleanTurno.includes('DIA')) {
+                return '#22C55E'; // Verde Brillante / Mañana (Green-500)
+            } else if (cleanTurno.includes('NOCHE')) {
+                return '#166534'; // Verde Bosque Profundo / Noche (Green-800)
+            } else if (cleanTurno.includes('FERIA')) {
+                return '#84CC16'; // Verde Limón Ecológico / Ferias (Lime-500)
+            }
+            return '#15803D'; // Verde corporativo estándar
+        }
+
+        // --- GENERADOR DE ICONOS INTELIGENTE (PLAZAS/ESCUELAS/PREDIOS) ---
         function getCustomIcon(type, strokeColor = '#FFFFFF') {
             let bgColor, letter;
             if (type === 'ESCUELA') {
-                bgColor = '#F59E0B'; // Naranja
+                bgColor = '#F59E0B'; 
                 letter = 'E';
             } else if (type === 'POLIDEPORTIVO') {
-                bgColor = '#0EA5E9'; // Celeste
-                letter = 'D'; // Deportes
+                bgColor = '#0EA5E9'; 
+                letter = 'D'; 
             } else {
-                bgColor = '#84CC16'; // Verde Lima
-                letter = 'P'; // Plaza/Parque
+                bgColor = '#84CC16'; 
+                letter = 'P'; 
             }
             
-            // El trazo exterior del ícono tomará el color azul del día de la semana
             const svg = `
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                     <circle cx="12" cy="12" r="10" fill="${bgColor}" stroke="${strokeColor}" stroke-width="3"/>
@@ -202,6 +467,160 @@
                 url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
                 scaledSize: new google.maps.Size(24, 24),
                 anchor: new google.maps.Point(12, 12)
+            };
+        }
+
+        // --- ACTUALIZACIÓN DINÁMICA DEL SELECTOR DE CGMs ---
+        function updateCgmDropdown() {
+            const selectGlobalCgm = document.getElementById('filtro-global-cgm');
+            const selectedVal = selectGlobalCgm.value;
+            
+            selectGlobalCgm.innerHTML = '<option value="TODOS">TODOS LOS CGM</option>';
+            
+            const sortedNormalized = Array.from(cgmMap.keys()).sort((a, b) => {
+                return cgmMap.get(a).localeCompare(cgmMap.get(b));
+            });
+
+            sortedNormalized.forEach(normalized => {
+                const properName = cgmMap.get(normalized);
+                const opt = document.createElement('option');
+                opt.value = normalized;
+                const formattedName = properName.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+                opt.textContent = formattedName;
+                selectGlobalCgm.appendChild(opt);
+            });
+            selectGlobalCgm.value = selectedVal;
+        }
+
+        // --- ACTUALIZACIÓN DINÁMICA DEL SELECTOR DE BARRENDEROS BASADO EN EL CGM ---
+        function updateBarrenderoDropdown() {
+            if (!barridoGeoJsonData) return;
+
+            const globalCgmSelect = document.getElementById('filtro-global-cgm');
+            const globalCgm = globalCgmSelect ? globalCgmSelect.value : "TODOS";
+
+            const selectBarrendero = document.getElementById('filtro-barrendero');
+            const selectedVal = selectBarrendero ? selectBarrendero.value : "TODOS";
+
+            const barrenderosSet = new Set();
+            barridoGeoJsonData.features.forEach(f => {
+                if (f.properties && f.properties.BARRENDERO) {
+                    const featCgm = getGeoJsonFeatureCgm(f);
+                    const cleanFeatCgm = normalizeCgmName(featCgm);
+
+                    if (globalCgm === "TODOS" || cleanFeatCgm === globalCgm) {
+                        barrenderosSet.add(f.properties.BARRENDERO.trim());
+                    }
+                }
+            });
+
+            if (selectBarrendero) {
+                selectBarrendero.innerHTML = '<option value="TODOS">TODOS LOS BARRENDEROS</option>';
+                const sortedBarrenderos = Array.from(barrenderosSet).sort();
+                sortedBarrenderos.forEach(barrendero => {
+                    const opt = document.createElement('option');
+                    opt.value = barrendero;
+                    opt.textContent = barrendero;
+                    selectBarrendero.appendChild(opt);
+                });
+
+                if (barrenderosSet.has(selectedVal)) {
+                    selectBarrendero.value = selectedVal;
+                } else {
+                    selectBarrendero.value = "TODOS";
+                }
+            }
+        }
+
+        // --- ACTUALIZACIÓN DINÁMICA DEL SELECTOR DE BARRENDEROS COVELIA Y SUS TURNOS ---
+        function updateBarrenderoDropdownCovelia() {
+            // No se requiere filtro de barrendero individual para Covelia por el momento
+        }
+
+        // --- LIMPIEZA DE GEOJSON DAÑADO Y RECONSTRUCCIÓN DEFENSIVA ---
+        function sanitizeGeoJson(geoJson) {
+            if (!geoJson || !geoJson.features) return geoJson;
+            
+            const sanitizedFeatures = geoJson.features.map(feature => {
+                if (!feature.geometry || !feature.geometry.coordinates) return feature;
+                
+                const type = feature.geometry.type;
+                const coords = feature.geometry.coordinates;
+                
+                try {
+                    if (type === 'Point') {
+                        if (!Array.isArray(coords) || coords.length < 2 || coords[0] === null || coords[1] === null || isNaN(coords[0]) || isNaN(coords[1])) {
+                            feature.geometry = null;
+                        }
+                    } else if (type === 'LineString' || type === 'MultiPoint') {
+                        if (Array.isArray(coords)) {
+                            const clean = coords.filter(c => Array.isArray(c) && c.length >= 2 && c[0] !== null && c[1] !== null && !isNaN(c[0]) && !isNaN(c[1]));
+                            if (clean.length >= 2) {
+                                feature.geometry.coordinates = clean;
+                            } else if (clean.length === 1) {
+                                feature.geometry.type = 'Point';
+                                feature.geometry.coordinates = clean[0];
+                            } else {
+                                feature.geometry = null;
+                            }
+                        } else {
+                            feature.geometry = null;
+                        }
+                    } else if (type === 'Polygon' || type === 'MultiLineString') {
+                        if (Array.isArray(coords)) {
+                            const cleanRings = coords.map(ring => {
+                                if (!Array.isArray(ring)) return [];
+                                return ring.filter(c => Array.isArray(c) && c.length >= 2 && c[0] !== null && c[1] !== null && !isNaN(c[0]) && !isNaN(c[1]));
+                            }).filter(ring => ring.length > 0);
+                            
+                            if (cleanRings.length > 0) {
+                                const mainRing = cleanRings[0];
+                                if (mainRing.length >= 3 && type === 'Polygon') {
+                                    feature.geometry.coordinates = cleanRings;
+                                } else if (mainRing.length >= 2) {
+                                    feature.geometry.type = 'LineString';
+                                    feature.geometry.coordinates = mainRing;
+                                } else if (mainRing.length === 1) {
+                                    feature.geometry.type = 'Point';
+                                    feature.geometry.coordinates = mainRing[0];
+                                } else {
+                                    feature.geometry = null;
+                                }
+                            } else {
+                                feature.geometry = null;
+                            }
+                        } else {
+                            feature.geometry = null;
+                        }
+                    } else if (type === 'MultiPolygon') {
+                        if (Array.isArray(coords)) {
+                            const cleanPolys = coords.map(poly => {
+                                if (!Array.isArray(poly)) return [];
+                                return poly.map(ring => {
+                                    if (!Array.isArray(ring)) return [];
+                                    return ring.filter(c => Array.isArray(c) && c.length >= 2 && c[0] !== null && c[1] !== null && !isNaN(c[0]) && !isNaN(c[1]));
+                                }).filter(ring => ring.length > 0);
+                            }).filter(poly => poly.length > 0);
+                            
+                            if (cleanPolys.length > 0) {
+                                feature.geometry.coordinates = cleanPolys;
+                            } else {
+                                feature.geometry = null;
+                            }
+                        } else {
+                            feature.geometry = null;
+                        }
+                    }
+                } catch (err) {
+                    console.error("Error sanitizando geometría:", err);
+                    feature.geometry = null;
+                }
+                return feature;
+            }).filter(f => f.geometry !== null && f.geometry !== undefined);
+
+            return {
+                ...geoJson,
+                features: sanitizedFeatures
             };
         }
 
@@ -253,20 +672,58 @@
                 zoom: 13,
                 styles: mapStyle,
                 mapTypeControl: false,
-                streetViewControl: false
+                streetViewControl: true // Habilitamos la visualización y drag del Pegman para Street View
             });
 
+            // --- REGISTRAR LOS LISTENERS DE CAMBIOS GLOBALES ---
+            const selectGlobalCgm = document.getElementById('filtro-global-cgm');
+            selectGlobalCgm.addEventListener('change', () => {
+                updateStyles();
+                updateCortesStyles();
+                updateBarrenderoDropdown(); 
+                updateBarridoStyles();
+                updateCoveliaStyles();
+                updateRecoleccionStyles();
+                updateRecorridosStyles();
+            });
+
+            const selectFecha = document.getElementById('filtro-fecha');
+            selectFecha.addEventListener('change', () => {
+                updateCortesStyles();
+            });
+
+            const selectBarrendero = document.getElementById('filtro-barrendero');
+            selectBarrendero.addEventListener('change', () => {
+                updateBarridoStyles();
+            });
+
+            const selectRecorridosFecha = document.getElementById('filtro-recorridos-fecha');
+            if (selectRecorridosFecha) {
+                selectRecorridosFecha.addEventListener('change', () => {
+                    updateRecorridosStyles();
+                });
+            }
+
+            const selectRecorridosDominio = document.getElementById('filtro-recorridos-dominio');
+            if (selectRecorridosDominio) {
+                selectRecorridosDominio.addEventListener('change', () => {
+                    updateRecorridosStyles();
+                });
+            }
+
+            const noCache = '?v=' + new Date().getTime();
+
             // 1. Límite Lomas (Línea Punteada)
-            fetch('./municipios_Lomas de Zamora.geojson').then(r => r.json()).then(geoJson => {
+            fetch('./municipios_Lomas de Zamora.geojson' + noCache).then(r => r.json()).then(geoJson => {
                 geoJson.features.forEach(feature => {
                     if (feature.geometry.type === 'MultiPolygon' || feature.geometry.type === 'Polygon') {
                         const polys = feature.geometry.type === 'Polygon' ? [feature.geometry.coordinates] : feature.geometry.coordinates;
                         polys.forEach(poly => {
                             poly.forEach(ring => {
                                 const path = ring.map(coord => ({ lat: coord[1], lng: coord[0] }));
-                                const p = new google.maps.Polygon({ paths: path, strokeOpacity: 0, fillColor: '#2A7E43', fillOpacity: 0.03, map: map, zIndex: 2 });
+                                const p = new google.maps.Polygon({ paths: path, strokeOpacity: 0, fillColor: '#1E5E3A', fillOpacity: 0.03, map: map, zIndex: 2 });
                                 const lineSymbol = { path: 'M 0,-1 0,1', strokeOpacity: 1, scale: 3 };
-                                const l = new google.maps.Polyline({ path: path, strokeOpacity: 0, icons: [{ icon: lineSymbol, offset: '0', repeat: '15px' }], strokeColor: '#2A7E43', strokeWeight: 3, map: map, zIndex: 3 });
+                                const l = new google.maps.Polyline({ path: path, strokeOpacity: 0, icons: [{ icon: lineSymbol, offset: '0', repeat: '15px' }], strokeColor: '#1E5E3A', strokeWeight: 3, map: map, zIndex: 3 });
                                 limiteElements.push(p, l);
                             });
                         });
@@ -276,66 +733,350 @@
 
             // 2. Cargar CGM GeoJSON
             cgmLayer = new google.maps.Data();
-            fetch('./CGM.geojson').then(r => r.json()).then(geoJson => {
+            fetch('./CGM.geojson' + noCache).then(r => {
+                if(!r.ok) throw new Error("Fallo la carga de CGM.geojson");
+                return r.json();
+            }).then(geoJson => {
                 cgmLayer.addGeoJson(geoJson);
                 
-                const cgmSet = new Set();
                 geoJson.features.forEach(f => {
-                    if (f.properties && f.properties.CGM) cgmSet.add(f.properties.CGM.toUpperCase());
+                    const cgmValue = getGeoJsonFeatureCgm(f);
+                    if (cgmValue) {
+                        registerCgm(cgmValue);
+                    }
                 });
-                
-                const selectGlobalCgm = document.getElementById('filtro-global-cgm');
-                Array.from(cgmSet).sort().forEach(cgm => {
-                    const opt = document.createElement('option');
-                    opt.value = cgm;
-                    opt.textContent = cgm;
-                    selectGlobalCgm.appendChild(opt);
-                });
-                
-                selectGlobalCgm.addEventListener('change', () => {
-                    updateStyles();
-                    if(typeof updateCortesStyles === 'function') updateCortesStyles();
-                });
-
+                updateCgmDropdown();
                 updateStyles(); 
-            }).catch(e => console.log('Error cargando CGM:', e));
+            }).catch(e => {
+                console.log('Aviso: CGM.geojson no cargado automáticamente.');
+                document.getElementById('seccion-local-uploader').classList.remove('hidden');
+            });
 
-            cgmLayer.setMap(map);
+            // Se sincroniza con el estado inicial del checkbox (checked por defecto)
+            cgmLayer.setMap(document.getElementById('cb-cgm').checked ? map : null);
 
-            // 3. Cargar Cortes de Pasto GeoJSON (Líneas, Polígonos y Puntos juntos)
+            // 3. Cargar Cortes de Pasto GeoJSON (Inicia deseleccionado)
             cortesLayer = new google.maps.Data();
-            fetch('./cortedepasto.geojson').then(r => r.json()).then(geoJson => {
-                cortesLayer.addGeoJson(geoJson);
+            
+            const procesarCortes = (geoJson) => {
+                const featuresToRemove = [];
+                cortesLayer.forEach(feat => featuresToRemove.push(feat));
+                featuresToRemove.forEach(feat => cortesLayer.remove(feat));
+                
+                const sanitized = sanitizeGeoJson(geoJson);
+                cortesLayer.addGeoJson(sanitized);
                 
                 const fechasSet = new Set();
                 geoJson.features.forEach(f => {
                     if (f.properties && f.properties.Fecha_str) {
-                        fechasSet.add(f.properties.Fecha_str);
+                        fechasSet.add(formatDateToShow(f.properties.Fecha_str));
+                    }
+                    const cgmValue = getGeoJsonFeatureCgm(f);
+                    if (cgmValue) {
+                        registerCgm(cgmValue);
                     }
                 });
                 
+                updateCgmDropdown();
+
                 const selectFecha = document.getElementById('filtro-fecha');
+                const selectedVal = selectFecha.value;
+                selectFecha.innerHTML = '<option value="TODAS">TODAS LAS FECHAS</option>';
+                
                 const sortedFechas = Array.from(fechasSet).sort((a, b) => {
-                    const [dayA, monthA, yearA] = a.split('/');
-                    const [dayB, monthB, yearB] = b.split('/');
-                    return new Date(yearA, monthA - 1, dayA) - new Date(yearB, monthB - 1, dayB);
+                    const d1 = parseDateCustom(a);
+                    const d2 = parseDateCustom(b);
+                    if (!d1) return 1;
+                    if (!d2) return -1;
+                    return d1 - d2;
                 });
 
                 sortedFechas.forEach(fecha => {
-                    const opt = document.createElement('option');
-                    opt.value = fecha;
-                    opt.textContent = fecha;
-                    selectFecha.appendChild(opt);
+                    if(fecha !== '-') {
+                        const opt = document.createElement('option');
+                        opt.value = fecha; 
+                        opt.textContent = fecha;
+                        selectFecha.appendChild(opt);
+                    }
                 });
                 
-                selectFecha.addEventListener('change', () => {
-                    updateCortesStyles();
-                });
+                if (fechasSet.has(selectedVal)) {
+                    selectFecha.value = selectedVal;
+                } else {
+                    selectFecha.value = "TODAS";
+                }
 
                 updateCortesStyles(); 
-            }).catch(e => console.log('Error cargando Cortes de Pasto:', e));
+            };
 
-            cortesLayer.setMap(map);
+            fetch('./cortedepasto.geojson' + noCache)
+                .then(r => {
+                    if (!r.ok) throw new Error("Fallo el fetch remoto");
+                    return r.json();
+                })
+                .then(procesarCortes)
+                .catch(e => {
+                    console.log('cortedepasto.geojson no cargado automáticamente. Activando cargador manual.');
+                    document.getElementById('seccion-local-uploader').classList.remove('hidden');
+                });
+
+            // Se sincroniza con el estado inicial del checkbox (desmarcado por defecto)
+            cortesLayer.setMap(document.getElementById('cb-cortes').checked ? map : null);
+
+
+            // 4. Cargar Barrido GeoJSON (ZONAS BARRENDEROS MAYO 2026.geojson) (Inicia deseleccionado)
+            barridoLayer = new google.maps.Data();
+
+            const procesarBarrido = (geoJson) => {
+                const featuresToRemove = [];
+                barridoLayer.forEach(feat => featuresToRemove.push(feat));
+                featuresToRemove.forEach(feat => barridoLayer.remove(feat));
+
+                const sanitized = sanitizeGeoJson(geoJson);
+                barridoLayer.addGeoJson(sanitized);
+
+                barridoGeoJsonData = geoJson;
+
+                geoJson.features.forEach(f => {
+                    const cgmValue = getGeoJsonFeatureCgm(f);
+                    if (cgmValue) {
+                        registerCgm(cgmValue);
+                    }
+                });
+
+                updateCgmDropdown();
+                updateBarrenderoDropdown(); 
+                updateBarridoStyles();
+            };
+
+            fetch('./ZONAS BARRENDEROS MAYO 2026.geojson' + noCache)
+                .then(r => {
+                    if (!r.ok) throw new Error("Fallo el fetch remoto de Barrido");
+                    return r.json();
+                })
+                .then(procesarBarrido)
+                .catch(e => {
+                    console.log('ZONAS BARRENDEROS MAYO 2026.geojson no cargado automáticamente.');
+                    document.getElementById('seccion-local-uploader').classList.remove('hidden');
+                });
+
+            // Se sincroniza con el estado inicial del checkbox (desmarcado por defecto)
+            barridoLayer.setMap(document.getElementById('cb-barrido').checked ? map : null);
+
+
+            // 5. Cargar Rutas Barrido Covelia en formato GeoJSON (Zonificacion Barrido Covelia.geojson) (Inicia deseleccionado)
+            coveliaLayer = new google.maps.Data();
+
+            const procesarCovelia = (geoJson) => {
+                const featuresToRemove = [];
+                coveliaLayer.forEach(feat => featuresToRemove.push(feat));
+                featuresToRemove.forEach(feat => coveliaLayer.remove(feat));
+
+                const sanitized = sanitizeGeoJson(geoJson);
+                coveliaLayer.addGeoJson(sanitized);
+
+                geoJson.features.forEach(f => {
+                    const cgmValue = getGeoJsonFeatureCgm(f);
+                    if (cgmValue) {
+                        registerCgm(cgmValue);
+                    }
+                });
+
+                updateCgmDropdown();
+                updateCoveliaStyles();
+            };
+
+            fetch('./Zonificacion Barrido Covelia.geojson' + noCache)
+                .then(r => {
+                    if (!r.ok) throw new Error("Fallo el fetch remoto de GeoJSON de Covelia");
+                    return r.json();
+                })
+                .then(procesarCovelia)
+                .catch(e => {
+                    console.log('Zonificacion Barrido Covelia.geojson no cargado automáticamente. Activando cargador manual.');
+                    document.getElementById('seccion-local-uploader').classList.remove('hidden');
+                });
+
+            // Se sincroniza con el estado inicial del checkbox (desmarcado por defecto)
+            coveliaLayer.setMap(document.getElementById('cb-covelia').checked ? map : null);
+
+
+            // 6. Cargar Covelia Recoleccion GeoJSON (Zonas Covelia Recoleccion.geojson) (Inicia deseleccionado)
+            recoleccionLayer = new google.maps.Data();
+
+            const procesarRecoleccion = (geoJson) => {
+                const featuresToRemove = [];
+                recoleccionLayer.forEach(feat => featuresToRemove.push(feat));
+                featuresToRemove.forEach(feat => recoleccionLayer.remove(feat));
+
+                const sanitized = sanitizeGeoJson(geoJson);
+                recoleccionLayer.addGeoJson(sanitized);
+
+                recoleccionGeoJsonData = geoJson;
+
+                geoJson.features.forEach(f => {
+                    const cgmValue = getGeoJsonFeatureCgm(f);
+                    if (cgmValue) {
+                        registerCgm(cgmValue);
+                    }
+                });
+
+                updateCgmDropdown();
+                updateRecoleccionStyles();
+            };
+
+            fetch('./Zonas Covelia Recoleccion.geojson' + noCache)
+                .then(r => {
+                    if (!r.ok) throw new Error("Fallo el fetch de Recoleccion");
+                    return r.json();
+                })
+                .then(procesarRecoleccion)
+                .catch(e => {
+                    console.log('Zonas Covelia Recoleccion.geojson no cargado automáticamente.');
+                    document.getElementById('seccion-local-uploader').classList.remove('hidden');
+                });
+
+            // Se sincroniza con el estado inicial del checkbox (desmarcado por defecto)
+            recoleccionLayer.setMap(document.getElementById('cb-recoleccion').checked ? map : null);
+
+
+            // 7. Cargar Recorridos Mensuales GeoJSON (covelia_mensual_polylines.geojson) (Inicia deseleccionado)
+            recorridosLayer = new google.maps.Data();
+
+            const procesarRecorridos = (geoJson) => {
+                const featuresToRemove = [];
+                recorridosLayer.forEach(feat => featuresToRemove.push(feat));
+                featuresToRemove.forEach(feat => recorridosLayer.remove(feat));
+
+                const sanitized = sanitizeGeoJson(geoJson);
+                recorridosLayer.addGeoJson(sanitized);
+
+                const fechasSet = new Set();
+                const dominiosSet = new Set();
+
+                geoJson.features.forEach(f => {
+                    if (f.properties) {
+                        if (f.properties.Fecha) {
+                            fechasSet.add(formatDateToShow(f.properties.Fecha));
+                        }
+                        if (f.properties.Dominio) {
+                            dominiosSet.add(f.properties.Dominio.trim());
+                        }
+                    }
+                });
+
+                const selectFecha = document.getElementById('filtro-recorridos-fecha');
+                if (selectFecha) {
+                    const selectedVal = selectFecha.value;
+                    selectFecha.innerHTML = '<option value="TODAS">TODAS LAS FECHAS</option>';
+                    const sortedFechas = Array.from(fechasSet).sort((a, b) => {
+                        const d1 = parseDateCustom(a);
+                        const d2 = parseDateCustom(b);
+                        if (!d1) return 1;
+                        if (!d2) return -1;
+                        return d1 - d2;
+                    });
+                    sortedFechas.forEach(fecha => {
+                        const opt = document.createElement('option');
+                        opt.value = fecha;
+                        opt.textContent = fecha;
+                        selectFecha.appendChild(opt);
+                    });
+                    if (fechasSet.has(selectedVal)) {
+                        selectFecha.value = selectedVal;
+                    } else {
+                        selectFecha.value = "TODAS";
+                    }
+                }
+
+                const selectDominio = document.getElementById('filtro-recorridos-dominio');
+                if (selectDominio) {
+                    const selectedVal = selectDominio.value;
+                    selectDominio.innerHTML = '<option value="TODOS">TODOS LOS DOMINIOS</option>';
+                    const sortedDominios = Array.from(dominiosSet).sort();
+                    sortedDominios.forEach(dom => {
+                        const opt = document.createElement('option');
+                        opt.value = dom;
+                        opt.textContent = dom;
+                        selectDominio.appendChild(opt); 
+                    });
+                    if (dominiosSet.has(selectedVal)) {
+                        selectDominio.value = selectedVal;
+                    } else {
+                        selectDominio.value = "TODOS";
+                    }
+                }
+
+                updateRecorridosStyles();
+            };
+
+            fetch('./covelia_mensual_polylines.geojson' + noCache)
+                .then(r => {
+                    if (!r.ok) throw new Error("Fallo el fetch de Recorridos");
+                    return r.json();
+                })
+                .then(procesarRecorridos)
+                .catch(e => {
+                    console.log('covelia_mensual_polylines.geojson no cargado automáticamente.');
+                    document.getElementById('seccion-local-uploader').classList.remove('hidden');
+                });
+
+            // Se sincroniza con el estado inicial del checkbox (desmarcado por defecto)
+            recorridosLayer.setMap(document.getElementById('cb-recorridos').checked ? map : null);
+
+
+            // --- EVENTO DE CARGA DE ARCHIVO MANUAL INTELIGENTE ---
+            const loadGeoJsonData = (geoJson) => {
+                const name = (geoJson.name || "").toLowerCase();
+                const isCgm = name.includes("cgm") || geoJson.features.some(f => f.geometry && (f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon') && !f.properties.Fecha_str && !f.properties.BARRENDERO && !f.properties.Ruta && !f.properties.RUTA && !f.properties.Dominio);
+                const isBarrido = name.includes("barrendero") || name.includes("barrido.geojson") || geoJson.features.some(f => f.properties && f.properties.BARRENDERO);
+                const isCovelia = name.includes("covelia") || name.includes("barrido") || geoJson.features.some(f => f.properties && f.properties.Ruta && !f.properties.Dominio);
+                const isRecoleccion = name.includes("recoleccion") || geoJson.features.some(f => f.properties && f.properties.RUTA);
+                const isRecorridos = name.includes("recorridos") || name.includes("polylines") || geoJson.features.some(f => f.properties && f.properties.Dominio);
+                
+                if (isCgm) {
+                    const featuresToRemoveCgm = [];
+                    cgmLayer.forEach(feat => featuresToRemoveCgm.push(feat));
+                    featuresToRemoveCgm.forEach(feat => cgmLayer.remove(feat));
+
+                    cgmLayer.addGeoJson(geoJson);
+                    geoJson.features.forEach(f => {
+                        const cgmValue = getGeoJsonFeatureCgm(f);
+                        if (cgmValue) registerCgm(cgmValue);
+                    });
+                    updateCgmDropdown();
+                    updateStyles();
+                } else if (isBarrido) {
+                    procesarBarrido(geoJson);
+                } else if (isCovelia) {
+                    procesarCovelia(geoJson);
+                } else if (isRecoleccion) {
+                    procesarRecoleccion(geoJson);
+                } else if (isRecorridos) {
+                    procesarRecorridos(geoJson);
+                } else {
+                    procesarCortes(geoJson);
+                }
+            };
+
+            document.getElementById('input-geojson-local').addEventListener('change', function(e) {
+                const files = e.target.files;
+                if (!files || files.length === 0) return;
+                
+                Array.from(files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
+                        try {
+                            const rawText = evt.target.result;
+                            const geoJson = JSON.parse(rawText);
+                            loadGeoJsonData(geoJson);
+                        } catch(err) {
+                            console.error("Error al parsear el archivo cargado:", err);
+                        }
+                    };
+                    reader.readAsText(file);
+                });
+            });
 
             // --- FUNCIONES DE ESTILOS Y FILTROS ---
             function updateStyles() {
@@ -343,13 +1084,14 @@
                 const globalCgm = globalCgmSelect ? globalCgmSelect.value : "TODOS";
 
                 cgmLayer.setStyle((feature) => {
-                    const featCgm = feature.getProperty('CGM');
+                    const featCgm = getFeatureCgmProperty(feature);
+                    const cleanFeatCgm = normalizeCgmName(featCgm);
                     let isVisible = true;
                     let opacidad = 0.25;
                     let grosor = 3;
 
                     if (globalCgm !== "TODOS") {
-                        if (!featCgm || featCgm.toUpperCase() !== globalCgm) {
+                        if (cleanFeatCgm !== globalCgm) {
                             isVisible = false; 
                         } else {
                             opacidad = 0.4; 
@@ -358,9 +1100,9 @@
                     }
 
                     return {
-                        fillColor: '#7ED957', 
+                        fillColor: '#86EFAC', 
                         fillOpacity: opacidad, 
-                        strokeColor: '#2A7E43', 
+                        strokeColor: '#1E5E3A', 
                         strokeWeight: grosor,        
                         strokeOpacity: 0.9, 
                         zIndex: 1,
@@ -377,34 +1119,35 @@
                 const fechaFiltro = fechaSelect ? fechaSelect.value : "TODAS";
 
                 cortesLayer.setStyle((feature) => {
-                    const featCgm = feature.getProperty('CGM');
-                    const featFecha = feature.getProperty('Fecha_str'); 
-                    const dynamicDayColor = getColorPorDiaSemana(featFecha); 
+                    const featCgm = getFeatureCgmProperty(feature);
+                    const cleanFeatCgm = normalizeCgmName(featCgm);
+                    const featFechaOriginal = feature.getProperty('Fecha_str'); 
+                    const featFechaClean = formatDateToShow(featFechaOriginal);
+                    const dynamicDayColor = getColorPorDiaSemana(featFechaOriginal); 
                     let isVisible = true;
 
                     if (globalCgm !== "TODOS") {
-                        if (!featCgm || featCgm.toUpperCase() !== globalCgm) {
+                        if (cleanFeatCgm !== globalCgm) {
                             isVisible = false;
                         }
                     }
 
                     if (fechaFiltro !== "TODAS") {
-                        if (!featFecha || featFecha !== fechaFiltro) {
+                        if (featFechaClean !== fechaFiltro) {
                             isVisible = false;
                         }
                     }
 
                     const geomType = feature.getGeometry() ? feature.getGeometry().getType() : '';
 
-                    // Si es un punto (Plaza/Escuela), aplicamos ícono inteligente
                     if (geomType === 'Point') {
-                        const nombre = feature.getProperty('PLAZA') || feature.getProperty('NOMBRE') || feature.getProperty('Inicio Recorrido') || '';
-                        const nombreUpper = nombre.toUpperCase();
+                        const nombreRaw = feature.getProperty('Inicio Recorrido') || feature.getProperty('PLAZA') || feature.getProperty('NOMBRE') || '';
+                        const nombreUpper = nombreRaw.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
                         
                         let type = 'PLAZA';
-                        if (nombreUpper.includes('ESCUELA') || nombreUpper.includes('COLEGIO') || nombreUpper.includes('JARDIN')) {
+                        if (nombreUpper.includes('ESCUELA') || nombreUpper.includes('COLEGIO') || nombreUpper.includes('JARDIN') || nombreUpper.includes('FORMACION') || nombreUpper.includes('TECNICA') || nombreUpper.includes('PRIMARIA') || nombreUpper.includes('SECUNDARIA')) {
                             type = 'ESCUELA';
-                        } else if (nombreUpper.includes('POLIDEPORTIVO') || nombreUpper.includes('CLUB')) {
+                        } else if (nombreUpper.includes('POLIDEPORTIVO') || nombreUpper.includes('CLUB') || nombreUpper.includes('PREDIO') || nombreUpper.includes('DOTA')) {
                             type = 'POLIDEPORTIVO';
                         }
 
@@ -414,7 +1157,6 @@
                             visible: isVisible
                         };
                     } else {
-                        // Si es línea o polígono (recorridos o áreas de corte)
                         return {
                             fillColor: dynamicDayColor,
                             fillOpacity: 0.6,
@@ -427,71 +1169,264 @@
                 });
             }
 
-            // Ventanas Emergentes base para CGM y Cortes
+            // Estilos para Barrido Municipal
+            function updateBarridoStyles() {
+                const globalCgmSelect = document.getElementById('filtro-global-cgm');
+                const globalCgm = globalCgmSelect ? globalCgmSelect.value : "TODOS";
+
+                const barrenderoSelect = document.getElementById('filtro-barrendero');
+                const barrenderoFiltro = barrenderoSelect ? barrenderoSelect.value : "TODOS";
+
+                barridoLayer.setStyle((feature) => {
+                    const featCgm = getFeatureCgmProperty(feature);
+                    const cleanFeatCgm = normalizeCgmName(featCgm);
+                    const featBarrendero = feature.getProperty('BARRENDERO') ? feature.getProperty('BARRENDERO').trim() : "";
+                    let isVisible = true;
+
+                    if (globalCgm !== "TODOS") {
+                        if (cleanFeatCgm !== globalCgm) {
+                            isVisible = false;
+                        }
+                    }
+
+                    if (barrenderoFiltro !== "TODOS") {
+                        if (featBarrendero !== barrenderoFiltro) {
+                            isVisible = false;
+                        }
+                    }
+
+                    return {
+                        strokeColor: 'var(--color-barrido)',
+                        strokeWeight: 5,
+                        strokeOpacity: 0.85,
+                        zIndex: 4,
+                        visible: isVisible
+                    };
+                });
+            }
+
+            // Estilos para Barrido Covelia (barrido.geojson)
+            function updateCoveliaStyles() {
+                const globalCgmSelect = document.getElementById('filtro-global-cgm');
+                const globalCgm = globalCgmSelect ? globalCgmSelect.value : "TODOS";
+
+                coveliaLayer.setStyle((feature) => {
+                    const featCgm = getFeatureCgmProperty(feature);
+                    const cleanFeatCgm = normalizeCgmName(featCgm);
+                    let isVisible = true;
+
+                    if (globalCgm !== "TODOS") {
+                        if (cleanFeatCgm !== globalCgm) {
+                            isVisible = false;
+                        }
+                    }
+
+                    const rutaNum = feature.getProperty('Ruta') || feature.getProperty('ruta') || feature.getProperty('RUTA') || "";
+                    const dynamicGreen = getColorForRoute(rutaNum);
+
+                    return {
+                        strokeColor: dynamicGreen,
+                        strokeWeight: 4,
+                        strokeOpacity: 0.9,
+                        zIndex: 3,
+                        visible: isVisible
+                    };
+                });
+            }
+
+            // Estilos para Recolección Covelia
+            function updateRecoleccionStyles() {
+                const globalCgmSelect = document.getElementById('filtro-global-cgm');
+                const globalCgm = globalCgmSelect ? globalCgmSelect.value : "TODOS";
+
+                recoleccionLayer.setStyle((feature) => {
+                    const featCgm = getFeatureCgmProperty(feature);
+                    const cleanFeatCgm = normalizeCgmName(featCgm);
+                    const featTurno = getFeatureTurnoProperty(feature);
+                    let isVisible = true;
+
+                    if (globalCgm !== "TODOS" && cleanFeatCgm) {
+                        if (cleanFeatCgm !== globalCgm) {
+                            isVisible = false;
+                        }
+                    }
+
+                    const dynamicTurnoColor = getRecoleccionColor(featTurno);
+
+                    return {
+                        fillColor: dynamicTurnoColor,
+                        fillOpacity: 0.35, 
+                        strokeColor: dynamicTurnoColor,
+                        strokeWeight: 2,
+                        strokeOpacity: 0.85,
+                        zIndex: 3,
+                        visible: isVisible
+                    };
+                });
+            }
+
+            // Estilos para Recorridos GPS Mensuales Covelia
+            function updateRecorridosStyles() {
+                const fechaSelect = document.getElementById('filtro-recorridos-fecha');
+                const fechaFiltro = fechaSelect ? fechaSelect.value : "TODAS";
+
+                const dominioSelect = document.getElementById('filtro-recorridos-dominio');
+                const dominioFiltro = dominioSelect ? dominioSelect.value : "TODOS";
+
+                recorridosLayer.setStyle((feature) => {
+                    const featFechaOriginal = feature.getProperty('Fecha');
+                    const featFechaClean = formatDateToShow(featFechaOriginal);
+                    const featDominio = feature.getProperty('Dominio') ? feature.getProperty('Dominio').trim() : "";
+                    let isVisible = true;
+
+                    if (fechaFiltro !== "TODAS") {
+                        if (featFechaClean !== fechaFiltro) {
+                            isVisible = false;
+                        }
+                    }
+
+                    if (dominioFiltro !== "TODOS") {
+                        if (featDominio !== dominioFiltro) {
+                            isVisible = false;
+                        }
+                    }
+
+                    const dynamicGreen = getColorForRoute(featDominio || "");
+
+                    return {
+                        strokeColor: dynamicGreen,
+                        strokeWeight: 5,
+                        strokeOpacity: 0.9,
+                        zIndex: 4,
+                        visible: isVisible
+                    };
+                });
+            }
+
+            // Ventanas Emergentes base para CGM, Cortes, Barrido, Covelia, Recoleccion y Recorridos
             function bindPopup(layer, colorTitle, layerType = 'cgm') {
                 layer.addListener('click', function(event) {
-                    let content = `<div style="font-family: 'Montserrat', sans-serif; min-width: 180px; position: relative;">`;
+                    let content = `<div style="font-family: 'Montserrat', sans-serif; min-width: 200px; position: relative;">`;
                     content += `<button onclick="window.closeInfoWindow()" class="custom-close-btn">&times;</button>`;
                     
                     if (layerType === 'corte') {
                         const geomType = event.feature.getGeometry() ? event.feature.getGeometry().getType() : '';
-                        const fechaCorte = event.feature.getProperty('Fecha_str');
-                        const dynamicDayColor = getColorPorDiaSemana(fechaCorte);
+                        const fechaCorteOriginal = event.feature.getProperty('Fecha_str');
+                        const fechaCorteClean = formatDateToShow(fechaCorteOriginal);
+                        const dynamicDayColor = getColorPorDiaSemana(fechaCorteOriginal);
                         
                         if (geomType === 'Point') {
-                            // Información especial para Puntos
-                            const nombre = event.feature.getProperty('PLAZA') || event.feature.getProperty('NOMBRE') || event.feature.getProperty('Inicio Recorrido') || 'Lugar de Interés';
-                            const nombreUpper = nombre.toUpperCase();
+                            const nombreRaw = event.feature.getProperty('Inicio Recorrido') || event.feature.getProperty('PLAZA') || event.feature.getProperty('NOMBRE') || 'Lugar de Interés';
+                            const nombreUpper = nombreRaw.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
                             
                             let colorDin = '#84CC16';
                             let tipoLabel = 'Corte en Plaza / Parque';
                             
-                            if (nombreUpper.includes('ESCUELA') || nombreUpper.includes('COLEGIO') || nombreUpper.includes('JARDIN')) { 
+                            if (nombreUpper.includes('ESCUELA') || nombreUpper.includes('COLEGIO') || nombreUpper.includes('JARDIN') || nombreUpper.includes('FORMACION') || nombreUpper.includes('TECNICA') || nombreUpper.includes('PRIMARIA') || nombreUpper.includes('SECUNDARIA')) { 
                                 colorDin = '#F59E0B'; 
                                 tipoLabel = 'Corte en Institución Educativa'; 
                             }
-                            else if (nombreUpper.includes('POLIDEPORTIVO') || nombreUpper.includes('CLUB')) { 
+                            else if (nombreUpper.includes('POLIDEPORTIVO') || nombreUpper.includes('CLUB') || nombreUpper.includes('PREDIO') || nombreUpper.includes('DOTA')) { 
                                 colorDin = '#0EA5E9'; 
-                                tipoLabel = 'Corte en Deporte / Polideportivo'; 
+                                tipoLabel = 'Corte en Deporte / Predio / Polideportivo'; 
                             }
 
                             content += `<h3 style="font-weight: 800; font-size: 14px; color: ${colorDin}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">${tipoLabel}</h3>`;
-                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Nombre:</b> ${nombre}</p>`;
-                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaCorte || '-'}</p>`;
-                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${event.feature.getProperty('CGM') || '-'}</p>`;
-                            if (event.feature.getProperty('UBICACION') || event.feature.getProperty('DIRECCION')) {
-                                content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Ubicación:</b> ${event.feature.getProperty('UBICACION') || event.feature.getProperty('DIRECCION')}</p>`;
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Nombre:</b> ${nombreRaw}</p>`;
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaCorteClean}</p>`;
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${getFeatureCgmProperty(event.feature) || '-'}</p>`;
+                            
+                            const localidad = event.feature.getProperty('Localidad');
+                            if (localidad) {
+                                content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Localidad:</b> ${localidad}</p>`;
+                            }
+                            const ubicacion = event.feature.getProperty('UBICACION') || event.feature.getProperty('DIRECCION');
+                            if (ubicacion) {
+                                content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Ubicación:</b> ${ubicacion}</p>`;
                             }
                         } else {
-                            // Información especial para Líneas o Polígonos
                             content += `<h3 style="font-weight: 800; font-size: 14px; color: ${dynamicDayColor}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Recorrido de Corte</h3>`;
-                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaCorte || '-'}</p>`;
-                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${event.feature.getProperty('CGM') || '-'}</p>`;
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaCorteClean}</p>`;
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${getFeatureCgmProperty(event.feature) || '-'}</p>`;
                             
+                            const localidad = event.feature.getProperty('Localidad');
+                            if (localidad) {
+                                content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Localidad:</b> ${localidad}</p>`;
+                            }
                             if(event.feature.getProperty('Inicio Recorrido')) {
                                 content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Inicio:</b> ${event.feature.getProperty('Inicio Recorrido')}</p>`;
                             }
                             if(event.feature.getProperty('Fin del Recorrido')) {
                                 content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fin:</b> ${event.feature.getProperty('Fin del Recorrido')}</p>`;
                             }
-                            if(event.feature.getProperty('Distancia')) {
-                                content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Distancia:</b> ${event.feature.getProperty('Distancia')} m</p>`;
+                            
+                            const distancia = event.feature.getProperty('Distancia');
+                            if(distancia && distancia > 0) {
+                                content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Distancia:</b> ${distancia} m</p>`;
                             }
-                            if(event.feature.getProperty('Area') && event.feature.getProperty('Area') > 0) {
-                                content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Área:</b> ${event.feature.getProperty('Area')} m²</p>`;
+                            const area = event.feature.getProperty('Area');
+                            if(area && area > 0) {
+                                content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Área:</b> ${area} m²</p>`;
                             }
                         }
+                    } else if (layerType === 'barrido') {
+                        content += `<h3 style="font-weight: 800; font-size: 14px; color: var(--color-barrido); border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Barrido</h3>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Calle:</b> ${event.feature.getProperty('CALLE') || '-'}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Barrendero:</b> ${event.feature.getProperty('BARRENDERO') || '-'}</p>`;
+                        
+                        const legajo = event.feature.getProperty('LEGAJO/DNI');
+                        if (legajo !== undefined && legajo !== null && legajo !== "") {
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Legajo:</b> ${legajo}</p>`;
+                        }
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${getFeatureCgmProperty(event.feature) || '-'}</p>`;
+
+                    } else if (layerType === 'covelia') {
+                        const ruta = event.feature.getProperty('Ruta') || event.feature.getProperty('ruta') || event.feature.getProperty('RUTA') || '-';
+                        const dynamicGreen = getColorForRoute(ruta);
+                        content += `<h3 style="font-weight: 800; font-size: 14px; color: ${dynamicGreen}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Barrido Covelia - Ruta ${ruta}</h3>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${getFeatureCgmProperty(event.feature) || '-'}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Turno:</b> ${event.feature.getProperty('Turno') || event.feature.getProperty('turno') || event.feature.getProperty('TURNO') || '-'}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Frecuencia:</b> ${event.feature.getProperty('Frecuencia') || event.feature.getProperty('frecuencia') || event.feature.getProperty('FRECUENCIA') || '-'}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Horario:</b> ${event.feature.getProperty('Horario') || event.feature.getProperty('horario') || event.feature.getProperty('HORARIO') || '-'}</p>`;
+                        const metros = event.feature.getProperty('Metros') || event.feature.getProperty('metros') || event.feature.getProperty('METROS');
+                        if (metros) {
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Extensión:</b> ${metros} m</p>`;
+                        }
+                    } else if (layerType === 'recoleccion') {
+                        const ruta = event.feature.getProperty('RUTA') || '-';
+                        const featTurno = getFeatureTurnoProperty(event.feature);
+                        const dynamicTurnoColor = getRecoleccionColor(featTurno);
+                        
+                        content += `<h3 style="font-weight: 800; font-size: 14px; color: ${dynamicTurnoColor}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Recolección Covelia - Ruta ${ruta}</h3>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Frecuencia semanal:</b> ${event.feature.getProperty('FRECUENCIA') || '-'}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Turno:</b> ${featTurno || '-'}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Horario:</b> ${event.feature.getProperty('INICIO_T') || '-'}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Días:</b> ${event.feature.getProperty('DIAS') || '-'}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Zona interna:</b> ${event.feature.getProperty('ZONA') || '-'}</p>`;
+                        const cgmVal = getFeatureCgmProperty(event.feature);
+                        if (cgmVal) {
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${cgmVal}</p>`;
+                        }
+                    } else if (layerType === 'recorridos') {
+                        const dominio = event.feature.getProperty('Dominio') || '-';
+                        const dynamicColor = getColorForRoute(dominio);
+                        const fechaOriginal = event.feature.getProperty('Fecha');
+                        const fechaClean = formatDateToShow(fechaOriginal);
+                        const puntos = event.feature.getProperty('n_puntos') || '-';
+
+                        content += `<h3 style="font-weight: 800; font-size: 14px; color: ${dynamicColor}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Recorrido Covelia</h3>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Dominio:</b> ${dominio}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaClean}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Puntos Registrados:</b> ${puntos}</p>`;
                     } else { // CGM
-                        content += `<h3 style="font-weight: 800; font-size: 14px; color: ${colorTitle}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">CGM: ${event.feature.getProperty('CGM')}</h3>`;
+                        content += `<h3 style="font-weight: 800; font-size: 14px; color: ${colorTitle}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">CGM: ${getFeatureCgmProperty(event.feature)}</h3>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Manzanas:</b> ${event.feature.getProperty('Manzanas') || '-'}</p>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Cuadras:</b> ${event.feature.getProperty('Cuadras') || '-'}</p>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Viviendas:</b> ${event.feature.getProperty('Viviendas') || '-'}</p>`;
                     }
-                    
                     content += `</div>`;
                     
                     infoWindow.setContent(content);
-                    
                     if (event.feature.getGeometry().getType() === 'Point') {
                         infoWindow.setPosition(event.feature.getGeometry().get());
                     } else {
@@ -504,8 +1439,12 @@
 
             bindPopup(cgmLayer, '#2A7E43', 'cgm');
             bindPopup(cortesLayer, '#19567C', 'corte');
+            bindPopup(barridoLayer, 'var(--color-barrido)', 'barrido');
+            bindPopup(coveliaLayer, 'var(--color-covelia)', 'covelia');
+            bindPopup(recoleccionLayer, 'var(--color-recoleccion)', 'recoleccion');
+            bindPopup(recorridosLayer, 'var(--color-covelia)', 'recorridos');
 
-            // Toggles
+            // Toggles de Capas
             document.getElementById('cb-limite').addEventListener('change', (e) => {
                 const m = e.target.checked ? map : null;
                 limiteElements.forEach(el => el.setMap(m));
@@ -517,6 +1456,22 @@
 
             document.getElementById('cb-cortes').addEventListener('change', (e) => {
                 e.target.checked ? cortesLayer.setMap(map) : cortesLayer.setMap(null);
+            });
+
+            document.getElementById('cb-barrido').addEventListener('change', (e) => {
+                e.target.checked ? barridoLayer.setMap(map) : barridoLayer.setMap(null);
+            });
+
+            document.getElementById('cb-covelia').addEventListener('change', (e) => {
+                e.target.checked ? coveliaLayer.setMap(map) : coveliaLayer.setMap(null);
+            });
+
+            document.getElementById('cb-recoleccion').addEventListener('change', (e) => {
+                e.target.checked ? recoleccionLayer.setMap(map) : recoleccionLayer.setMap(null);
+            });
+
+            document.getElementById('cb-recorridos').addEventListener('change', (e) => {
+                e.target.checked ? recorridosLayer.setMap(map) : recorridosLayer.setMap(null);
             });
         }
     </script>
