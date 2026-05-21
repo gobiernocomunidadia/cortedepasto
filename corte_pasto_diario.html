@@ -98,7 +98,7 @@
                     </select>
                 </div>
 
-                <!-- SECCIÓN: DIVISIÓN TERRITORIAL (Se mantiene activa) -->
+                <!-- SECCIÓN: DIVISIÓN TERRITORIAL -->
                 <div class="bg-[var(--bg-main)]/10 p-3 rounded-lg border border-[var(--bg-main)]/30">
                     <h4 class="text-xs font-extrabold text-[var(--bg-main)] uppercase mb-3 flex items-center gap-2">
                         <i data-lucide="map" class="h-4 w-4"></i> División Territorial
@@ -133,7 +133,7 @@
                             </select>
                         </div>
                         
-                        <!-- CAPA: ZONAS BARRIDO COVELIA -->
+                        <!-- CAPA: RUTAS BARRIDO COVELIA (Inicia desmarcado) -->
                         <label class="flex items-center gap-3 cursor-pointer pt-3 border-t border-[var(--color-barrido)]/20">
                             <input type="checkbox" id="cb-covelia" class="w-4 h-4 accent-[var(--color-barrido)]">
                             <span class="text-sm text-[#0F172A] font-bold">Rutas Barrido Covelia</span>
@@ -206,10 +206,10 @@
                 <!-- SECCIÓN RESPALDO: CARGADOR MANUAL LOCAL (Se activa si el CORS bloquea la carga local) -->
                 <div id="seccion-local-uploader" class="bg-amber-500/10 p-3 rounded-lg border border-amber-500/30 hidden">
                     <h4 class="text-xs font-extrabold text-amber-700 uppercase mb-2 flex items-center gap-2">
-                        <i data-lucide="upload-cloud" class="h-4 w-4"></i> Cargar GeoJSON/KML Local
+                        <i data-lucide="upload-cloud" class="h-4 w-4"></i> Cargar GeoJSON Local
                     </h4>
-                    <p class="text-[10px] text-gray-600 mb-2">Para ver el mapa offline o local sin servidor CORS, selecciona tus archivos manualmente (.geojson, .kml):</p>
-                    <input type="file" id="input-geojson-local" accept=".geojson, .json, .kml" class="w-full text-xs text-[#0F172A] file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700 cursor-pointer" multiple>
+                    <p class="text-[10px] text-gray-600 mb-2">Para ver el mapa offline o local sin servidor CORS, selecciona tus archivos manualmente (.geojson, .json):</p>
+                    <input type="file" id="input-geojson-local" accept=".geojson, .json" class="w-full text-xs text-[#0F172A] file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700 cursor-pointer" multiple>
                 </div>
 
             </div>
@@ -236,115 +236,6 @@
         const cgmMap = new Map(); // Mapa de CGM normalizado -> Nombre original para evitar duplicados en el select
         let barridoGeoJsonData = null; // Almacenamiento global para los datos de barrido y filtrado dinámico
         let recoleccionGeoJsonData = null; // Almacenamiento global para recolección
-
-        // --- PARSER DE KML A GEOJSON (Permite leer barrido.kml en memoria al instante) ---
-        function kmlToGeoJson(xmlString) {
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(xmlString, "text/xml");
-            const geojson = {
-                type: "FeatureCollection",
-                features: []
-            };
-
-            const placemarks = xmlDoc.getElementsByTagName("Placemark");
-            for (let i = 0; i < placemarks.length; i++) {
-                const placemark = placemarks[i];
-                const properties = {};
-
-                // Parsear propiedades extendidas (ExtendedData -> SimpleData)
-                const simpleDatas = placemark.getElementsByTagName("SimpleData");
-                for (let j = 0; j < simpleDatas.length; j++) {
-                    const sd = simpleDatas[j];
-                    const name = sd.getAttribute("name");
-                    const value = sd.textContent;
-                    if (name) {
-                        properties[name] = value;
-                    }
-                }
-
-                // Metadata de respaldo
-                const nameNode = placemark.getElementsByTagName("name")[0];
-                if (nameNode && !properties.name) {
-                    properties.name = nameNode.textContent;
-                }
-                const descNode = placemark.getElementsByTagName("description")[0];
-                if (descNode && !properties.description) {
-                    properties.description = descNode.textContent;
-                }
-
-                // Parser de coordenadas KML ("lon,lat,alt lon,lat,alt ...")
-                function parseCoordsString(coordsStr) {
-                    if (!coordsStr) return [];
-                    return coordsStr.trim().split(/\s+/).map(coord => {
-                        const parts = coord.split(',').map(Number);
-                        return [parts[0], parts[1]]; // Google Maps usa [lng, lat] para GeoJSON
-                    }).filter(c => !isNaN(c[0]) && !isNaN(c[1]));
-                }
-
-                let geometry = null;
-                const lineStrings = placemark.getElementsByTagName("LineString");
-                const polygons = placemark.getElementsByTagName("Polygon");
-                const points = placemark.getElementsByTagName("Point");
-                const multiGeometries = placemark.getElementsByTagName("MultiGeometry");
-
-                if (multiGeometries.length > 0) {
-                    const coordsList = [];
-                    const mgLineStrings = multiGeometries[0].getElementsByTagName("LineString");
-                    for (let k = 0; k < mgLineStrings.length; k++) {
-                        const coordNode = mgLineStrings[k].getElementsByTagName("coordinates")[0];
-                        if (coordNode) {
-                            const parsed = parseCoordsString(coordNode.textContent);
-                            if (parsed.length > 0) coordsList.push(parsed);
-                        }
-                    }
-                    if (coordsList.length > 0) {
-                        geometry = {
-                            type: "MultiLineString",
-                            coordinates: coordsList
-                        };
-                    }
-                } else if (lineStrings.length > 0) {
-                    const coordNode = lineStrings[0].getElementsByTagName("coordinates")[0];
-                    if (coordNode) {
-                        geometry = {
-                            type: "LineString",
-                            coordinates: parseCoordsString(coordNode.textContent)
-                        };
-                    }
-                } else if (polygons.length > 0) {
-                    const outerBoundary = polygons[0].getElementsByTagName("outerBoundaryIs")[0];
-                    if (outerBoundary) {
-                        const coordNode = outerBoundary.getElementsByTagName("coordinates")[0];
-                        if (coordNode) {
-                            geometry = {
-                                type: "Polygon",
-                                coordinates: [parseCoordsString(coordNode.textContent)]
-                            };
-                        }
-                    }
-                } else if (points.length > 0) {
-                    const coordNode = points[0].getElementsByTagName("coordinates")[0];
-                    if (coordNode) {
-                        const parsed = parseCoordsString(coordNode.textContent);
-                        if (parsed.length > 0) {
-                            geometry = {
-                                type: "Point",
-                                coordinates: parsed[0]
-                            };
-                        }
-                    }
-                }
-
-                if (geometry) {
-                    geojson.features.push({
-                        type: "Feature",
-                        properties: properties,
-                        geometry: geometry
-                    });
-                }
-            }
-            return geojson;
-        }
 
         // --- FUNCIÓN DE NORMALIZACIÓN DE CGMs (Evita fallos por espacios o acentos en el JSON) ---
         function normalizeCgmName(cgmName) {
@@ -631,6 +522,11 @@
                     selectBarrendero.value = "TODOS";
                 }
             }
+        }
+
+        // --- ACTUALIZACIÓN DINÁMICA DEL SELECTOR DE BARRENDEROS COVELIA Y SUS TURNOS ---
+        function updateBarrenderoDropdownCovelia() {
+            // No se requiere filtro de barrendero individual para Covelia por el momento
         }
 
         // --- LIMPIEZA DE GEOJSON DAÑADO Y RECONSTRUCCIÓN DEFENSIVA ---
@@ -960,7 +856,7 @@
             barridoLayer.setMap(document.getElementById('cb-barrido').checked ? map : null);
 
 
-            // 5. Cargar Rutas Barrido Covelia en formato KML (barrido.kml) (Inicia deseleccionado)
+            // 5. Cargar Rutas Barrido Covelia en formato GeoJSON (Zonificacion Barrido Covelia.geojson) (Inicia deseleccionado)
             coveliaLayer = new google.maps.Data();
 
             const procesarCovelia = (geoJson) => {
@@ -982,17 +878,14 @@
                 updateCoveliaStyles();
             };
 
-            fetch('./barrido.kml' + noCache)
+            fetch('./Zonificacion Barrido Covelia.geojson' + noCache)
                 .then(r => {
-                    if (!r.ok) throw new Error("Fallo el fetch remoto de KML de Covelia");
-                    return r.text();
+                    if (!r.ok) throw new Error("Fallo el fetch remoto de GeoJSON de Covelia");
+                    return r.json();
                 })
-                .then(kmlText => {
-                    const parsedGeoJson = kmlToGeoJson(kmlText);
-                    procesarCovelia(parsedGeoJson);
-                })
+                .then(procesarCovelia)
                 .catch(e => {
-                    console.log('barrido.kml no cargado automáticamente. Activando cargador manual.');
+                    console.log('Zonificacion Barrido Covelia.geojson no cargado automáticamente. Activando cargador manual.');
                     document.getElementById('seccion-local-uploader').classList.remove('hidden');
                 });
 
@@ -1121,7 +1014,7 @@
                         const opt = document.createElement('option');
                         opt.value = dom;
                         opt.textContent = dom;
-                        selectDominio.appendChild(dom);
+                        selectDominio.appendChild(opt); // Corregido: antes appendChild(dom)
                     });
                     if (dominiosSet.has(selectedVal)) {
                         selectDominio.value = selectedVal;
@@ -1148,7 +1041,7 @@
             recorridosLayer.setMap(document.getElementById('cb-recorridos').checked ? map : null);
 
 
-            // --- EVENTO DE CARGA DE ARCHIVO MANUAL INTELIGENTE (Soporta GeoJSON y KML) ---
+            // --- EVENTO DE CARGA DE ARCHIVO MANUAL INTELIGENTE ---
             const loadGeoJsonData = (geoJson) => {
                 const name = (geoJson.name || "").toLowerCase();
                 const isCgm = name.includes("cgm") || geoJson.features.some(f => f.geometry && (f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon') && !f.properties.Fecha_str && !f.properties.BARRENDERO && !f.properties.Ruta && !f.properties.RUTA && !f.properties.Dominio);
@@ -1191,16 +1084,8 @@
                     reader.onload = function(evt) {
                         try {
                             const rawText = evt.target.result;
-                            const lowerName = file.name.toLowerCase();
-                            
-                            // Si el usuario carga un KML localmente, lo transformamos primero a GeoJSON
-                            if (lowerName.endsWith('.kml')) {
-                                const geoJson = kmlToGeoJson(rawText);
-                                loadGeoJsonData(geoJson);
-                            } else {
-                                const geoJson = JSON.parse(rawText);
-                                loadGeoJsonData(geoJson);
-                            }
+                            const geoJson = JSON.parse(rawText);
+                            loadGeoJsonData(geoJson);
                         } catch(err) {
                             console.error("Error al parsear el archivo cargado:", err);
                         }
