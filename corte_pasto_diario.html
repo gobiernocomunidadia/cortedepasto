@@ -672,7 +672,7 @@
                 zoom: 13,
                 styles: mapStyle,
                 mapTypeControl: false,
-                streetViewControl: false
+                streetViewControl: true // Habilitamos la visualización y drag del Pegman para Street View
             });
 
             // --- REGISTRAR LOS LISTENERS DE CAMBIOS GLOBALES ---
@@ -1169,6 +1169,7 @@
                 });
             }
 
+            // Estilos para Barrido Municipal
             function updateBarridoStyles() {
                 const globalCgmSelect = document.getElementById('filtro-global-cgm');
                 const globalCgm = globalCgmSelect ? globalCgmSelect.value : "TODOS";
@@ -1204,6 +1205,7 @@
                 });
             }
 
+            // Estilos para Barrido Covelia (barrido.geojson)
             function updateCoveliaStyles() {
                 const globalCgmSelect = document.getElementById('filtro-global-cgm');
                 const globalCgm = globalCgmSelect ? globalCgmSelect.value : "TODOS";
@@ -1232,6 +1234,7 @@
                 });
             }
 
+            // Estilos para Recolección Covelia
             function updateRecoleccionStyles() {
                 const globalCgmSelect = document.getElementById('filtro-global-cgm');
                 const globalCgm = globalCgmSelect ? globalCgmSelect.value : "TODOS";
@@ -1248,12 +1251,11 @@
                         }
                     }
 
-                    // Se asigna dinámicamente un color de verde de acuerdo al tipo de Turno (MAÑANA, NOCHE, FERIAS)
                     const dynamicTurnoColor = getRecoleccionColor(featTurno);
 
                     return {
                         fillColor: dynamicTurnoColor,
-                        fillOpacity: 0.35, // Opacidad optimizada para apreciar las distintas tonalidades
+                        fillOpacity: 0.35, 
                         strokeColor: dynamicTurnoColor,
                         strokeWeight: 2,
                         strokeOpacity: 0.85,
@@ -1263,6 +1265,7 @@
                 });
             }
 
+            // Estilos para Recorridos GPS Mensuales Covelia
             function updateRecorridosStyles() {
                 const fechaSelect = document.getElementById('filtro-recorridos-fecha');
                 const fechaFiltro = fechaSelect ? fechaSelect.value : "TODAS";
