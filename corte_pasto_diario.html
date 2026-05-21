@@ -20,7 +20,7 @@
             --acento: #86EFAC;  /* Verde claro de acento */
             --azul-inst: #19567C;
             --color-barrido: #1E5E3A; /* Color verde institucional para Barrido */
-            --color-covelia: #10B981; /* Color verde esmeralda brillante para Covelia Barrido */
+            --color-covelia: #10B981; /* Color verde de respaldo para Covelia Barrido */
             --color-recoleccion: #15803D; /* Color verde esmeralda profundo para Covelia Recolección */
         }
 
@@ -136,7 +136,7 @@
                         <!-- CAPA: ZONAS BARRIDO COVELIA -->
                         <label class="flex items-center gap-3 cursor-pointer pt-3 border-t border-[var(--color-barrido)]/20">
                             <input type="checkbox" id="cb-covelia" checked class="w-4 h-4 accent-[var(--color-barrido)]">
-                            <span class="text-sm text-[#0F172A] font-bold">Zonas Barrido Covelia</span>
+                            <span class="text-sm text-[#0F172A] font-bold">Rutas Barrido Covelia</span>
                         </label>
                     </div>
                 </div>
@@ -259,6 +259,18 @@
             return "";
         }
 
+        // --- FUNCIÓN DE BÚSQUEDA DE PROPIEDAD TURNO INSENSIBLE A MAYÚSCULAS ---
+        function getFeatureTurnoProperty(feature) {
+            if (!feature) return "";
+            let turno = feature.getProperty('TURNO');
+            if (turno !== undefined && turno !== null) return String(turno).trim();
+            turno = feature.getProperty('turno');
+            if (turno !== undefined && turno !== null) return String(turno).trim();
+            turno = feature.getProperty('Turno');
+            if (turno !== undefined && turno !== null) return String(turno).trim();
+            return "";
+        }
+
         // --- REGISTRAR CGM DE FORMA ÚNICA ---
         function registerCgm(cgmName) {
             if (!cgmName) return;
@@ -360,6 +372,38 @@
             };
             
             return coloresAzul[diaSemana] || '#19567C';
+        }
+
+        // --- CONVERTIDOR DE HSL A HEXADECIMAL PARA MÁXIMA COMPATIBILIDAD ---
+        function hslToHex(h, s, l) {
+            l /= 100;
+            const a = s * Math.min(l, 1 - l) / 100;
+            const f = n => {
+                const k = (n + h / 30) % 12;
+                const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                return Math.round(255 * color).toString(16).padStart(2, '0');
+            };
+            return `#${f(0)}${f(8)}${f(4)}`;
+        }
+
+        // --- GENERADOR DETERMINISTA DE 63 TONALIDADES DE VERDE DISTINTAS ---
+        function getColorForRoute(ruta) {
+            if (!ruta) return '#10B981'; // Verde base
+            let hash = 0;
+            const str = String(ruta);
+            for (let i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            hash = Math.abs(hash);
+            
+            // Rango verde en HSL: 85 (amarillo-verde) a 155 (menta/esmeralda)
+            const h = 85 + (hash % 71); 
+            // Saturación visible pero corporativa: 55% a 95%
+            const s = 55 + (hash % 41);
+            // Luminosidad media para no perder contraste: 35% a 58%
+            const l = 33 + (hash % 26);
+            
+            return hslToHex(h, s, l);
         }
 
         // --- GENERADOR DE ICONOS INTELIGENTE (PLAZAS/ESCUELAS/PREDIOS) ---
@@ -765,7 +809,7 @@
             barridoLayer.setMap(map);
 
 
-            // 5. Cargar Zonas Barrido Covelia GeoJSON (Zonificacion Barrido Covelia.geojson)
+            // 5. Cargar Rutas Barrido Covelia GeoJSON (barrido.geojson) con tonalidades diferentes para cada una de las 63 rutas
             coveliaLayer = new google.maps.Data();
 
             const procesarCovelia = (geoJson) => {
@@ -776,25 +820,17 @@
                 const sanitized = sanitizeGeoJson(geoJson);
                 coveliaLayer.addGeoJson(sanitized);
 
-                geoJson.features.forEach(f => {
-                    const cgmValue = getGeoJsonFeatureCgm(f);
-                    if (cgmValue) {
-                        registerCgm(cgmValue);
-                    }
-                });
-
-                updateCgmDropdown();
                 updateCoveliaStyles();
             };
 
-            fetch('./Zonificacion Barrido Covelia.geojson' + noCache)
+            fetch('./barrido.geojson' + noCache)
                 .then(r => {
                     if (!r.ok) throw new Error("Fallo el fetch remoto de Covelia");
                     return r.json();
                 })
                 .then(procesarCovelia)
                 .catch(e => {
-                    console.log('Zonificacion Barrido Covelia.geojson no cargado automáticamente. Activando cargador manual.');
+                    console.log('barrido.geojson no cargado automáticamente. Activando cargador manual.');
                     document.getElementById('seccion-local-uploader').classList.remove('hidden');
                 });
 
@@ -867,8 +903,8 @@
             const loadGeoJsonData = (geoJson) => {
                 const name = (geoJson.name || "").toLowerCase();
                 const isCgm = name.includes("cgm") || geoJson.features.some(f => f.geometry && (f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon') && !f.properties.Fecha_str && !f.properties.BARRENDERO && !f.properties.Ruta && !f.properties.RUTA);
-                const isBarrido = name.includes("barrendero") || name.includes("barrido") || geoJson.features.some(f => f.properties && f.properties.BARRENDERO);
-                const isCovelia = name.includes("covelia") || geoJson.features.some(f => f.properties && f.properties.Ruta);
+                const isBarrido = name.includes("barrendero") || name.includes("barrido.geojson") || geoJson.features.some(f => f.properties && f.properties.BARRENDERO);
+                const isCovelia = name.includes("covelia") || name.includes("barrido") || geoJson.features.some(f => f.properties && f.properties.Ruta);
                 const isRecoleccion = name.includes("recoleccion") || geoJson.features.some(f => f.properties && f.properties.RUTA);
                 
                 if (isCgm) {
@@ -891,7 +927,7 @@
                     console.log("ZONAS BARRENDEROS MAYO 2026.geojson cargado manualmente de forma exitosa.");
                 } else if (isCovelia) {
                     procesarCovelia(geoJson);
-                    console.log("Zonificacion Barrido Covelia.geojson cargado manualmente de forma exitosa.");
+                    console.log("barrido.geojson cargado manualmente de forma exitosa.");
                 } else if (isRecoleccion) {
                     procesarRecoleccion(geoJson);
                     console.log("Zonas Covelia Recoleccion.geojson cargado manualmente de forma exitosa.");
@@ -1066,8 +1102,12 @@
                         }
                     }
 
+                    // Obtener la tonalidad de verde determinista para esta ruta específica de las 63 disponibles
+                    const rutaNum = feature.getProperty('Ruta') || feature.getProperty('ruta') || feature.getProperty('RUTA') || "";
+                    const dynamicGreen = getColorForRoute(rutaNum);
+
                     return {
-                        strokeColor: 'var(--color-covelia)',
+                        strokeColor: dynamicGreen,
                         strokeWeight: 4,
                         strokeOpacity: 0.9,
                         zIndex: 3,
@@ -1086,7 +1126,7 @@
                 recoleccionLayer.setStyle((feature) => {
                     const featCgm = getFeatureCgmProperty(feature);
                     const cleanFeatCgm = normalizeCgmName(featCgm);
-                    const featTurno = feature.getProperty('TURNO') ? feature.getProperty('TURNO').trim() : "";
+                    const featTurno = getFeatureTurnoProperty(feature);
                     let isVisible = true;
 
                     // Filtro Global CGM aplicado si el registro tiene CGM especificado
@@ -1196,14 +1236,15 @@
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${getFeatureCgmProperty(event.feature) || '-'}</p>`;
 
                     } else if (layerType === 'covelia') {
-                        // Información de Zonas Covelia (Nuevos datos de línea)
-                        const ruta = event.feature.getProperty('Ruta') || '-';
-                        content += `<h3 style="font-weight: 800; font-size: 14px; color: var(--color-covelia); border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Barrido Covelia - Ruta ${ruta}</h3>`;
+                        // Información de Zonas Covelia (Rutas de línea de barrido.geojson)
+                        const ruta = event.feature.getProperty('Ruta') || event.feature.getProperty('ruta') || event.feature.getProperty('RUTA') || '-';
+                        const dynamicGreen = getColorForRoute(ruta);
+                        content += `<h3 style="font-weight: 800; font-size: 14px; color: ${dynamicGreen}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Barrido Covelia - Ruta ${ruta}</h3>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${getFeatureCgmProperty(event.feature) || '-'}</p>`;
-                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Turno:</b> ${event.feature.getProperty('Turno') || '-'}</p>`;
-                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Frecuencia:</b> ${event.feature.getProperty('Frecuencia') || '-'}</p>`;
-                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Horario:</b> ${event.feature.getProperty('Horario') || '-'}</p>`;
-                        const metros = event.feature.getProperty('Metros');
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Turno:</b> ${event.feature.getProperty('Turno') || event.feature.getProperty('turno') || event.feature.getProperty('TURNO') || '-'}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Frecuencia:</b> ${event.feature.getProperty('Frecuencia') || event.feature.getProperty('frecuencia') || event.feature.getProperty('FRECUENCIA') || '-'}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Horario:</b> ${event.feature.getProperty('Horario') || event.feature.getProperty('horario') || event.feature.getProperty('HORARIO') || '-'}</p>`;
+                        const metros = event.feature.getProperty('Metros') || event.feature.getProperty('metros') || event.feature.getProperty('METROS');
                         if (metros) {
                             content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Extensión:</b> ${metros} m</p>`;
                         }
@@ -1212,7 +1253,7 @@
                         const ruta = event.feature.getProperty('RUTA') || '-';
                         content += `<h3 style="font-weight: 800; font-size: 14px; color: var(--color-recoleccion); border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Recolección Covelia - Ruta ${ruta}</h3>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Frecuencia semanal:</b> ${event.feature.getProperty('FRECUENCIA') || '-'}</p>`;
-                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Turno:</b> ${event.feature.getProperty('TURNO') || '-'}</p>`;
+                        content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Turno:</b> ${getFeatureTurnoProperty(event.feature) || '-'}</p>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Horario:</b> ${event.feature.getProperty('INICIO_T') || '-'}</p>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Días:</b> ${event.feature.getProperty('DIAS') || '-'}</p>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Zona interna:</b> ${event.feature.getProperty('ZONA') || '-'}</p>`;
