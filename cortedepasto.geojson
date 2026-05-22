@@ -5747,7 +5747,7 @@
         "Inicio Recorrido": "Epecuen & Tuyutí",
         "Fin del Recorrido": "Epecuen & Falucho",
         "CGM": "Lamadrid",
-        "Localidad": "San Jose",
+        "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 2335.75,
         "Area": 0
@@ -18994,6 +18994,32 @@
       "type": "Feature",
       "properties": {
         "Fecha_str": "17/04/2026",
+        "Inicio Recorrido": "Oran & Einstein",
+        "Fin del Recorrido": "Oran & Padre Mujica",
+        "CGM": "Lamadrid",
+        "Localidad": "Lomas de Zamora ",
+        "Color_Generado": "#3cb44b",
+        "Distancia": 0,
+        "Area": 0
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -58.4780192661606,
+            -34.7272654912999
+          ],
+          [
+            -58.480620633789,
+            -34.7286206629803
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Fecha_str": "17/04/2026",
         "Inicio Recorrido": "Pje Sáenz & Goodwyn",
         "Fin del Recorrido": "Pje Sáenz & Martel",
         "CGM": "Santa Catalina",
@@ -26555,7 +26581,7 @@
         "Inicio Recorrido": "Goya & Arana Goiri",
         "Fin del Recorrido": "Goya & Newton",
         "CGM": "Lamadrid",
-        "Localidad": "Llavallol",
+        "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 4929.89,
         "Area": 0
@@ -32393,7 +32419,7 @@
         "Inicio Recorrido": "Homero & Metan",
         "Fin del Recorrido": "Homero & Goya",
         "CGM": "Lamadrid",
-        "Localidad": "Llavallol",
+        "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 844.51,
         "Area": 0
@@ -35071,7 +35097,7 @@
         "Inicio Recorrido": "Terrada & Goya",
         "Fin del Recorrido": "Terrada & Metán",
         "CGM": "Lamadrid",
-        "Localidad": "Llavallol",
+        "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 835.02,
         "Area": 0
@@ -35097,7 +35123,7 @@
         "Inicio Recorrido": "Vucetich & Gualeguay",
         "Fin del Recorrido": "Vucetich & Metán",
         "CGM": "Lamadrid",
-        "Localidad": "Llavallol",
+        "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 613.42,
         "Area": 0
@@ -35161,7 +35187,7 @@
         "Inicio Recorrido": "Cafayate & Tuyutí",
         "Fin del Recorrido": "Cafayate & Falucho",
         "CGM": "Lamadrid",
-        "Localidad": "Lamadrid",
+        "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
         "Distancia": 1967.85,
         "Area": 0
