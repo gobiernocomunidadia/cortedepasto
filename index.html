@@ -175,6 +175,14 @@
                                     <!-- Se llena dinámicamente -->
                                 </select>
                             </div>
+                            <!-- NUEVO FILTRO: CGM específico para Recorridos -->
+                            <div class="flex flex-col gap-1 pl-7">
+                                <label class="text-xs font-semibold text-gray-600">Filtrar por CGM (Recorridos):</label>
+                                <select id="filtro-recorridos-cgm" class="w-full text-xs p-1.5 border border-gray-300 rounded focus:outline-none focus:border-[var(--color-recoleccion)] font-semibold text-[#0F172A] cursor-pointer">
+                                    <option value="TODOS">TODOS LOS CGM</option>
+                                    <!-- Se llena dinámicamente -->
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -535,11 +543,6 @@
             }
         }
 
-        // --- ACTUALIZACIÓN DINÁMICA DEL SELECTOR DE BARRENDEROS COVELIA Y SUS TURNOS ---
-        function updateBarrenderoDropdownCovelia() {
-            // No se requiere filtro de barrendero individual para Covelia por el momento
-        }
-
         // --- LIMPIEZA DE GEOJSON DAÑADO Y RECONSTRUCCIÓN DEFENSIVA ---
         function sanitizeGeoJson(geoJson) {
             if (!geoJson || !geoJson.features) return geoJson;
@@ -700,6 +703,7 @@
                 updateBarridoStyles();
             });
 
+            // Listeners para los filtros de Recorridos (Fecha, Dominio y CGM local)
             const selectRecorridosFecha = document.getElementById('filtro-recorridos-fecha');
             if (selectRecorridosFecha) {
                 selectRecorridosFecha.addEventListener('change', () => {
@@ -710,6 +714,13 @@
             const selectRecorridosDominio = document.getElementById('filtro-recorridos-dominio');
             if (selectRecorridosDominio) {
                 selectRecorridosDominio.addEventListener('change', () => {
+                    updateRecorridosStyles();
+                });
+            }
+
+            const selectRecorridosCgm = document.getElementById('filtro-recorridos-cgm');
+            if (selectRecorridosCgm) {
+                selectRecorridosCgm.addEventListener('change', () => {
                     updateRecorridosStyles();
                 });
             }
@@ -943,7 +954,7 @@
             recoleccionLayer.setMap(document.getElementById('cb-recoleccion').checked ? map : null);
 
 
-            // 7. Cargar Recorridos Mensuales GeoJSON (Soporta covelia_mensual_polylines.geojson.gz comprimido con GZIP)
+            // 7. Cargar Recorridos Mensuales GeoJSON (Soporta covelia_mensual_polylines_cgm.geojson.gz comprimido con GZIP)
             recorridosLayer = new google.maps.Data();
 
             const procesarRecorridos = (geoJson) => {
@@ -956,6 +967,7 @@
 
                 const fechasSet = new Set();
                 const dominiosSet = new Set();
+                const cgmsRecorridosSet = new Set();
 
                 geoJson.features.forEach(f => {
                     if (f.properties) {
@@ -965,9 +977,14 @@
                         if (f.properties.Dominio) {
                             dominiosSet.add(f.properties.Dominio.trim());
                         }
+                        const cgmValue = getGeoJsonFeatureCgm(f);
+                        if (cgmValue) {
+                            cgmsRecorridosSet.add(cgmValue.trim());
+                        }
                     }
                 });
 
+                // Llenar selector de Fecha para Recorridos
                 const selectFecha = document.getElementById('filtro-recorridos-fecha');
                 if (selectFecha) {
                     const selectedVal = selectFecha.value;
@@ -992,6 +1009,7 @@
                     }
                 }
 
+                // Llenar selector de Dominio para Recorridos
                 const selectDominio = document.getElementById('filtro-recorridos-dominio');
                 if (selectDominio) {
                     const selectedVal = selectDominio.value;
@@ -1010,17 +1028,38 @@
                     }
                 }
 
+                // Llenar selector de CGM para Recorridos
+                const selectRecorridosCgm = document.getElementById('filtro-recorridos-cgm');
+                if (selectRecorridosCgm) {
+                    const selectedVal = selectRecorridosCgm.value;
+                    selectRecorridosCgm.innerHTML = '<option value="TODOS">TODOS LOS CGM</option>';
+                    const sortedCgms = Array.from(cgmsRecorridosSet).sort();
+                    sortedCgms.forEach(cgm => {
+                        const opt = document.createElement('option');
+                        opt.value = normalizeCgmName(cgm);
+                        const formattedName = cgm.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+                        opt.textContent = formattedName;
+                        selectRecorridosCgm.appendChild(opt);
+                    });
+                    const normalizedCgmsList = Array.from(cgmsRecorridosSet).map(normalizeCgmName);
+                    if (normalizedCgmsList.includes(selectedVal)) {
+                        selectRecorridosCgm.value = selectedVal;
+                    } else {
+                        selectRecorridosCgm.value = "TODOS";
+                    }
+                }
+
                 updateRecorridosStyles();
             };
 
             // Intentar cargar primero el archivo comprimido .gz utilizando la librería pako con autodetección
-            fetch('./covelia_mensual_polylines.geojson.gz' + noCache)
+            fetch('./covelia_mensual_polylines_cgm.geojson.gz' + noCache)
                 .then(r => {
                     if (!r.ok) throw new Error("No se pudo descargar el archivo .gz");
                     return r.arrayBuffer();
                 })
                 .then(buffer => {
-                    // Intentamos decodificar como UTF-8 plano para ver si el servidor ya lo entregó descomprimido de manera transparente (Content-Encoding)
+                    // Intentamos decodificar como UTF-8 plano para ver si el servidor ya lo entregó descomprimido de manera transparente
                     const decoder = new TextDecoder('utf-8');
                     try {
                         const text = decoder.decode(buffer);
@@ -1046,7 +1085,7 @@
                 .catch(e => {
                     console.log('No se pudo procesar .gz de forma directa. Intentando con el fallback .geojson...', e);
                     // Fallback al archivo GeoJSON plano
-                    fetch('./covelia_mensual_polylines.geojson' + noCache)
+                    fetch('./covelia_mensual_polylines_cgm.geojson' + noCache)
                         .then(r => {
                             if (!r.ok) throw new Error("Fallo el fetch de .geojson");
                             return r.json();
@@ -1331,21 +1370,45 @@
                 const dominioSelect = document.getElementById('filtro-recorridos-dominio');
                 const dominioFiltro = dominioSelect ? dominioSelect.value : "TODOS";
 
+                const cgmSelectRecorridos = document.getElementById('filtro-recorridos-cgm');
+                const cgmFiltroRecorridos = cgmSelectRecorridos ? cgmSelectRecorridos.value : "TODOS";
+
+                const globalCgmSelect = document.getElementById('filtro-global-cgm');
+                const globalCgm = globalCgmSelect ? globalCgmSelect.value : "TODOS";
+
                 recorridosLayer.setStyle((feature) => {
                     const featFechaOriginal = feature.getProperty('Fecha');
                     const featFechaClean = formatDateToShow(featFechaOriginal);
                     const featDominio = feature.getProperty('Dominio') ? feature.getProperty('Dominio').trim() : "";
+                    const featCgm = getFeatureCgmProperty(feature);
+                    const cleanFeatCgm = normalizeCgmName(featCgm);
                     let isVisible = true;
 
+                    // Filtro de Fecha
                     if (fechaFiltro !== "TODAS") {
                         if (featFechaClean !== fechaFiltro) {
                             isVisible = false;
                         }
                     }
 
+                    // Filtro de Dominio
                     if (dominioFiltro !== "TODOS") {
                         if (featDominio !== dominioFiltro) {
                             isVisible = false;
+                        }
+                    }
+
+                    // Filtro específico local de CGM para Recorridos (Toma precedencia sobre el global si está seteado)
+                    if (cgmFiltroRecorridos !== "TODOS") {
+                        if (cleanFeatCgm !== cgmFiltroRecorridos) {
+                            isVisible = false;
+                        }
+                    } else {
+                        // Si el selector interno de Recorridos está en TODOS, se respeta el filtro global de CGM
+                        if (globalCgm !== "TODOS" && cleanFeatCgm) {
+                            if (cleanFeatCgm !== globalCgm) {
+                                isVisible = false;
+                            }
                         }
                     }
 
@@ -1466,16 +1529,25 @@
                             content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${cgmVal}</p>`;
                         }
                     } else if (layerType === 'recorridos') {
+                        // Información de los recorridos mensuales de Covelia (ahora con CGM y n_puntos_cgm)
                         const dominio = event.feature.getProperty('Dominio') || '-';
                         const dynamicColor = getColorForRoute(dominio);
                         const fechaOriginal = event.feature.getProperty('Fecha');
                         const fechaClean = formatDateToShow(fechaOriginal);
                         const puntos = event.feature.getProperty('n_puntos') || '-';
+                        const puntosCgm = event.feature.getProperty('n_puntos_cgm');
+                        const cgmVal = getFeatureCgmProperty(event.feature);
 
                         content += `<h3 style="font-weight: 800; font-size: 14px; color: ${dynamicColor}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Recorrido Covelia</h3>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Dominio:</b> ${dominio}</p>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaClean}</p>`;
+                        if (cgmVal) {
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>CGM:</b> ${cgmVal}</p>`;
+                        }
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Puntos Registrados:</b> ${puntos}</p>`;
+                        if (puntosCgm !== undefined && puntosCgm !== null) {
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Puntos en CGM:</b> ${puntosCgm}</p>`;
+                        }
                     } else { // CGM
                         content += `<h3 style="font-weight: 800; font-size: 14px; color: ${colorTitle}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">CGM: ${getFeatureCgmProperty(event.feature)}</h3>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Manzanas:</b> ${event.feature.getProperty('Manzanas') || '-'}</p>`;
