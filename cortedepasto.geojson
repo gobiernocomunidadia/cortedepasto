@@ -5256,8 +5256,8 @@
         "Fecha_str": "26/03/2026",
         "Inicio Recorrido": "Av. Juan XII & Tiro Federal",
         "Fin del Recorrido": "Av. Juan XII & Ruta 4",
-        "CGM": "Parque Baron",
-        "Localidad": "Lomas de Zamora ",
+        "CGM": "Llavallol",
+        "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 2381.87,
         "Area": 0
@@ -21598,8 +21598,8 @@
         "Fecha_str": "27/04/2026",
         "Inicio Recorrido": "Boulevard de Juan XIII & Oslo",
         "Fin del Recorrido": "Boulevard de Juan XIII & puente peatonal",
-        "CGM": "Parque Baron",
-        "Localidad": "Lomas de Zamora ",
+        "CGM": "Llavallol",
+        "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
         "Distancia": 3913.94,
         "Area": 0
@@ -30123,47 +30123,19 @@
         "CGM": "Parque Baron",
         "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
-        "Distancia": 5462.69,
+        "Distancia": 3604.7,
         "Area": 0
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            -58.44828,
-            -34.76348
+            -58.4541209227406,
+            -34.7572584236982
           ],
           [
-            -58.44914,
-            -34.76241
-          ],
-          [
-            -58.44997,
-            -34.7613
-          ],
-          [
-            -58.45162,
-            -34.75908
-          ],
-          [
-            -58.45328,
-            -34.75688
-          ],
-          [
-            -58.46012,
-            -34.74773
-          ],
-          [
-            -58.4629,
-            -34.74403
-          ],
-          [
-            -58.46353,
-            -34.74321
-          ],
-          [
-            -58.4643,
-            -34.74358
+            -58.4437571470425,
+            -34.771051280648
           ]
         ]
       }
