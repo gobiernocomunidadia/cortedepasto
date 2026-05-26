@@ -6700,7 +6700,7 @@
         "Fecha_str": "30/03/2026",
         "Inicio Recorrido": "Oliden & Siritto",
         "Fin del Recorrido": "Oliden & Simon Bolivar",
-        "CGM": "Parque Baron",
+        "CGM": "Lomas ",
         "Localidad": "Lomas de Zamora ",
         "Color_Generado": "#3cb44b",
         "Distancia": 3899.09,
@@ -26447,151 +26447,19 @@
         "CGM": "Parque Baron",
         "Localidad": "Llavallol",
         "Color_Generado": "#3cb44b",
-        "Distancia": 4639.98,
+        "Distancia": 1045.13,
         "Area": 0
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            -58.43418,
-            -34.77194
+            -58.434209158966,
+            -34.7719392103656
           ],
           [
-            -58.43341,
-            -34.77146
-          ],
-          [
-            -58.43259,
-            -34.77102
-          ],
-          [
-            -58.43138,
-            -34.77041
-          ],
-          [
-            -58.43131,
-            -34.77038
-          ],
-          [
-            -58.43147,
-            -34.77016
-          ],
-          [
-            -58.43132,
-            -34.7701
-          ],
-          [
-            -58.43134,
-            -34.77006
-          ],
-          [
-            -58.43134,
-            -34.76999
-          ],
-          [
-            -58.43135,
-            -34.76991
-          ],
-          [
-            -58.43135,
-            -34.76966
-          ],
-          [
-            -58.43129,
-            -34.76933
-          ],
-          [
-            -58.43117,
-            -34.76896
-          ],
-          [
-            -58.43104,
-            -34.76858
-          ],
-          [
-            -58.4309,
-            -34.76828
-          ],
-          [
-            -58.43075,
-            -34.76805
-          ],
-          [
-            -58.43067,
-            -34.76794
-          ],
-          [
-            -58.43049,
-            -34.76775
-          ],
-          [
-            -58.42999,
-            -34.76744
-          ],
-          [
-            -58.4295,
-            -34.76716
-          ],
-          [
-            -58.42926,
-            -34.76688
-          ],
-          [
-            -58.42836,
-            -34.76564
-          ],
-          [
-            -58.42828,
-            -34.76551
-          ],
-          [
-            -58.42821,
-            -34.76539
-          ],
-          [
-            -58.42821,
-            -34.76533
-          ],
-          [
-            -58.42772,
-            -34.76539
-          ],
-          [
-            -58.4269,
-            -34.76551
-          ],
-          [
-            -58.42688,
-            -34.76545
-          ],
-          [
-            -58.42646,
-            -34.76348
-          ],
-          [
-            -58.42614,
-            -34.76197
-          ],
-          [
-            -58.42272,
-            -34.76246
-          ],
-          [
-            -58.42195,
-            -34.76257
-          ],
-          [
-            -58.42107,
-            -34.76267
-          ],
-          [
-            -58.41968,
-            -34.76288
-          ],
-          [
-            -58.41736,
-            -34.76321
+            -58.4373011255981,
+            -34.7679851617203
           ]
         ]
       }
@@ -26978,8 +26846,8 @@
         "Fecha_str": "28/04/2026",
         "Inicio Recorrido": "Eloy Alfaro & Zelaya",
         "Fin del Recorrido": "Eloy Alfaro & Las Heras",
-        "CGM": "Parque Baron",
-        "Localidad": "Villa Lamadrid",
+        "CGM": "Santa Marta",
+        "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 304.77,
         "Area": 0
@@ -27046,8 +26914,8 @@
         "Fecha_str": "28/04/2026",
         "Inicio Recorrido": "Felipe Castro & Camino Negro",
         "Fin del Recorrido": "Felipe Castro & Las Heras",
-        "CGM": "Parque Baron",
-        "Localidad": "Villa Centenario",
+        "CGM": "Santa Marta",
+        "Localidad": "Lomas de Zamora",
         "Color_Generado": "#3cb44b",
         "Distancia": 344.95,
         "Area": 0
