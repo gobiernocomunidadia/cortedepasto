@@ -6737,19 +6737,19 @@
         "CGM": "Santa Marta ",
         "Localidad": "Villa Lamadrid",
         "Color_Generado": "#3cb44b",
-        "Distancia": 475.58,
+        "Distancia": 2393.84,
         "Area": 0
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            -58.44607,
-            -34.76235
+            -58.4540955928359,
+            -34.7445663371673
           ],
           [
-            -58.44828,
-            -34.76348
+            -58.4470389282295,
+            -34.7536354179616
           ]
         ]
       }
