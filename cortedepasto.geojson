@@ -40145,6 +40145,26 @@
           -34.77530733563482
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Fecha_str": "27/05/2026",
+        "Inicio Recorrido": "Plazoleta Cristina Bertos",
+        "Fin del Recorrido": null,
+        "CGM": "Lomas",
+        "Localidad": "Lomas de Zamora",
+        "Color_Generado": "#3cb44b",
+        "Distancia": 0,
+        "Area": 0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -58.4278656628073,
+          -34.7656557881735
+        ]
+      }
     }
   ]
 }
