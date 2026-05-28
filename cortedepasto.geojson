@@ -21869,19 +21869,19 @@
         "CGM": "Temperley",
         "Localidad": "Lomas de Zamora ",
         "Color_Generado": "#3cb44b",
-        "Distancia": 721.68,
+        "Distancia": 723.23,
         "Area": 0
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            -58.36535,
-            -34.771
+            -58.3730130178044,
+            -34.771071876221
           ],
           [
-            -58.3687,
-            -34.77272
+            -58.375129860867,
+            -34.76832373601
           ]
         ]
       }
