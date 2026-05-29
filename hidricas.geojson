@@ -580,36 +580,6 @@
     {
       "type": "Feature",
       "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.37403399999999,
-            -34.5994864
-          ],
-          [
-            -58.4865276,
-            -34.7424126
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-23T03:00:00.000Z",
-        "cgm": "Santa Catalina",
-        "tarea": "Nivelado de Suelo",
-        "cant": 1,
-        "mts.": 300,
-        "tipo": "",
-        "direccion_desde": "12 de octubre & Ruben",
-        "direccion_hasta": "Martell & Elizalde",
-        "": "FBB01",
-        "distancia": "SGR",
-        "nro._reporte": 433742,
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
         "type": "Point",
         "coordinates": [
           -58.425625,
@@ -970,66 +940,6 @@
     {
       "type": "Feature",
       "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.467264,
-            -34.737455
-          ],
-          [
-            -58.448275,
-            -34.7634809
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-04-07T03:00:00.000Z",
-        "cgm": "Albertina",
-        "tarea": "Zanjeo y limpieza",
-        "cant": 1,
-        "mts.": 85,
-        "tipo": "Zanja",
-        "direccion_desde": "Aguirre & Iparraguirre",
-        "direccion_hasta": "Iparraguirre & Terrada",
-        "": "",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.466535,
-            -34.737137
-          ],
-          [
-            -58.448275,
-            -34.7634809
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-04-08T03:00:00.000Z",
-        "cgm": "Albertina",
-        "tarea": "Zanjeo",
-        "cant": 1,
-        "mts.": 80,
-        "tipo": "",
-        "direccion_desde": "Aguirre & Iparraguirre",
-        "direccion_hasta": "Iparraguirre & Terrada",
-        "": "",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
         "type": "Point",
         "coordinates": [
           -58.466535,
@@ -1102,66 +1012,6 @@
     {
       "type": "Feature",
       "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4590153,
-            -34.7471661
-          ],
-          [
-            -58.448275,
-            -34.7634809
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-04-22T03:00:00.000Z",
-        "cgm": "Llavallol",
-        "tarea": "Zanjeo y limpieza",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "Puente vecinal",
-        "direccion_desde": "Aguirre & Iparraguirre",
-        "direccion_hasta": "Iparraguirre & Terrada",
-        "": "HST169",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.468135,
-            -34.737862
-          ],
-          [
-            -58.4129034,
-            -34.7491856
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-04-16T03:00:00.000Z",
-        "cgm": "Parque Baron",
-        "tarea": "Zanjeo",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "Zanja",
-        "direccion_desde": "Aguirre & Terrada",
-        "direccion_hasta": "Aguirre & O´Higgins",
-        "": "",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
         "type": "Point",
         "coordinates": [
           -58.467559,
@@ -1204,66 +1054,6 @@
         "": "OLL491",
         "distancia": "",
         "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.476982,
-            -34.733222
-          ],
-          [
-            -58.4569726,
-            -34.7179008
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-15T03:00:00.000Z",
-        "cgm": "Albertina",
-        "tarea": "Corte de pasto y Zanjeo",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "Zanja",
-        "direccion_desde": "Agustin Magaldi & Av La Noria hasta Bariloche",
-        "direccion_hasta": "Agustin Magaldi & Bariloche",
-        "": "AH168ZT",
-        "distancia": "SGR",
-        "nro._reporte": 465732,
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -74.2110227,
-            11.2403547
-          ],
-          [
-            -58.47228089999999,
-            -34.7387365
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-28T03:00:00.000Z",
-        "cgm": "Santa Marta",
-        "tarea": "Nivelado de Suelo",
-        "cant": "",
-        "mts.": 200,
-        "tipo": "",
-        "direccion_desde": "Agustin Magaldi & Cabo del Monte",
-        "direccion_hasta": "Agustin Magaldi & Cabo Correa",
-        "": "FBB01",
-        "distancia": "SGR",
-        "nro._reporte": 448191,
         "observaciones": ""
       }
     },
@@ -1334,96 +1124,6 @@
         "direccion_desde": "Alberto Franco",
         "direccion_hasta": "",
         "": "AH168ZT",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4731464,
-            -34.7463461
-          ],
-          [
-            -58.4741999,
-            -34.7501923
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-21T03:00:00.000Z",
-        "cgm": "Banfield",
-        "tarea": "Nivelado de Suelo",
-        "cant": 1,
-        "mts.": 400,
-        "tipo": "",
-        "direccion_desde": "Alberto Franco & Giachino",
-        "direccion_hasta": "Alberto Franco & Mercedes Sosa",
-        "": "FBB01",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.3917343,
-            -34.7446312
-          ],
-          [
-            -58.47683910000001,
-            -34.7530207
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-22T03:00:00.000Z",
-        "cgm": "Banfield",
-        "tarea": "Nivelado de Suelo",
-        "cant": 1,
-        "mts.": 400,
-        "tipo": "",
-        "direccion_desde": "Alberto Franco & Mercedes Sosa",
-        "direccion_hasta": "Alberto Franco & Ruben Martell",
-        "": "FBB01",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.3917343,
-            -34.7446312
-          ],
-          [
-            -58.3621931,
-            -34.7515564
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-04-01T03:00:00.000Z",
-        "cgm": "Banfield",
-        "tarea": "Zanjeo y limpieza",
-        "cant": 1,
-        "mts.": 45,
-        "tipo": "Zanja",
-        "direccion_desde": "Alemania & Otawa",
-        "direccion_hasta": "Alemania & Portugal",
-        "": "",
         "distancia": "",
         "nro._reporte": "",
         "observaciones": ""
@@ -1664,36 +1364,6 @@
         "direccion_desde": "Amberes entre Claudio de alas & Evaristo carriego",
         "direccion_hasta": "",
         "": "AA065BR",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4292272,
-            -34.7966151
-          ],
-          [
-            -58.4748339,
-            -34.7517244
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-08T03:00:00.000Z",
-        "cgm": "Llavallol",
-        "tarea": "Desobstruccion",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "Zanja",
-        "direccion_desde": "Andrea amaya & Pampas",
-        "direccion_hasta": "Andrea amaya & Oscar allende",
-        "": "AH168ZT",
         "distancia": "",
         "nro._reporte": "",
         "observaciones": ""
@@ -9758,36 +9428,6 @@
         "direccion_desde": "Calle 4 y Quiroga (barrio 2 de Abril)",
         "direccion_hasta": "",
         "": "OLL491",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.42881310000001,
-            -34.6184483
-          ],
-          [
-            -58.4676268,
-            -34.7537227
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-14T03:00:00.000Z",
-        "cgm": "Albertina",
-        "tarea": "Corte de pasto y Zanjeo",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "Zanja",
-        "direccion_desde": "Calle 8 & Rosario",
-        "direccion_hasta": "Calle 8 & hasta Giachino",
-        "": "AH168ZT",
         "distancia": "",
         "nro._reporte": "",
         "observaciones": ""
@@ -27772,66 +27412,6 @@
     {
       "type": "Feature",
       "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4511542,
-            -34.7354048
-          ],
-          [
-            -58.4503328,
-            -34.7364982
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-08T03:00:00.000Z",
-        "cgm": "Budge",
-        "tarea": "Zanjeo y limpieza",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "Puente vecinal",
-        "direccion_desde": "Claudio de alas & Paris",
-        "direccion_hasta": "Claudio de alas & Barcelona",
-        "": "HST169",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4511542,
-            -34.7354048
-          ],
-          [
-            -58.4503328,
-            -34.7364982
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-11T03:00:00.000Z",
-        "cgm": "Budge",
-        "tarea": "Zanjeo y limpieza",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "Puente vecinal",
-        "direccion_desde": "Claudio de alas & Paris",
-        "direccion_hasta": "Claudio de alas & Barcelona",
-        "": "HST169",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
         "type": "Point",
         "coordinates": [
           -58.450747,
@@ -30712,36 +30292,6 @@
     {
       "type": "Feature",
       "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.43983000000001,
-            -34.7387
-          ],
-          [
-            -58.4599013,
-            -34.7123357
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-04-14T03:00:00.000Z",
-        "cgm": "Santa Marta",
-        "tarea": "Zanjeo",
-        "cant": 1,
-        "mts.": 200,
-        "tipo": "",
-        "direccion_desde": "Figueredo & Guamini y Montiel",
-        "direccion_hasta": "Figueredo & Montiel",
-        "": "",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
         "type": "Point",
         "coordinates": [
           -58.44209673614806,
@@ -30761,36 +30311,6 @@
         "distancia": "",
         "nro._reporte": "",
         "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4599013,
-            -34.7123357
-          ],
-          [
-            -58.4609591,
-            -34.7129419
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-04-13T03:00:00.000Z",
-        "cgm": "Llavallol",
-        "tarea": "Zanjeo y limpieza",
-        "cant": 1,
-        "mts.": 200,
-        "tipo": "",
-        "direccion_desde": "Figueredo & Montiel",
-        "direccion_hasta": "Figueredo & Bariloche",
-        "": "",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": "Trabajo realizado en el marco del Super Operativo de la Comunidad"
       }
     },
     {
@@ -30956,36 +30476,6 @@
         "direccion_desde": "Florencio Sanchez y Felipe Castro",
         "direccion_hasta": "",
         "": "",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.426422,
-            -34.748347
-          ],
-          [
-            -58.4795226,
-            -34.743976
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-21T03:00:00.000Z",
-        "cgm": "Centenario",
-        "tarea": "Corte de pasto y Zanjeo",
-        "cant": 1,
-        "mts.": 400,
-        "tipo": "Zanja",
-        "direccion_desde": "Formosa & Roca",
-        "direccion_hasta": "Formosa & Diagonal 61",
-        "": "AH168ZT",
         "distancia": "",
         "nro._reporte": "",
         "observaciones": ""
@@ -31666,36 +31156,6 @@
     {
       "type": "Feature",
       "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4665696,
-            -34.7551748
-          ],
-          [
-            -58.4754086,
-            -34.74344300000001
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-18T03:00:00.000Z",
-        "cgm": "Lomas",
-        "tarea": "Corte de pasto y Zanjeo",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "Zanja",
-        "direccion_desde": "Giachino & calle 7 & 8",
-        "direccion_hasta": "Giachino & calle 8",
-        "": "AH168ZT",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
         "type": "Point",
         "coordinates": [
           -58.468935,
@@ -31880,66 +31340,6 @@
         "direccion_desde": "Ginebra e/ Plumerillo y Murature",
         "direccion_hasta": "",
         "": "AA411YY",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4297155,
-            -34.7157176
-          ],
-          [
-            -58.4327376,
-            -34.7095952
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-06T03:00:00.000Z",
-        "cgm": "Temperley",
-        "tarea": "Zanjeo y limpieza",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "Puente vecinal",
-        "direccion_desde": "Ginebra & Conesa y Darwin",
-        "direccion_hasta": "Ginebra entre Conesa y Darwin",
-        "": "HST169",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4297155,
-            -34.7157176
-          ],
-          [
-            -58.4285279,
-            -34.7151146
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-07T03:00:00.000Z",
-        "cgm": "Banfield",
-        "tarea": "Zanjeo y limpieza",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "Zanja",
-        "direccion_desde": "Ginebra & Conesa",
-        "direccion_hasta": "Ginebra & Darwin",
-        "": "HST169",
         "distancia": "",
         "nro._reporte": "",
         "observaciones": ""
@@ -32764,36 +32164,6 @@
     {
       "type": "Feature",
       "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.47487659999999,
-            -34.7342888
-          ],
-          [
-            -58.4761587,
-            -34.7364459
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-12T03:00:00.000Z",
-        "cgm": "Albertina",
-        "tarea": "Corte de pasto y Zanjeo",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "Zanja",
-        "direccion_desde": "Homero Manzi & Soldado Massad",
-        "direccion_hasta": "Homero Manzi & Sub oficial de Rosa",
-        "": "AH168ZT",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
         "type": "Point",
         "coordinates": [
           -58.473189,
@@ -33124,36 +32494,6 @@
         "": "OLL491",
         "distancia": "",
         "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4679824,
-            -34.7455272
-          ],
-          [
-            -58.4362138,
-            -34.7550927
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-19T03:00:00.000Z",
-        "cgm": "Lomas",
-        "tarea": "Corte de pasto y Zanjeo",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "Zanja",
-        "direccion_desde": "Ignacio Corsini & quiroga",
-        "direccion_hasta": "Ignacio Corsini & calle 101",
-        "": "AH168ZT",
-        "distancia": "SGR",
-        "nro._reporte": 453650,
         "observaciones": ""
       }
     },
@@ -35008,96 +34348,6 @@
     {
       "type": "Feature",
       "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4831536,
-            -34.7436766
-          ],
-          [
-            -58.4849331,
-            -34.7445642
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-04T03:00:00.000Z",
-        "cgm": "Santa Marta",
-        "tarea": "Corte de pasto y Zanjeo",
-        "cant": 1,
-        "mts.": 200,
-        "tipo": "Zanja",
-        "direccion_desde": "Lencina & Ruben Martell",
-        "direccion_hasta": "Lencina & Elizalde",
-        "": "AH168ZT",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.47780339999999,
-            -34.7401658
-          ],
-          [
-            -58.4767525,
-            -34.7396535
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-04-17T03:00:00.000Z",
-        "cgm": "Santa Marta",
-        "tarea": "Zanjeo",
-        "cant": 1,
-        "mts.": 150,
-        "tipo": "",
-        "direccion_desde": "Leña & Giachino",
-        "direccion_hasta": "Leña & Evita",
-        "": "",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4760547,
-            -34.7392865
-          ],
-          [
-            -58.4767525,
-            -34.7396535
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-04-08T03:00:00.000Z",
-        "cgm": "Llavallol",
-        "tarea": "Limpieza",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "Zanja",
-        "direccion_desde": "Leña & Macacha guemes",
-        "direccion_hasta": "Leña & Evita",
-        "": "",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
         "type": "Point",
         "coordinates": [
           -58.477825,
@@ -35698,36 +34948,6 @@
     {
       "type": "Feature",
       "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4851944,
-            -34.7377329
-          ],
-          [
-            -58.473859,
-            -34.7408758
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-04-20T03:00:00.000Z",
-        "cgm": "Fiorito",
-        "tarea": "Zanjeo y limpieza",
-        "cant": 1,
-        "mts.": 150,
-        "tipo": "Zanja",
-        "direccion_desde": "M. Guemes & Olimpo",
-        "direccion_hasta": "M. Guemes & P. Rosende de Grigera",
-        "": "",
-        "distancia": "SGR",
-        "nro._reporte": 447511,
-        "observaciones": "Trabajo realizado por la cuadrilla de zanjeo"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
         "type": "Point",
         "coordinates": [
           -58.447126,
@@ -35743,36 +34963,6 @@
         "tipo": "Sumidero",
         "direccion_desde": "M. Rodriguez y Belén",
         "direccion_hasta": "",
-        "": "",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.47605469999999,
-            -34.7392865
-          ],
-          [
-            -58.4725484,
-            -34.7359677
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-04-17T03:00:00.000Z",
-        "cgm": "Fiorito",
-        "tarea": "Zanjeo",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "",
-        "direccion_desde": "Macacha Guemes & Leña",
-        "direccion_hasta": "Macacha Guemes & Cabo Cáceres",
         "": "",
         "distancia": "",
         "nro._reporte": "",
@@ -35846,36 +35036,6 @@
         "direccion_desde": "Machado de Asis y General Paz",
         "direccion_hasta": "",
         "": "AF262DV- CONTRATADO",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.47305,
-            -34.7506529
-          ],
-          [
-            -58.47238599999999,
-            -34.75132840000001
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-11T03:00:00.000Z",
-        "cgm": "Santa Marta",
-        "tarea": "Corte de pasto y Zanjeo",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "Zanja",
-        "direccion_desde": "Madres de plaza de mayo & tita merello",
-        "direccion_hasta": "Madres de plaza de mayo & Carlos voss",
-        "": "AH168ZT",
         "distancia": "",
         "nro._reporte": "",
         "observaciones": ""
@@ -36503,66 +35663,6 @@
         "distancia": "SGR",
         "nro._reporte": 453821,
         "observaciones": "Por vereda"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.478446,
-            -34.7362089
-          ],
-          [
-            -58.4777475,
-            -34.7358365
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-04-13T03:00:00.000Z",
-        "cgm": "Temperley",
-        "tarea": "Zanjeo",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "",
-        "direccion_desde": "Massad & Macacha Guemes",
-        "direccion_hasta": "Massad & Rosende Grigera",
-        "": "",
-        "distancia": "SGR",
-        "nro._reporte": 442702,
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.478446,
-            -34.7362089
-          ],
-          [
-            -58.4777475,
-            -34.7358365
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-04-13T03:00:00.000Z",
-        "cgm": "Temperley",
-        "tarea": "Zanjeo",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "",
-        "direccion_desde": "Massad & Macacha Guemes",
-        "direccion_hasta": "Massad & Rosende Grigera",
-        "": "",
-        "distancia": "SGR",
-        "nro._reporte": 441871,
-        "observaciones": ""
       }
     },
     {
@@ -37264,36 +36364,6 @@
     {
       "type": "Feature",
       "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4288868,
-            -34.7626901
-          ],
-          [
-            -58.4737408,
-            -34.7509256
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-21T03:00:00.000Z",
-        "cgm": "Fiorito",
-        "tarea": "Nivelado de Suelo",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "",
-        "direccion_desde": "Mercedes Sosa & Alberto Franco",
-        "direccion_hasta": "Mercedes Sosa & Tita Merello",
-        "": "FBB01",
-        "distancia": "SGR",
-        "nro._reporte": 453468,
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
         "type": "Point",
         "coordinates": [
           -58.473989,
@@ -37432,36 +36502,6 @@
         "": "AF262DV- CONTRATADO",
         "distancia": "",
         "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.47981919999999,
-            -34.74904
-          ],
-          [
-            -58.47920629999999,
-            -34.7467806
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-26T03:00:00.000Z",
-        "cgm": "Centenario",
-        "tarea": "Corte de pasto y Zanjeo",
-        "cant": 1,
-        "mts.": 50,
-        "tipo": "Zanja",
-        "direccion_desde": "Misiones & Ruben Martell hasta Forgione",
-        "direccion_hasta": "Misiones & Forgione",
-        "": "AH168ZT",
-        "distancia": "",
-        "nro._reporte": 477820,
         "observaciones": ""
       }
     },
@@ -37823,36 +36863,6 @@
         "distancia": "",
         "nro._reporte": "",
         "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.45889340000001,
-            -34.7135799
-          ],
-          [
-            -58.4619083,
-            -34.7097965
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-04-13T03:00:00.000Z",
-        "cgm": "Santa Catalina",
-        "tarea": "Zanjeo y limpieza",
-        "cant": 1,
-        "mts.": 300,
-        "tipo": "",
-        "direccion_desde": "Montiel & Baradero",
-        "direccion_hasta": "Montiel & Turner",
-        "": "",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": "Trabajo realizado en el marco del Super Operativo de la Comunidad"
       }
     },
     {
@@ -38597,36 +37607,6 @@
         "distancia": "",
         "nro._reporte": "",
         "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.43686940000001,
-            -34.7254258
-          ],
-          [
-            -58.4426618,
-            -34.7285053
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-04-20T03:00:00.000Z",
-        "cgm": "Albertina",
-        "tarea": "Zanjeo y limpieza",
-        "cant": "",
-        "mts.": 100,
-        "tipo": "",
-        "direccion_desde": "Napoles & Pio Baroja y G. Miro",
-        "direccion_hasta": "Napoles & G. Miro",
-        "": "HST169",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": "Limpieza y desobstruccion de puentes vecinales"
       }
     },
     {
@@ -40768,36 +39748,6 @@
     {
       "type": "Feature",
       "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4479293,
-            -34.7099061
-          ],
-          [
-            -58.4291379,
-            -34.6999412
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-04-09T03:00:00.000Z",
-        "cgm": "Santa Catalina",
-        "tarea": "Zanjeo",
-        "cant": 1,
-        "mts.": 50,
-        "tipo": "",
-        "direccion_desde": "Pilcomayo & Perez Galdos",
-        "direccion_hasta": "Pilcomayo & Pje. Los Pinos",
-        "": "",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
         "type": "Point",
         "coordinates": [
           -58.438656,
@@ -41782,36 +40732,6 @@
     {
       "type": "Feature",
       "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.47336660000001,
-            -34.7554869
-          ],
-          [
-            -58.4729749,
-            -34.7539664
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-04-24T03:00:00.000Z",
-        "cgm": "Fiorito",
-        "tarea": "Zanjeo y limpieza",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "Zanja",
-        "direccion_desde": "Gnral.Goodwyn & Las Flores",
-        "direccion_hasta": "Gnral.Goodwyn & 20 de Junio",
-        "": "",
-        "distancia": "",
-        "nro._reporte": 452968,
-        "observaciones": "Limpieza y corte pasto a mano"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
         "type": "Point",
         "coordinates": [
           -58.437721,
@@ -42071,36 +40991,6 @@
         "distancia": "",
         "nro._reporte": "",
         "observaciones": "Trabajo realizado por el conducto principal"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.3687986,
-            -34.7629743
-          ],
-          [
-            -58.36918659999999,
-            -34.7609204
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-04-20T03:00:00.000Z",
-        "cgm": "Temperley",
-        "tarea": "Limpieza y desobstruccion",
-        "cant": 7,
-        "mts.": 300,
-        "tipo": "Camara",
-        "direccion_desde": "Rev. de Temperley & Mirasol",
-        "direccion_hasta": "Rev. de Temperley & El Tala",
-        "": "AA065BR",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": "Trabajo relaizado por el conducto principal"
       }
     },
     {
@@ -42794,66 +41684,6 @@
         "direccion_desde": "Ruben Martell &Andrea amaya",
         "direccion_hasta": "",
         "": "OLL491",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.48054159999999,
-            -34.7471474
-          ],
-          [
-            -58.4794275,
-            -34.7495353
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-23T03:00:00.000Z",
-        "cgm": "Turdera",
-        "tarea": "Nivelado de Suelo",
-        "cant": 1,
-        "mts.": 200,
-        "tipo": "",
-        "direccion_desde": "Ruben Martell & diagon 61",
-        "direccion_hasta": "Ruben Martell & el Arroyo",
-        "": "FBB01",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4824372,
-            -34.7446861
-          ],
-          [
-            -58.4794275,
-            -34.7495353
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-28T03:00:00.000Z",
-        "cgm": "Llavallol",
-        "tarea": "Corte de pasto y Zanjeo",
-        "cant": "",
-        "mts.": 150,
-        "tipo": "Zanja",
-        "direccion_desde": "Ruben Martell & San Manco",
-        "direccion_hasta": "Ruben Martell & Arroyo Santa Catalina",
-        "": "AH168ZT",
         "distancia": "",
         "nro._reporte": "",
         "observaciones": ""
@@ -43846,36 +42676,6 @@
     {
       "type": "Feature",
       "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4729635,
-            -34.7432652
-          ],
-          [
-            -58.4748031,
-            -34.7442274
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-20T03:00:00.000Z",
-        "cgm": "Santa Catalina",
-        "tarea": "Corte de pasto y Zanjeo",
-        "cant": 1,
-        "mts.": 300,
-        "tipo": "Zanja",
-        "direccion_desde": "Soldado Britos & Macacha Guemes",
-        "direccion_hasta": "Soldado Britos & Giachino",
-        "": "AH168ZT",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
         "type": "Point",
         "coordinates": [
           -58.475489,
@@ -44404,66 +43204,6 @@
     {
       "type": "Feature",
       "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4733714,
-            -34.7483756
-          ],
-          [
-            -58.4288868,
-            -34.7626901
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-27T03:00:00.000Z",
-        "cgm": "Lomas",
-        "tarea": "Nivelado de Suelo",
-        "cant": "",
-        "mts.": 300,
-        "tipo": "",
-        "direccion_desde": "Thomas Edison & Quiroga",
-        "direccion_hasta": "Thomas Edison & Alberto Franco",
-        "": "FBB01",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4712614,
-            -34.7554563
-          ],
-          [
-            -58.4712614,
-            -34.7554563
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-21T03:00:00.000Z",
-        "cgm": "Banfield",
-        "tarea": "Nivelado de Suelo",
-        "cant": 1,
-        "mts.": 600,
-        "tipo": "",
-        "direccion_desde": "Thomas edison desde Quiroga hasta Jeronimo Costa",
-        "direccion_hasta": "Thomas Edison & Jeronimo Costa",
-        "": "FBB01",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
         "type": "Point",
         "coordinates": [
           -58.476535,
@@ -44507,36 +43247,6 @@
         "distancia": "",
         "nro._reporte": "",
         "observaciones": "Trabajo realizado a mano por la cuadrilla de zanjeo"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4302476,
-            -34.76118230000001
-          ],
-          [
-            -58.472386,
-            -34.7513284
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-11T03:00:00.000Z",
-        "cgm": "Banfield",
-        "tarea": "Corte de pasto y Zanjeo",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "Zanja",
-        "direccion_desde": "Tita Merello & Mercedes Sosa",
-        "direccion_hasta": "Tita Merello & Madres de Plaza de Mayo",
-        "": "AH168ZT",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
       }
     },
     {
@@ -44729,66 +43439,6 @@
         "distancia": "",
         "nro._reporte": "",
         "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4608362,
-            -34.7091986
-          ],
-          [
-            -58.46299639999999,
-            -34.7104033
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-04-14T03:00:00.000Z",
-        "cgm": "Lomas",
-        "tarea": "Zanjeo",
-        "cant": 1,
-        "mts.": 150,
-        "tipo": "",
-        "direccion_desde": "Turner & Guamini",
-        "direccion_hasta": "Turner & Bariloche",
-        "": "",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.464086,
-            -34.7109849
-          ],
-          [
-            -58.46299639999999,
-            -34.7104033
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-04-13T03:00:00.000Z",
-        "cgm": "Llavallol",
-        "tarea": "Zanjeo y limpieza",
-        "cant": 1,
-        "mts.": 100,
-        "tipo": "",
-        "direccion_desde": "Turner & Saladillo",
-        "direccion_hasta": "Turner & Bariloche",
-        "": "",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": "Trabajo realizado en el marco del Super Operativo de la Comunidad"
       }
     },
     {
@@ -45434,36 +44084,6 @@
         "direccion_desde": "Yapeyu&Matheu",
         "direccion_hasta": "",
         "": "AA411YY",
-        "distancia": "",
-        "nro._reporte": "",
-        "observaciones": ""
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            -58.4794275,
-            -34.7495353
-          ],
-          [
-            -58.4851332,
-            -34.7443012
-          ]
-        ]
-      },
-      "properties": {
-        "fecha": "2026-05-13T03:00:00.000Z",
-        "cgm": "SANTA CATALINA",
-        "tarea": "Corte de pasto y Zanjeo",
-        "cant": 1,
-        "mts.": 200,
-        "tipo": "Zanja",
-        "direccion_desde": "Zanetti & Ruben Martell",
-        "direccion_hasta": "Zanetti & Elizalde",
-        "": "AH168ZT",
         "distancia": "",
         "nro._reporte": "",
         "observaciones": ""
