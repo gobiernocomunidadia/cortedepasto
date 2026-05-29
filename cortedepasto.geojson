@@ -40944,24 +40944,24 @@
       "type": "Feature",
       "properties": {
         "Fecha_str": "28/5/2026",
-        "Inicio Recorrido": "Bariloche",
+        "Inicio Recorrido": "Bariloche & Padre Carlos Mujica",
         "Fin del Recorrido": "Completo",
         "CGM": "Budge",
         "Localidad": "Ingeniero Budge",
         "Color_Generado": "#3cb44b",
-        "Distancia": 4447.72,
+        "Distancia": 285,
         "Area": 0
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            -58.4640047135446,
-            -34.7092230659465
+            -58.4772758018131,
+            -34.7318182549982
           ],
           [
-            -58.4507277622732,
-            -34.7259827701055
+            -58.4783540498158,
+            -34.7327440616181
           ]
         ]
       }
