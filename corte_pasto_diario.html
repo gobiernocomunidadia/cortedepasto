@@ -197,10 +197,18 @@
                                 <!-- Se llena dinámicamente -->
                             </select>
                         </div>
-                        <div class="flex flex-col gap-1 pl-7">
+                        <div class="flex flex-col gap-1 pl-7 mb-3">
                             <label class="text-xs font-semibold text-gray-600">Filtrar por Tarea:</label>
                             <select id="filtro-hidricas-tarea" class="w-full text-xs p-1.5 border border-gray-300 rounded focus:outline-none focus:border-[var(--color-hidricas)] font-semibold text-[#0F172A] cursor-pointer">
                                 <option value="TODAS">TODAS LAS TAREAS</option>
+                                <!-- Se llena dinámicamente -->
+                            </select>
+                        </div>
+                        <!-- NUEVO FILTRO: FECHA para Asuntos Hídricos -->
+                        <div class="flex flex-col gap-1 pl-7">
+                            <label class="text-xs font-semibold text-gray-600">Filtrar por Fecha:</label>
+                            <select id="filtro-hidricas-fecha" class="w-full text-xs p-1.5 border border-gray-300 rounded focus:outline-none focus:border-[var(--color-hidricas)] font-semibold text-[#0F172A] cursor-pointer">
+                                <option value="TODAS">TODAS LAS FECHAS</option>
                                 <!-- Se llena dinámicamente -->
                             </select>
                         </div>
@@ -256,7 +264,7 @@
         let coveliaLayer;
         let recoleccionLayer;
         let recorridosLayer; 
-        let hidricasLayer; // Nueva capa para Asuntos Hídricos
+        let hidricasLayer; // Capa para Asuntos Hídricos
         let limiteElements = []; 
         const cgmMap = new Map(); // Mapa de CGM normalizado -> Nombre original para evitar duplicados en el select
         let barridoGeoJsonData = null; // Almacenamiento global para los datos de barrido y filtrado dinámico
@@ -778,62 +786,6 @@
                     updateRecorridosStyles();
                 });
             }
-
-            // Listeners para los filtros de Asuntos Hídricos
-            const selectHidricasTipo = document.getElementById('filtro-hidricas-tipo');
-            if (selectHidricasTipo) {
-                selectHidricasTipo.addEventListener('change', () => {
-                    updateHidricasStyles();
-                });
-            }
-
-            const selectHidricasTarea = document.getElementById('filtro-hidricas-tarea');
-            if (selectHidricasTarea) {
-                selectHidricasTarea.addEventListener('change', () => {
-                    updateHidricasStyles();
-                });
-            }
-
-            const noCache = '?v=' + new Date().getTime();
-
-            // 1. Límite Lomas (Línea Punteada)
-            fetch('./municipios_Lomas de Zamora.geojson' + noCache).then(r => r.json()).then(geoJson => {
-                geoJson.features.forEach(feature => {
-                    if (feature.geometry.type === 'MultiPolygon' || feature.geometry.type === 'Polygon') {
-                        const polys = feature.geometry.type === 'Polygon' ? [feature.geometry.coordinates] : feature.geometry.coordinates;
-                        polys.forEach(poly => {
-                            poly.forEach(ring => {
-                                const path = ring.map(coord => ({ lat: coord[1], lng: coord[0] }));
-                                const p = new google.maps.Polygon({ paths: path, strokeOpacity: 0, fillColor: '#1E5E3A', fillOpacity: 0.03, map: map, zIndex: 2 });
-                                const lineSymbol = { path: 'M 0,-1 0,1', strokeOpacity: 1, scale: 3 };
-                                const l = new google.maps.Polyline({ path: path, strokeOpacity: 0, icons: [{ icon: lineSymbol, offset: '0', repeat: '15px' }], strokeColor: '#1E5E3A', strokeWeight: 3, map: map, zIndex: 3 });
-                                limiteElements.push(p, l);
-                            });
-                        });
-                    }
-                });
-            }).catch(e => console.log('Error cargando límite:', e));
-
-            // 2. Cargar CGM GeoJSON
-            cgmLayer = new google.maps.Data();
-            fetch('./CGM.geojson' + noCache).then(r => {
-                if(!r.ok) throw new Error("Fallo la carga de CGM.geojson");
-                return r.json();
-            }).then(geoJson => {
-                cgmLayer.addGeoJson(geoJson);
-                
-                geoJson.features.forEach(f => {
-                    const cgmValue = getGeoJsonFeatureCgm(f);
-                    if (cgmValue) {
-                        registerCgm(cgmValue);
-                    }
-                });
-                updateCgmDropdown();
-                updateStyles(); 
-            }).catch(e => {
-                console.log('Aviso: CGM.geojson no cargado automáticamente.');
-                document.getElementById('seccion-local-uploader').classList.remove('hidden');
-            });
 
             // Se sincroniza con el estado inicial del checkbox (checked por defecto)
             cgmLayer.setMap(document.getElementById('cb-cgm').checked ? map : null);
