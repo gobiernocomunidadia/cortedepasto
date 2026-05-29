@@ -204,7 +204,7 @@
                                 <!-- Se llena dinámicamente -->
                             </select>
                         </div>
-                        <!-- NUEVO FILTRO: FECHA para Asuntos Hídricos -->
+                        <!-- FILTRO: FECHA para Asuntos Hídricos -->
                         <div class="flex flex-col gap-1 pl-7">
                             <label class="text-xs font-semibold text-gray-600">Filtrar por Fecha:</label>
                             <select id="filtro-hidricas-fecha" class="w-full text-xs p-1.5 border border-gray-300 rounded focus:outline-none focus:border-[var(--color-hidricas)] font-semibold text-[#0F172A] cursor-pointer">
@@ -232,6 +232,24 @@
                                 <!-- Se llena dinámicamente -->
                             </select>
                         </div>
+                    </div>
+                </div>
+
+                <!-- NUEVA SECCIÓN: PANEL DE DIAGNÓSTICO DE CARGA -->
+                <div class="bg-gray-100 p-3 rounded-lg border border-gray-300 mt-4">
+                    <h4 class="text-xs font-extrabold text-gray-700 uppercase mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-signal text-gray-600"></i> Diagnóstico de Carga (GitHub)
+                    </h4>
+                    <p class="text-[10px] text-gray-500 mb-2">Comprueba la vinculación de tus archivos en tiempo real:</p>
+                    <div id="status-panel" class="space-y-1.5 text-[11px] font-medium text-gray-700">
+                        <div id="status-limite" class="flex justify-between"><span>Límite Lomas:</span> <span class="text-yellow-600 font-bold">🟡 Cargando...</span></div>
+                        <div id="status-cgm" class="flex justify-between"><span>CGM División:</span> <span class="text-yellow-600 font-bold">🟡 Cargando...</span></div>
+                        <div id="status-barrido" class="flex justify-between"><span>Barrido Mun.:</span> <span class="text-yellow-600 font-bold">🟡 Cargando...</span></div>
+                        <div id="status-covelia" class="flex justify-between"><span>Barrido Covelia:</span> <span class="text-yellow-600 font-bold">🟡 Cargando...</span></div>
+                        <div id="status-recoleccion" class="flex justify-between"><span>Recolección:</span> <span class="text-yellow-600 font-bold">🟡 Cargando...</span></div>
+                        <div id="status-recorridos" class="flex justify-between"><span>Recorridos GPS:</span> <span class="text-yellow-600 font-bold">🟡 Cargando...</span></div>
+                        <div id="status-hidricas" class="flex justify-between"><span>Asuntos Hídricos:</span> <span class="text-yellow-600 font-bold">🟡 Cargando...</span></div>
+                        <div id="status-cortes" class="flex justify-between"><span>Cortes de Pasto:</span> <span class="text-yellow-600 font-bold">🟡 Cargando...</span></div>
                     </div>
                 </div>
 
@@ -270,6 +288,52 @@
         let barridoGeoJsonData = null; // Almacenamiento global para los datos de barrido y filtrado dinámico
         let recoleccionGeoJsonData = null; // Almacenamiento global para recolección
         let hidricasGeoJsonData = null; // Almacenamiento global para Asuntos Hídricos
+
+        // --- SISTEMA DIAGNÓSTICO EN PANTALLA ---
+        function updateStatus(id, state, extraInfo = '') {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const nameSpan = el.querySelector('span:first-child').innerText;
+            
+            if (state === 'success') {
+                el.innerHTML = `<span>${nameSpan}</span> <span class="text-green-600 font-bold">🟢 Cargado</span>`;
+            } else if (state === 'error') {
+                el.innerHTML = `<span>${nameSpan}</span> <span class="text-red-600 font-bold" title="${extraInfo}">🔴 Error (404/MIME)</span>`;
+            } else if (state === 'warning') {
+                el.innerHTML = `<span>${nameSpan}</span> <span class="text-amber-600 font-bold" title="${extraInfo}">🟡 Manual</span>`;
+            }
+        }
+
+        // --- CARGADOR DE ARCHIVOS MULTI-RUTA / CASE-INSENSITIVE FALLBACKS ---
+        async function loadLayerData(paths, processor, statusId) {
+            const noCache = '?v=' + new Date().getTime();
+            let success = false;
+            let lastError = null;
+
+            for (let path of paths) {
+                try {
+                    const res = await fetch(path + noCache);
+                    if (res.ok) {
+                        const json = await res.json();
+                        await processor(json);
+                        success = true;
+                        updateStatus(statusId, 'success');
+                        console.log(`Carga exitosa: ${path}`);
+                        break;
+                    } else {
+                        lastError = `HTTP ${res.status}`;
+                    }
+                } catch (err) {
+                    lastError = err.message;
+                }
+            }
+
+            if (!success) {
+                console.error(`Error crítico cargando de rutas:`, paths, lastError);
+                updateStatus(statusId, 'error', lastError);
+                document.getElementById('seccion-local-uploader').classList.remove('hidden');
+            }
+        }
 
         // --- FUNCIÓN DE NORMALIZACIÓN DE CGMs (Evita fallos por espacios o acentos en el JSON) ---
         function normalizeCgmName(cgmName) {
@@ -780,19 +844,59 @@
                 });
             }
 
-            const selectRecorridosDominio = document.getElementById('filtro-recorridos-dominio');
-            if (selectRecorridosDominio) {
-                selectRecorridosDominio.addEventListener('change', () => {
+            const selectDominio = document.getElementById('filtro-recorridos-dominio');
+            if (selectDominio) {
+                selectDominio.addEventListener('change', () => {
                     updateRecorridosStyles();
                 });
             }
 
             // Se sincroniza con el estado inicial del checkbox (checked por defecto)
+            cgmLayer = new google.maps.Data();
             cgmLayer.setMap(document.getElementById('cb-cgm').checked ? map : null);
+
+            // 1. Límite Lomas (Soporte multiruta/case-insensitive)
+            const limiteProcessor = async (geoJson) => {
+                geoJson.features.forEach(feature => {
+                    if (feature.geometry.type === 'MultiPolygon' || feature.geometry.type === 'Polygon') {
+                        const polys = feature.geometry.type === 'Polygon' ? [feature.geometry.coordinates] : feature.geometry.coordinates;
+                        polys.forEach(poly => {
+                            poly.forEach(ring => {
+                                const path = ring.map(coord => ({ lat: coord[1], lng: coord[0] }));
+                                const p = new google.maps.Polygon({ paths: path, strokeOpacity: 0, fillColor: '#1E5E3A', fillOpacity: 0.03, map: map, zIndex: 2 });
+                                const lineSymbol = { path: 'M 0,-1 0,1', strokeOpacity: 1, scale: 3 };
+                                const l = new google.maps.Polyline({ path: path, strokeOpacity: 0, icons: [{ icon: lineSymbol, offset: '0', repeat: '15px' }], strokeColor: '#1E5E3A', strokeWeight: 3, map: map, zIndex: 3 });
+                                limiteElements.push(p, l);
+                            });
+                        });
+                    }
+                });
+            };
+            loadLayerData([
+                './municipios_Lomas%20de%20Zamora.geojson',
+                './municipios_lomas%20de%20zamora.geojson',
+                './municipios_Lomas_de_Zamora.geojson'
+            ], limiteProcessor, 'status-limite');
+
+            // 2. Cargar CGM GeoJSON
+            const cgmProcessor = async (geoJson) => {
+                cgmLayer.addGeoJson(geoJson);
+                geoJson.features.forEach(f => {
+                    const cgmValue = getGeoJsonFeatureCgm(f);
+                    if (cgmValue) {
+                        registerCgm(cgmValue);
+                    }
+                });
+                updateCgmDropdown();
+                updateStyles(); 
+            };
+            loadLayerData([
+                './CGM.geojson',
+                './cgm.geojson'
+            ], cgmProcessor, 'status-cgm');
 
             // 3. Cargar Cortes de Pasto GeoJSON (Inicia deseleccionado)
             cortesLayer = new google.maps.Data();
-            
             const procesarCortes = (geoJson) => {
                 const featuresToRemove = [];
                 cortesLayer.forEach(feat => featuresToRemove.push(feat));
@@ -843,25 +947,18 @@
 
                 updateCortesStyles(); 
             };
-
-            fetch('./cortedepasto.geojson' + noCache)
-                .then(r => {
-                    if (!r.ok) throw new Error("Fallo el fetch remoto");
-                    return r.json();
-                })
-                .then(procesarCortes)
-                .catch(e => {
-                    console.log('cortedepasto.geojson no cargado automáticamente. Activando cargador manual.');
-                    document.getElementById('seccion-local-uploader').classList.remove('hidden');
-                });
+            loadLayerData([
+                './cortedepasto.geojson',
+                './corte_de_pasto.geojson',
+                './CorteDePasto.geojson'
+            ], procesarCortes, 'status-cortes');
 
             // Se sincroniza con el estado inicial del checkbox (desmarcado por defecto)
             cortesLayer.setMap(document.getElementById('cb-cortes').checked ? map : null);
 
 
-            // 4. Cargar Barrido GeoJSON (ZONAS BARRENDEROS MAYO 2026.geojson) (Inicia deseleccionado)
+            // 4. Cargar Barrido GeoJSON (Inicia deseleccionado)
             barridoLayer = new google.maps.Data();
-
             const procesarBarrido = (geoJson) => {
                 const featuresToRemove = [];
                 barridoLayer.forEach(feat => featuresToRemove.push(feat));
@@ -883,25 +980,18 @@
                 updateBarrenderoDropdown(); 
                 updateBarridoStyles();
             };
-
-            fetch('./ZONAS BARRENDEROS MAYO 2026.geojson' + noCache)
-                .then(r => {
-                    if (!r.ok) throw new Error("Fallo el fetch remoto de Barrido");
-                    return r.json();
-                })
-                .then(procesarBarrido)
-                .catch(e => {
-                    console.log('ZONAS BARRENDEROS MAYO 2026.geojson no cargado automáticamente.');
-                    document.getElementById('seccion-local-uploader').classList.remove('hidden');
-                });
+            loadLayerData([
+                './ZONAS%20BARRENDEROS%20MAYO%202026.geojson',
+                './zonas%20barrenderos%20mayo%202026.geojson',
+                './ZONAS_BARRENDEROS_MAYO_2026.geojson'
+            ], procesarBarrido, 'status-barrido');
 
             // Se sincroniza con el estado inicial del checkbox (desmarcado por defecto)
             barridoLayer.setMap(document.getElementById('cb-barrido').checked ? map : null);
 
 
-            // 5. Cargar Rutas Barrido Covelia en formato GeoJSON (Zonificacion Barrido Covelia.geojson) (Inicia deseleccionado)
+            // 5. Cargar Rutas Barrido Covelia (Inicia deseleccionado)
             coveliaLayer = new google.maps.Data();
-
             const procesarCovelia = (geoJson) => {
                 const featuresToRemove = [];
                 coveliaLayer.forEach(feat => featuresToRemove.push(feat));
@@ -920,25 +1010,19 @@
                 updateCgmDropdown();
                 updateCoveliaStyles();
             };
-
-            fetch('./Zonificacion Barrido Covelia.geojson' + noCache)
-                .then(r => {
-                    if (!r.ok) throw new Error("Fallo el fetch remoto de GeoJSON de Covelia");
-                    return r.json();
-                })
-                .then(procesarCovelia)
-                .catch(e => {
-                    console.log('Zonificacion Barrido Covelia.geojson no cargado automáticamente. Activando cargador manual.');
-                    document.getElementById('seccion-local-uploader').classList.remove('hidden');
-                });
+            loadLayerData([
+                './Zonificacion%20Barrido%20Covelia.geojson',
+                './zonificacion%20barrido%20covelia.geojson',
+                './barrido.geojson',
+                './Zonificacion_Barrido_Covelia.geojson'
+            ], procesarCovelia, 'status-covelia');
 
             // Se sincroniza con el estado inicial del checkbox (desmarcado por defecto)
             coveliaLayer.setMap(document.getElementById('cb-covelia').checked ? map : null);
 
 
-            // 6. Cargar Covelia Recoleccion GeoJSON (Zonas Covelia Recoleccion.geojson) (Inicia deseleccionado)
+            // 6. Cargar Covelia Recoleccion GeoJSON (Inicia deseleccionado)
             recoleccionLayer = new google.maps.Data();
-
             const procesarRecoleccion = (geoJson) => {
                 const featuresToRemove = [];
                 recoleccionLayer.forEach(feat => featuresToRemove.push(feat));
@@ -959,25 +1043,18 @@
                 updateCgmDropdown();
                 updateRecoleccionStyles();
             };
-
-            fetch('./Zonas Covelia Recoleccion.geojson' + noCache)
-                .then(r => {
-                    if (!r.ok) throw new Error("Fallo el fetch de Recoleccion");
-                    return r.json();
-                })
-                .then(procesarRecoleccion)
-                .catch(e => {
-                    console.log('Zonas Covelia Recoleccion.geojson no cargado automáticamente.');
-                    document.getElementById('seccion-local-uploader').classList.remove('hidden');
-                });
+            loadLayerData([
+                './Zonas%20Covelia%20Recoleccion.geojson',
+                './zonas%20covelia%20recoleccion.geojson',
+                './Zonas_Covelia_Recoleccion.geojson'
+            ], procesarRecoleccion, 'status-recoleccion');
 
             // Se sincroniza con el estado inicial del checkbox (desmarcado por defecto)
             recoleccionLayer.setMap(document.getElementById('cb-recoleccion').checked ? map : null);
 
 
-            // 7. Cargar Recorridos Mensuales GeoJSON (Soporta covelia_mensual_polylines.geojson.gz comprimido con GZIP)
+            // 7. Cargar Recorridos Mensuales GeoJSON (Soporta covelia_mensual_polylines.geojson.gz)
             recorridosLayer = new google.maps.Data();
-
             const procesarRecorridos = (geoJson) => {
                 const featuresToRemove = [];
                 recorridosLayer.forEach(feat => featuresToRemove.push(feat));
@@ -1033,7 +1110,7 @@
                         const opt = document.createElement('option');
                         opt.value = dom;
                         opt.textContent = dom;
-                        selectDominio.appendChild(opt); 
+                        selectDominio.appendChild(opt); // Corregido el bug de inyección DOM
                     });
                     if (dominiosSet.has(selectedVal)) {
                         selectDominio.value = selectedVal;
@@ -1046,57 +1123,73 @@
             };
 
             // Intentar cargar primero el archivo comprimido .gz utilizando la librería pako con autodetección
-            fetch('./covelia_mensual_polylines.geojson.gz' + noCache)
-                .then(r => {
-                    if (!r.ok) throw new Error("No se pudo descargar el archivo .gz");
-                    return r.arrayBuffer();
-                })
-                .then(buffer => {
-                    // Intentamos decodificar como UTF-8 plano para ver si el servidor ya lo entregó descomprimido de manera transparente (Content-Encoding)
-                    const decoder = new TextDecoder('utf-8');
-                    try {
-                        const text = decoder.decode(buffer);
-                        if (text.trim().startsWith('{')) {
-                            const geoJson = JSON.parse(text);
-                            procesarRecorridos(geoJson);
-                            console.log("Archivo .gz cargado (el servidor o navegador ya lo había descomprimido automáticamente).");
-                            return;
-                        }
-                    } catch (e) {
-                        // No era texto plano, procedemos a descomprimir con pako
-                    }
+            async function loadRecorridosData() {
+                const paths = [
+                    { path: './covelia_mensual_polylines.geojson.gz', isGz: true },
+                    { path: './covelia_mensual_polylines.geojson', isGz: false }
+                ];
+                let success = false;
+                let lastError = null;
 
-                    if (typeof pako !== 'undefined') {
-                        const decompressed = pako.ungzip(new Uint8Array(buffer), { to: 'string' });
-                        const geoJson = JSON.parse(decompressed);
-                        procesarRecorridos(geoJson);
-                        console.log("Archivo .gz descomprimido exitosamente en memoria con Pako.");
-                    } else {
-                        throw new Error("Pako no está listo en el cliente");
+                for (let item of paths) {
+                    try {
+                        const res = await fetch(item.path + noCache);
+                        if (!res.ok) {
+                            lastError = `HTTP ${res.status}`;
+                            continue;
+                        }
+
+                        if (item.isGz) {
+                            const buffer = await res.arrayBuffer();
+                            const decoder = new TextDecoder('utf-8');
+                            let geoJson = null;
+                            try {
+                                const text = decoder.decode(buffer);
+                                if (text.trim().startsWith('{')) {
+                                    geoJson = JSON.parse(text);
+                                }
+                            } catch (e) {
+                                // Es un binario GZ real
+                            }
+
+                            if (!geoJson) {
+                                if (typeof pako !== 'undefined') {
+                                    const decompressed = pako.ungzip(new Uint8Array(buffer), { to: 'string' });
+                                    geoJson = JSON.parse(decompressed);
+                                } else {
+                                    throw new Error("Librería Pako ausente");
+                                }
+                            }
+                            procesarRecorridos(geoJson);
+                            success = true;
+                            updateStatus('status-recorridos', 'success');
+                            break;
+                        } else {
+                            const geoJson = await res.json();
+                            procesarRecorridos(geoJson);
+                            success = true;
+                            updateStatus('status-recorridos', 'success');
+                            break;
+                        }
+                    } catch (err) {
+                        lastError = err.message;
                     }
-                })
-                .catch(e => {
-                    console.log('No se pudo procesar .gz de forma directa. Intentando con el fallback .geojson...', e);
-                    // Fallback al archivo GeoJSON plano
-                    fetch('./covelia_mensual_polylines.geojson' + noCache)
-                        .then(r => {
-                            if (!r.ok) throw new Error("Fallo el fetch de .geojson");
-                            return r.json();
-                        })
-                        .then(procesarRecorridos)
-                        .catch(err => {
-                            console.error('No se pudo encontrar ninguna de las dos fuentes de recorridos.', err);
-                            document.getElementById('seccion-local-uploader').classList.remove('hidden');
-                        });
-                });
+                }
+
+                if (!success) {
+                    console.error("Fallo total al cargar recorridos:", lastError);
+                    updateStatus('status-recorridos', 'error', lastError);
+                    document.getElementById('seccion-local-uploader').classList.remove('hidden');
+                }
+            }
+            loadRecorridosData();
 
             // Se sincroniza con el estado inicial del checkbox (desmarcado por defecto)
             recorridosLayer.setMap(document.getElementById('cb-recorridos').checked ? map : null);
 
 
-            // 8. Cargar Asuntos Hídricos GeoJSON (hidricas.geojson) (Inicia deseleccionado)
+            // 8. Cargar Asuntos Hídricos GeoJSON (Inicia deseleccionado)
             hidricasLayer = new google.maps.Data();
-
             const procesarHidricas = (geoJson) => {
                 const featuresToRemove = [];
                 hidricasLayer.forEach(feat => featuresToRemove.push(feat));
@@ -1109,6 +1202,7 @@
 
                 const tiposSet = new Set();
                 const tareasSet = new Set();
+                const fechasHidricasSet = new Set();
 
                 geoJson.features.forEach(f => {
                     if (f.properties) {
@@ -1117,6 +1211,9 @@
                         }
                         if (f.properties.tarea) {
                             tareasSet.add(f.properties.tarea.trim());
+                        }
+                        if (f.properties.fecha) {
+                            fechasHidricasSet.add(formatDateToShow(f.properties.fecha));
                         }
                         const cgmValue = getGeoJsonFeatureCgm(f);
                         if (cgmValue) {
@@ -1165,19 +1262,38 @@
                     }
                 }
 
+                // Llenar selector de Fecha de Asuntos Hídricos
+                const selectFechaHidricas = document.getElementById('filtro-hidricas-fecha');
+                if (selectFechaHidricas) {
+                    const selectedVal = selectFechaHidricas.value;
+                    selectFechaHidricas.innerHTML = '<option value="TODAS">TODAS LAS FECHAS</option>';
+                    const sortedFechas = Array.from(fechasHidricasSet).sort((a, b) => {
+                        const d1 = parseDateCustom(a);
+                        const d2 = parseDateCustom(b);
+                        if (!d1) return 1;
+                        if (!d2) return -1;
+                        return d1 - d2;
+                    });
+                    sortedFechas.forEach(f => {
+                        const opt = document.createElement('option');
+                        opt.value = f;
+                        opt.textContent = f;
+                        selectFechaHidricas.appendChild(opt);
+                    });
+                    if (fechasHidricasSet.has(selectedVal)) {
+                        selectFechaHidricas.value = selectedVal;
+                    } else {
+                        selectFechaHidricas.value = "TODAS";
+                    }
+                }
+
                 updateHidricasStyles();
             };
-
-            fetch('./hidricas.geojson' + noCache)
-                .then(r => {
-                    if (!r.ok) throw new Error("Fallo el fetch de hidricas.geojson");
-                    return r.json();
-                })
-                .then(procesarHidricas)
-                .catch(e => {
-                    console.log('hidricas.geojson no cargado automáticamente. Activando cargador manual.');
-                    document.getElementById('seccion-local-uploader').classList.remove('hidden');
-                });
+            loadLayerData([
+                './hidricas.geojson',
+                './hidricas.json',
+                './Hidricas.geojson'
+            ], procesarHidricas, 'status-hidricas');
 
             // Se sincroniza con el estado inicial del checkbox (desmarcado por defecto)
             hidricasLayer.setMap(document.getElementById('cb-hidricas').checked ? map : null);
@@ -1205,18 +1321,25 @@
                     });
                     updateCgmDropdown();
                     updateStyles();
+                    updateStatus('status-cgm', 'success');
                 } else if (isBarrido) {
                     procesarBarrido(geoJson);
+                    updateStatus('status-barrido', 'success');
                 } else if (isCovelia) {
                     procesarCovelia(geoJson);
+                    updateStatus('status-covelia', 'success');
                 } else if (isRecoleccion) {
                     procesarRecoleccion(geoJson);
+                    updateStatus('status-recoleccion', 'success');
                 } else if (isRecorridos) {
                     procesarRecorridos(geoJson);
+                    updateStatus('status-recorridos', 'success');
                 } else if (isHidricas) {
                     procesarHidricas(geoJson);
+                    updateStatus('status-hidricas', 'success');
                 } else {
                     procesarCortes(geoJson);
+                    updateStatus('status-cortes', 'success');
                 }
             };
 
@@ -1496,11 +1619,16 @@
                 const tareaSelect = document.getElementById('filtro-hidricas-tarea');
                 const tareaFiltro = tareaSelect ? tareaSelect.value : "TODAS";
 
+                const fechaSelect = document.getElementById('filtro-hidricas-fecha');
+                const fechaFiltro = fechaSelect ? fechaSelect.value : "TODAS";
+
                 hidricasLayer.setStyle((feature) => {
                     const featCgm = getFeatureCgmProperty(feature);
                     const cleanFeatCgm = normalizeCgmName(featCgm);
                     const featTipo = feature.getProperty('tipo') ? feature.getProperty('tipo').trim() : "";
                     const featTarea = feature.getProperty('tarea') ? feature.getProperty('tarea').trim() : "";
+                    const featFecha = feature.getProperty('fecha');
+                    const featFechaClean = formatDateToShow(featFecha);
                     let isVisible = true;
 
                     // Filtro Global CGM
@@ -1520,6 +1648,13 @@
                     // Filtro específico Tarea
                     if (tareaFiltro !== "TODAS") {
                         if (featTarea !== tareaFiltro) {
+                            isVisible = false;
+                        }
+                    }
+
+                    // Filtro específico de Fecha para Hídricas
+                    if (fechaFiltro !== "TODAS") {
+                        if (featFechaClean !== fechaFiltro) {
                             isVisible = false;
                         }
                     }
