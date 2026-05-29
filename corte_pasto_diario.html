@@ -169,10 +169,18 @@
                                     <!-- Se llena dinámicamente -->
                                 </select>
                             </div>
-                            <div class="flex flex-col gap-1 pl-7">
+                            <div class="flex flex-col gap-1 pl-7 mb-1">
                                 <label class="text-xs font-semibold text-gray-600">Filtrar por Dominio:</label>
                                 <select id="filtro-recorridos-dominio" class="w-full text-xs p-1.5 border border-gray-300 rounded focus:outline-none focus:border-[var(--color-recoleccion)] font-semibold text-[#0F172A] cursor-pointer">
                                     <option value="TODOS">TODOS LOS DOMINIOS</option>
+                                    <!-- Se llena dinámicamente -->
+                                </select>
+                            </div>
+                            <!-- FILTRO RECORRIDOS: Ruta Covelia Replicado -->
+                            <div class="flex flex-col gap-1 pl-7">
+                                <label class="text-xs font-semibold text-gray-600">Filtrar por Ruta:</label>
+                                <select id="filtro-recorridos-ruta" class="w-full text-xs p-1.5 border border-gray-300 rounded focus:outline-none focus:border-[var(--color-recoleccion)] font-semibold text-[#0F172A] cursor-pointer">
+                                    <option value="TODAS">TODAS LAS RUTAS</option>
                                     <!-- Se llena dinámicamente -->
                                 </select>
                             </div>
@@ -235,25 +243,7 @@
                     </div>
                 </div>
 
-                <!-- NUEVA SECCIÓN: PANEL DE DIAGNÓSTICO DE CARGA -->
-                <div class="bg-gray-100 p-3 rounded-lg border border-gray-300 mt-4">
-                    <h4 class="text-xs font-extrabold text-gray-700 uppercase mb-2 flex items-center gap-2">
-                        <i class="fa-solid fa-signal text-gray-600"></i> Diagnóstico de Carga (GitHub)
-                    </h4>
-                    <p class="text-[10px] text-gray-500 mb-2">Comprueba la vinculación de tus archivos en tiempo real:</p>
-                    <div id="status-panel" class="space-y-1.5 text-[11px] font-medium text-gray-700">
-                        <div id="status-limite" class="flex justify-between"><span>Límite Lomas:</span> <span class="text-yellow-600 font-bold">🟡 Cargando...</span></div>
-                        <div id="status-cgm" class="flex justify-between"><span>CGM División:</span> <span class="text-yellow-600 font-bold">🟡 Cargando...</span></div>
-                        <div id="status-barrido" class="flex justify-between"><span>Barrido Mun.:</span> <span class="text-yellow-600 font-bold">🟡 Cargando...</span></div>
-                        <div id="status-covelia" class="flex justify-between"><span>Barrido Covelia:</span> <span class="text-yellow-600 font-bold">🟡 Cargando...</span></div>
-                        <div id="status-recoleccion" class="flex justify-between"><span>Recolección:</span> <span class="text-yellow-600 font-bold">🟡 Cargando...</span></div>
-                        <div id="status-recorridos" class="flex justify-between"><span>Recorridos GPS:</span> <span class="text-yellow-600 font-bold">🟡 Cargando...</span></div>
-                        <div id="status-hidricas" class="flex justify-between"><span>Asuntos Hídricos:</span> <span class="text-yellow-600 font-bold">🟡 Cargando...</span></div>
-                        <div id="status-cortes" class="flex justify-between"><span>Cortes de Pasto:</span> <span class="text-yellow-600 font-bold">🟡 Cargando...</span></div>
-                    </div>
-                </div>
-
-                <!-- SECCIÓN RESPALDO: CARGADOR MANUAL LOCAL (Se activa si el CORS bloquea la carga local) -->
+                <!-- SECCIÓN RESPALDO: CARGADOR MANUAL LOCAL -->
                 <div id="seccion-local-uploader" class="bg-amber-500/10 p-3 rounded-lg border border-amber-500/30 hidden">
                     <h4 class="text-xs font-extrabold text-amber-700 uppercase mb-2 flex items-center gap-2">
                         <i data-lucide="upload-cloud" class="h-4 w-4"></i> Cargar GeoJSON Local
@@ -289,19 +279,9 @@
         let recoleccionGeoJsonData = null; // Almacenamiento global para recolección
         let hidricasGeoJsonData = null; // Almacenamiento global para Asuntos Hídricos
 
-        // --- SISTEMA DIAGNÓSTICO EN PANTALLA ---
+        // --- SISTEMA DIAGNÓSTICO SILENCIOSO ---
         function updateStatus(id, state, extraInfo = '') {
-            const el = document.getElementById(id);
-            if (!el) return;
-            const nameSpan = el.querySelector('span:first-child').innerText;
-            
-            if (state === 'success') {
-                el.innerHTML = `<span>${nameSpan}</span> <span class="text-green-600 font-bold">🟢 Cargado</span>`;
-            } else if (state === 'error') {
-                el.innerHTML = `<span>${nameSpan}</span> <span class="text-red-600 font-bold" title="${extraInfo}">🔴 Error (404/MIME)</span>`;
-            } else if (state === 'warning') {
-                el.innerHTML = `<span>${nameSpan}</span> <span class="text-amber-600 font-bold" title="${extraInfo}">🟡 Manual</span>`;
-            }
+            // Silenciado por solicitud
         }
 
         // --- CARGADOR DE ARCHIVOS MULTI-RUTA / CASE-INSENSITIVE FALLBACKS ---
@@ -317,7 +297,6 @@
                         const json = await res.json();
                         await processor(json);
                         success = true;
-                        updateStatus(statusId, 'success');
                         console.log(`Carga exitosa: ${path}`);
                         break;
                     } else {
@@ -330,12 +309,11 @@
 
             if (!success) {
                 console.error(`Error crítico cargando de rutas:`, paths, lastError);
-                updateStatus(statusId, 'error', lastError);
                 document.getElementById('seccion-local-uploader').classList.remove('hidden');
             }
         }
 
-        // --- FUNCIÓN DE NORMALIZACIÓN DE CGMs (Evita fallos por espacios o acentos en el JSON) ---
+        // --- FUNCIÓN DE NORMALIZACIÓN DE CGMs ---
         function normalizeCgmName(cgmName) {
             if (!cgmName) return "";
             return cgmName
@@ -392,6 +370,26 @@
             return "";
         }
 
+        // --- FUNCIÓN DE BÚSQUEDA DE PROPIEDAD RUTA INSENSIBLE A MAYÚSCULAS ---
+        function getFeatureRutaProperty(feature) {
+            if (!feature) return "";
+            let ruta = feature.getProperty('Ruta');
+            if (ruta !== undefined && ruta !== null) return String(ruta).trim();
+            ruta = feature.getProperty('ruta');
+            if (ruta !== undefined && ruta !== null) return String(ruta).trim();
+            ruta = feature.getProperty('RUTA');
+            if (ruta !== undefined && ruta !== null) return String(ruta).trim();
+            return "";
+        }
+
+        function getGeoJsonFeatureRuta(f) {
+            if (!f || !f.properties) return "";
+            if (f.properties.Ruta) return String(f.properties.Ruta).trim();
+            if (f.properties.ruta) return String(f.properties.ruta).trim();
+            if (f.properties.RUTA) return String(f.properties.RUTA).trim();
+            return "";
+        }
+
         // --- REGISTRAR CGM DE FORMA ÚNICA ---
         function registerCgm(cgmName) {
             if (!cgmName) return;
@@ -412,7 +410,7 @@
         // --- PARSEO LITERAL DE FECHAS SEGURO ---
         function parseDateCustom(dateStr) {
             if (!dateStr) return null;
-            dateStr = dateStr.trim();
+            dateStr = String(dateStr).trim();
             
             // Caso 1: Formato DD/MM/YYYY o D/M/YYYY
             if (dateStr.includes('/')) {
@@ -468,9 +466,8 @@
                 }
             }
             
-            // Fallback
-            const cleanStr = dateStr.replace(/\s*\(.*\)\s*/, '').trim();
-            const d = new Date(cleanStr);
+            // Fallback robusto garantizado a Date
+            const d = new Date(dateStr);
             if (!isNaN(d.getTime())) {
                 return new Date(d.getFullYear(), d.getMonth(), d.getDate());
             }
@@ -671,11 +668,6 @@
             }
         }
 
-        // --- ACTUALIZACIÓN DINÁMICA DEL SELECTOR DE BARRENDEROS COVELIA Y SUS TURNOS ---
-        function updateBarrenderoDropdownCovelia() {
-            // No se requiere filtro de barrendero individual para Covelia por el momento
-        }
-
         // --- LIMPIEZA DE GEOJSON DAÑADO Y RECONSTRUCCIÓN DEFENSIVA ---
         function sanitizeGeoJson(geoJson) {
             if (!geoJson || !geoJson.features) return geoJson;
@@ -837,6 +829,7 @@
                 updateBarridoStyles();
             });
 
+            // Listeners para los filtros de Recorridos (Fecha, Dominio y Ruta)
             const selectRecorridosFecha = document.getElementById('filtro-recorridos-fecha');
             if (selectRecorridosFecha) {
                 selectRecorridosFecha.addEventListener('change', () => {
@@ -851,9 +844,36 @@
                 });
             }
 
-            // Se sincroniza con el estado inicial del checkbox (checked por defecto)
-            cgmLayer = new google.maps.Data();
-            cgmLayer.setMap(document.getElementById('cb-cgm').checked ? map : null);
+            const selectRecorridosRuta = document.getElementById('filtro-recorridos-ruta');
+            if (selectRecorridosRuta) {
+                selectRecorridosRuta.addEventListener('change', () => {
+                    updateRecorridosStyles();
+                });
+            }
+
+            // Listeners para los filtros de Asuntos Hídricos (Solucionados)
+            const selectHidricasTipo = document.getElementById('filtro-hidricas-tipo');
+            if (selectHidricasTipo) {
+                selectHidricasTipo.addEventListener('change', () => {
+                    updateHidricasStyles();
+                });
+            }
+
+            const selectHidricasTarea = document.getElementById('filtro-hidricas-tarea');
+            if (selectHidricasTarea) {
+                selectHidricasTarea.addEventListener('change', () => {
+                    updateHidricasStyles();
+                });
+            }
+
+            const selectHidricasFecha = document.getElementById('filtro-hidricas-fecha');
+            if (selectHidricasFecha) {
+                selectHidricasFecha.addEventListener('change', () => {
+                    updateHidricasStyles();
+                });
+            }
+
+            const noCache = '?v=' + new Date().getTime();
 
             // 1. Límite Lomas (Soporte multiruta/case-insensitive)
             const limiteProcessor = async (geoJson) => {
@@ -879,6 +899,7 @@
             ], limiteProcessor, 'status-limite');
 
             // 2. Cargar CGM GeoJSON
+            cgmLayer = new google.maps.Data();
             const cgmProcessor = async (geoJson) => {
                 cgmLayer.addGeoJson(geoJson);
                 geoJson.features.forEach(f => {
@@ -894,6 +915,9 @@
                 './CGM.geojson',
                 './cgm.geojson'
             ], cgmProcessor, 'status-cgm');
+
+            // Se sincroniza con el estado inicial del checkbox (checked por defecto)
+            cgmLayer.setMap(document.getElementById('cb-cgm').checked ? map : null);
 
             // 3. Cargar Cortes de Pasto GeoJSON (Inicia deseleccionado)
             cortesLayer = new google.maps.Data();
@@ -990,7 +1014,8 @@
             barridoLayer.setMap(document.getElementById('cb-barrido').checked ? map : null);
 
 
-            // 5. Cargar Rutas Barrido Covelia (Inicia deseleccionado)
+            // 5. Cargar Rutas Barrido Covelia (Zonificacion Barrido Covelia.geojson) (Inicia deseleccionado)
+            // Se restaura sin selectores dinámicos propios en el panel lateral, obedeciendo la corrección del usuario
             coveliaLayer = new google.maps.Data();
             const procesarCovelia = (geoJson) => {
                 const featuresToRemove = [];
@@ -1054,6 +1079,7 @@
 
 
             // 7. Cargar Recorridos Mensuales GeoJSON (Soporta covelia_mensual_polylines.geojson.gz)
+            // Se le asigna el dropdown dinámico "Filtrar por Ruta" extraído y replicado de la lógica de index.html
             recorridosLayer = new google.maps.Data();
             const procesarRecorridos = (geoJson) => {
                 const featuresToRemove = [];
@@ -1065,6 +1091,7 @@
 
                 const fechasSet = new Set();
                 const dominiosSet = new Set();
+                const rutasSet = new Set();
 
                 geoJson.features.forEach(f => {
                     if (f.properties) {
@@ -1074,9 +1101,15 @@
                         if (f.properties.Dominio) {
                             dominiosSet.add(f.properties.Dominio.trim());
                         }
+                        // Escaneo dinámico y defensivo de propiedades de ruta
+                        const rVal = getGeoJsonFeatureRuta(f);
+                        if (rVal) {
+                            rutasSet.add(rVal);
+                        }
                     }
                 });
 
+                // Llenar selector de Fecha para Recorridos
                 const selectFecha = document.getElementById('filtro-recorridos-fecha');
                 if (selectFecha) {
                     const selectedVal = selectFecha.value;
@@ -1101,6 +1134,7 @@
                     }
                 }
 
+                // Llenar selector de Dominio para Recorridos
                 const selectDominio = document.getElementById('filtro-recorridos-dominio');
                 if (selectDominio) {
                     const selectedVal = selectDominio.value;
@@ -1110,12 +1144,33 @@
                         const opt = document.createElement('option');
                         opt.value = dom;
                         opt.textContent = dom;
-                        selectDominio.appendChild(opt); // Corregido el bug de inyección DOM
+                        selectDominio.appendChild(opt); 
                     });
                     if (dominiosSet.has(selectedVal)) {
                         selectDominio.value = selectedVal;
                     } else {
                         selectDominio.value = "TODOS";
+                    }
+                }
+
+                // Llenar selector de Rutas para Recorridos de forma dinámica (Proceso replicado de index.html)
+                const selectRuta = document.getElementById('filtro-recorridos-ruta');
+                if (selectRuta) {
+                    const selectedVal = selectRuta.value;
+                    selectRuta.innerHTML = '<option value="TODAS">TODAS LAS RUTAS</option>';
+                    const sortedRutas = Array.from(rutasSet).sort((a, b) => {
+                        return a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'});
+                    });
+                    sortedRutas.forEach(ruta => {
+                        const opt = document.createElement('option');
+                        opt.value = ruta;
+                        opt.textContent = `Ruta ${ruta}`;
+                        selectRuta.appendChild(opt);
+                    });
+                    if (rutasSet.has(selectedVal)) {
+                        selectRuta.value = selectedVal;
+                    } else {
+                        selectRuta.value = "TODAS";
                     }
                 }
 
@@ -1149,7 +1204,7 @@
                                     geoJson = JSON.parse(text);
                                 }
                             } catch (e) {
-                                // Es un binario GZ real
+                                // Es un binario GZIP real
                             }
 
                             if (!geoJson) {
@@ -1162,13 +1217,11 @@
                             }
                             procesarRecorridos(geoJson);
                             success = true;
-                            updateStatus('status-recorridos', 'success');
                             break;
                         } else {
                             const geoJson = await res.json();
                             procesarRecorridos(geoJson);
                             success = true;
-                            updateStatus('status-recorridos', 'success');
                             break;
                         }
                     } catch (err) {
@@ -1178,7 +1231,6 @@
 
                 if (!success) {
                     console.error("Fallo total al cargar recorridos:", lastError);
-                    updateStatus('status-recorridos', 'error', lastError);
                     document.getElementById('seccion-local-uploader').classList.remove('hidden');
                 }
             }
@@ -1207,13 +1259,16 @@
                 geoJson.features.forEach(f => {
                     if (f.properties) {
                         if (f.properties.tipo) {
-                            tiposSet.add(f.properties.tipo.trim());
+                            tiposSet.add(String(f.properties.tipo).trim());
                         }
                         if (f.properties.tarea) {
-                            tareasSet.add(f.properties.tarea.trim());
+                            tareasSet.add(String(f.properties.tarea).trim());
                         }
                         if (f.properties.fecha) {
-                            fechasHidricasSet.add(formatDateToShow(f.properties.fecha));
+                            const formatted = formatDateToShow(f.properties.fecha);
+                            if (formatted && formatted !== "-") {
+                                fechasHidricasSet.add(formatted);
+                            }
                         }
                         const cgmValue = getGeoJsonFeatureCgm(f);
                         if (cgmValue) {
@@ -1321,25 +1376,18 @@
                     });
                     updateCgmDropdown();
                     updateStyles();
-                    updateStatus('status-cgm', 'success');
                 } else if (isBarrido) {
                     procesarBarrido(geoJson);
-                    updateStatus('status-barrido', 'success');
                 } else if (isCovelia) {
                     procesarCovelia(geoJson);
-                    updateStatus('status-covelia', 'success');
                 } else if (isRecoleccion) {
                     procesarRecoleccion(geoJson);
-                    updateStatus('status-recoleccion', 'success');
                 } else if (isRecorridos) {
                     procesarRecorridos(geoJson);
-                    updateStatus('status-recorridos', 'success');
                 } else if (isHidricas) {
                     procesarHidricas(geoJson);
-                    updateStatus('status-hidricas', 'success');
                 } else {
                     procesarCortes(geoJson);
-                    updateStatus('status-cortes', 'success');
                 }
             };
 
@@ -1474,7 +1522,7 @@
                 });
             }
 
-            // Estilos para Barrido Municipal
+            // Estilos para Barrido Municipal (Solucionado usando color Hex literal #1E5E3A)
             function updateBarridoStyles() {
                 const globalCgmSelect = document.getElementById('filtro-global-cgm');
                 const globalCgm = globalCgmSelect ? globalCgmSelect.value : "TODOS";
@@ -1501,7 +1549,7 @@
                     }
 
                     return {
-                        strokeColor: 'var(--color-barrido)',
+                        strokeColor: '#1E5E3A', // Reemplazado variable CSS por Hex real
                         strokeWeight: 5,
                         strokeOpacity: 0.85,
                         zIndex: 4,
@@ -1510,7 +1558,8 @@
                 });
             }
 
-            // Estilos para Barrido Covelia (barrido.geojson)
+            // Estilos para Barrido Covelia (Zonificacion Barrido Covelia.geojson)
+            // Se restaura al comportamiento de filtrado simple por CGM, removiendo el filtrado de rutas que correspondía a Recorridos
             function updateCoveliaStyles() {
                 const globalCgmSelect = document.getElementById('filtro-global-cgm');
                 const globalCgm = globalCgmSelect ? globalCgmSelect.value : "TODOS";
@@ -1520,6 +1569,7 @@
                     const cleanFeatCgm = normalizeCgmName(featCgm);
                     let isVisible = true;
 
+                    // Filtro Global CGM aplicado a Covelia
                     if (globalCgm !== "TODOS") {
                         if (cleanFeatCgm !== globalCgm) {
                             isVisible = false;
@@ -1570,7 +1620,7 @@
                 });
             }
 
-            // Estilos para Recorridos GPS Mensuales Covelia
+            // Estilos para Recorridos GPS Mensuales Covelia (Proceso replicado de rutas de index.html)
             function updateRecorridosStyles() {
                 const fechaSelect = document.getElementById('filtro-recorridos-fecha');
                 const fechaFiltro = fechaSelect ? fechaSelect.value : "TODAS";
@@ -1578,10 +1628,14 @@
                 const dominioSelect = document.getElementById('filtro-recorridos-dominio');
                 const dominioFiltro = dominioSelect ? dominioSelect.value : "TODOS";
 
+                const rutaSelect = document.getElementById('filtro-recorridos-ruta');
+                const rutaFiltro = rutaSelect ? rutaSelect.value : "TODAS";
+
                 recorridosLayer.setStyle((feature) => {
                     const featFechaOriginal = feature.getProperty('Fecha');
                     const featFechaClean = formatDateToShow(featFechaOriginal);
                     const featDominio = feature.getProperty('Dominio') ? feature.getProperty('Dominio').trim() : "";
+                    const featRuta = getFeatureRutaProperty(feature);
                     let isVisible = true;
 
                     if (fechaFiltro !== "TODAS") {
@@ -1592,6 +1646,12 @@
 
                     if (dominioFiltro !== "TODOS") {
                         if (featDominio !== dominioFiltro) {
+                            isVisible = false;
+                        }
+                    }
+
+                    if (rutaFiltro !== "TODAS") {
+                        if (featRuta !== rutaFiltro) {
                             isVisible = false;
                         }
                     }
@@ -1608,7 +1668,7 @@
                 });
             }
 
-            // Estilos para Asuntos Hídricos (hidricas.geojson)
+            // Estilos para Asuntos Hídricos (hidricas.geojson) (Solucionado usando color Hex real #0D9488)
             function updateHidricasStyles() {
                 const globalCgmSelect = document.getElementById('filtro-global-cgm');
                 const globalCgm = globalCgmSelect ? globalCgmSelect.value : "TODOS";
@@ -1625,8 +1685,8 @@
                 hidricasLayer.setStyle((feature) => {
                     const featCgm = getFeatureCgmProperty(feature);
                     const cleanFeatCgm = normalizeCgmName(featCgm);
-                    const featTipo = feature.getProperty('tipo') ? feature.getProperty('tipo').trim() : "";
-                    const featTarea = feature.getProperty('tarea') ? feature.getProperty('tarea').trim() : "";
+                    const featTipo = feature.getProperty('tipo') ? String(feature.getProperty('tipo')).trim() : "";
+                    const featTarea = feature.getProperty('tarea') ? String(feature.getProperty('tarea')).trim() : "";
                     const featFecha = feature.getProperty('fecha');
                     const featFechaClean = formatDateToShow(featFecha);
                     let isVisible = true;
@@ -1668,12 +1728,12 @@
                             visible: isVisible
                         };
                     } else {
-                        // Línea o Polígono - Usar un color hídrico distintivo (Teal)
+                        // Línea o Polígono - Usar un color hídrico distintivo real (Teal Hex)
                         return {
-                            strokeColor: 'var(--color-hidricas)',
+                            strokeColor: '#0D9488', // Solucionado: Reemplazado variable CSS por Hex real
                             strokeWeight: 4,
                             strokeOpacity: 0.9,
-                            fillColor: 'var(--color-hidricas)',
+                            fillColor: '#0D9488', // Solucionado: Reemplazado variable CSS por Hex real
                             fillOpacity: 0.3,
                             zIndex: 4,
                             visible: isVisible
@@ -1792,17 +1852,20 @@
                         const fechaOriginal = event.feature.getProperty('Fecha');
                         const fechaClean = formatDateToShow(fechaOriginal);
                         const puntos = event.feature.getProperty('n_puntos') || '-';
+                        const ruta = getFeatureRutaProperty(event.feature);
 
                         content += `<h3 style="font-weight: 800; font-size: 14px; color: ${dynamicColor}; border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Recorrido Covelia</h3>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Dominio:</b> ${dominio}</p>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Fecha:</b> ${fechaClean}</p>`;
+                        if (ruta) {
+                            content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Ruta:</b> ${ruta}</p>`;
+                        }
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Puntos Registrados:</b> ${puntos}</p>`;
                     } else if (layerType === 'hidricas') {
                         const tipo = event.feature.getProperty('tipo') || 'Elemento Hídrico';
                         const tarea = event.feature.getProperty('tarea') || '-';
                         const fechaRaw = event.feature.getProperty('fecha');
                         const fechaClean = formatDateToShow(fechaRaw);
-                        const tipoColor = getRecoleccionColor(tipo);
 
                         content += `<h3 style="font-weight: 800; font-size: 14px; color: var(--color-hidricas); border-bottom: 1px solid #E6EDF3; padding-bottom: 4px; margin-bottom: 8px; padding-right: 20px;">Asuntos Hídricos</h3>`;
                         content += `<p style="margin: 4px 0; font-size: 12px; color: #333;"><b>Tipo:</b> ${tipo}</p>`;
